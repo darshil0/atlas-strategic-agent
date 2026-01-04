@@ -1,10 +1,3 @@
-This configuration document for **Atlas Agent – Google AI Studio** is already well-written, but it includes several structural, formatting, and clarity issues that can be improved to make it fully valid, consistent, and ready for use in Google AI Studio or other LLM configuration environments.
-
-Below is an improved and corrected version of the file, with redundancies fixed, improper code labels cleaned, capitalization standardized, and flow adjusted.
-
-***
-
-```yaml
 # Atlas Agent - Google AI Studio Configuration
 
 ## System Instructions

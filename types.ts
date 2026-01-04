@@ -1,16 +1,16 @@
 export enum TaskStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in-progress',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  BLOCKED = 'blocked',
-  WAITING = 'waiting'
+  PENDING = "pending",
+  IN_PROGRESS = "in-progress",
+  COMPLETED = "completed",
+  FAILED = "failed",
+  BLOCKED = "blocked",
+  WAITING = "waiting",
 }
 
 export enum Priority {
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low'
+  HIGH = "high",
+  MEDIUM = "medium",
+  LOW = "low",
 }
 
 export interface Citation {
@@ -51,15 +51,15 @@ export interface Plan {
 
 export interface Message {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: number;
 }
 
 export enum AgentMode {
-  AUTONOMOUS = 'Autonomous',
-  COLLABORATIVE = 'Collaborative',
-  GUIDED = 'Guided'
+  AUTONOMOUS = "Autonomous",
+  COLLABORATIVE = "Collaborative",
+  GUIDED = "Guided",
 }
 
 export interface AgentState {

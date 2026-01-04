@@ -336,6 +336,6 @@ For questions, suggestions, or collaboration opportunities, please open an issue
 
 **Atlas Strategic Agent** - Transforming complexity into clarity, one task at a time.
 
-Made with ❤️ using Google Gemini API
+***Made with ❤️ by Darshil using Google Gemini API***
 
 </div>

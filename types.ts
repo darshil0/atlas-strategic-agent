@@ -1,4 +1,3 @@
-
 export enum TaskStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in-progress',
@@ -13,6 +12,11 @@ export enum Priority {
   LOW = 'low'
 }
 
+export interface Citation {
+  uri: string;
+  title?: string;
+}
+
 export interface SubTask {
   id: string;
   description: string;
@@ -21,11 +25,15 @@ export interface SubTask {
   category?: string;
   result?: string;
   dependencies?: string[];
+  citations?: Citation[];
+  parentId?: string;
+  progress?: number;
 }
 
 export interface Plan {
   goal: string;
   tasks: SubTask[];
+  criticalPath?: string[];
 }
 
 export interface Message {

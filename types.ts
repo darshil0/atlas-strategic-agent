@@ -7,10 +7,17 @@ export enum TaskStatus {
   WAITING = 'waiting'
 }
 
+export enum Priority {
+  HIGH = 'high',
+  MEDIUM = 'medium',
+  LOW = 'low'
+}
+
 export interface SubTask {
   id: string;
   description: string;
   status: TaskStatus;
+  priority?: Priority;
   category?: string;
   result?: string;
   dependencies?: string[];

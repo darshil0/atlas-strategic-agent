@@ -1,15 +1,27 @@
 
-import React from 'react';
-import { SubTask, TaskStatus } from '../types';
+import React, { useRef, useEffect } from 'react';
+import { SubTask, TaskStatus, Priority } from '../types';
 import { ICONS } from '../constants';
 
 interface TaskCardProps {
   task: SubTask;
   isActive: boolean;
   isBlocked: boolean;
+  onClick?: () => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, isActive, isBlocked }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, isActive, isBlocked, onClick }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isActive && cardRef.current) {
+      cardRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [isActive]);
+
   const getStatusIcon = (status: TaskStatus) => {
     if (isBlocked && status === TaskStatus.PENDING) {
       return (
@@ -40,11 +52,24 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isActive, isBlocked }) => {
     }
   };
 
+  const getPriorityColor = (priority?: Priority) => {
+    switch (priority) {
+      case Priority.HIGH: return 'text-rose-400 border-rose-500/30 bg-rose-500/10';
+      case Priority.MEDIUM: return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
+      case Priority.LOW: return 'text-blue-400 border-blue-500/30 bg-blue-500/10';
+      default: return 'text-slate-500 border-slate-700 bg-slate-800/50';
+    }
+  };
+
   return (
-    <div className={`p-3 rounded-lg border transition-all duration-300 cursor-default group
-      ${getStatusColor(task.status)} 
-      ${isActive ? 'scale-[1.02] z-10' : 'hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10'}
-    `}>
+    <div 
+      ref={cardRef}
+      onClick={onClick}
+      className={`p-3 rounded-lg border transition-all duration-300 cursor-pointer group
+        ${getStatusColor(task.status)} 
+        ${isActive ? 'scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg shadow-blue-500/10' : 'hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10'}
+      `}
+    >
       <div className="flex items-start gap-3">
         <div className="mt-1 shrink-0 transition-transform duration-300 group-hover:scale-110">
           {getStatusIcon(task.status)}
@@ -58,6 +83,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isActive, isBlocked }) => {
           </div>
 
           <div className="mt-2 flex flex-wrap gap-2 items-center">
+            {task.priority && (
+              <span className={`px-1 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(task.priority)}`}>
+                {task.priority}
+              </span>
+            )}
             {task.category && (
               <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[9px] font-bold uppercase tracking-wider border border-blue-500/20 group-hover:border-blue-500/40 transition-colors">
                 {task.category}

@@ -1,7 +1,7 @@
 
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
-import { Plan, TaskStatus } from "../types";
+import { Plan, TaskStatus, Priority } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
 
@@ -11,7 +11,7 @@ export class AtlasService {
   static async generatePlan(userPrompt: string): Promise<Plan> {
     const response = await ai.models.generateContent({
       model: this.modelName,
-      contents: `User Request: ${userPrompt}\n\nDecompose this request into a structured plan for Atlas. Identify dependencies between subtasks. For long-term requests, assign logical categories (e.g. '2025 Q1', '2026 Strategy'). Output ONLY the JSON object.`,
+      contents: `User Request: ${userPrompt}\n\nDecompose this request into a structured plan for Atlas. Identify dependencies between subtasks. For each subtask, assign a priority ('high', 'medium', 'low') based on its importance to the overall mission. For long-term requests, assign logical categories (e.g. '2025 Q1', '2026 Strategy'). Output ONLY the JSON object.`,
       config: {
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
         responseMimeType: "application/json",
@@ -27,6 +27,7 @@ export class AtlasService {
                   id: { type: Type.STRING },
                   description: { type: Type.STRING },
                   status: { type: Type.STRING, description: 'Must be "pending"' },
+                  priority: { type: Type.STRING, description: 'Must be "high", "medium", or "low"' },
                   category: { type: Type.STRING },
                   dependencies: { 
                     type: Type.ARRAY, 

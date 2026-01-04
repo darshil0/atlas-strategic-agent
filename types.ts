@@ -3,6 +3,7 @@ export enum TaskStatus {
   IN_PROGRESS = 'in-progress',
   COMPLETED = 'completed',
   FAILED = 'failed',
+  BLOCKED = 'blocked',
   WAITING = 'waiting'
 }
 
@@ -17,22 +18,34 @@ export interface Citation {
   title?: string;
 }
 
+export interface Milestone {
+  id: string;
+  name: string;
+  date: string;
+  successCriteria: string;
+  isReached: boolean;
+}
+
 export interface SubTask {
   id: string;
   description: string;
   status: TaskStatus;
-  priority?: Priority;
+  priority: Priority;
   category?: string;
   result?: string;
   dependencies?: string[];
   citations?: Citation[];
   parentId?: string;
-  progress?: number;
+  duration?: string;
+  output?: string;
 }
 
 export interface Plan {
+  projectName: string;
+  timeline: string;
   goal: string;
   tasks: SubTask[];
+  milestones?: Milestone[];
   criticalPath?: string[];
 }
 

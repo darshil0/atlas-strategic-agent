@@ -7,10 +7,11 @@ import { TaskStatus, SubTask, Priority } from '../types';
  */
 
 export const testDependencyResolution = () => {
+  // FIX: Added required 'priority' field to mockTasks to satisfy SubTask interface.
   const mockTasks: SubTask[] = [
-    { id: '1', description: 'Phase 1 Complete', status: TaskStatus.COMPLETED },
-    { id: '2', description: 'Phase 2 Start', status: TaskStatus.PENDING, dependencies: ['1'] },
-    { id: '3', description: 'Phase 3 Blocked', status: TaskStatus.PENDING, dependencies: ['2'] }
+    { id: '1', description: 'Phase 1 Complete', status: TaskStatus.COMPLETED, priority: Priority.MEDIUM },
+    { id: '2', description: 'Phase 2 Start', status: TaskStatus.PENDING, dependencies: ['1'], priority: Priority.MEDIUM },
+    { id: '3', description: 'Phase 3 Blocked', status: TaskStatus.PENDING, dependencies: ['2'], priority: Priority.MEDIUM }
   ];
 
   const isBlocked = (task: SubTask, allTasks: SubTask[]) => {

@@ -1,24 +1,25 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
-import { Plan, TaskStatus, Citation } from "../types";
+import { Plan, Citation } from "../types";
 
 export class AtlasService {
   private static PLANNING_MODEL = 'gemini-3-pro-preview';
   private static EXECUTION_MODEL = 'gemini-3-flash-preview';
 
   static async generatePlan(userPrompt: string): Promise<Plan> {
-    // Create fresh instance to ensure correct API key usage per instructions
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const response = await ai.models.generateContent({
       model: this.PLANNING_MODEL,
-      contents: `User Request: ${userPrompt}\n\nDecompose this request into a structured hierarchical plan. Identify dependencies between subtasks. For each subtask, assign a priority and logical category. Use Task IDs.`,
+      contents: `Strategic Request: ${userPrompt}\n\nInitiate Phase 2 - Strategic Decomposition. Create a hierarchical, multi-level plan.`,
       config: {
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
+            projectName: { type: Type.STRING },
+            timeline: { type: Type.STRING },
             goal: { type: Type.STRING },
             tasks: {
               type: Type.ARRAY,
@@ -30,39 +31,52 @@ export class AtlasService {
                   status: { type: Type.STRING, description: 'Must be "pending"' },
                   priority: { type: Type.STRING, enum: ["high", "medium", "low"] },
                   category: { type: Type.STRING },
-                  dependencies: { 
-                    type: Type.ARRAY, 
-                    items: { type: Type.STRING }
-                  },
+                  dependencies: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  parentId: { type: Type.STRING },
+                  duration: { type: Type.STRING },
+                  output: { type: Type.STRING }
                 },
-                required: ["id", "description", "status"]
+                required: ["id", "description", "status", "priority"]
+              }
+            },
+            milestones: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  date: { type: Type.STRING },
+                  successCriteria: { type: Type.STRING },
+                  isReached: { type: Type.BOOLEAN }
+                },
+                required: ["id", "name", "successCriteria"]
               }
             }
           },
-          required: ["goal", "tasks"]
+          required: ["projectName", "goal", "tasks"]
         }
       }
     });
 
     try {
-      const plan = JSON.parse(response.text || "{}");
-      return plan as Plan;
+      return JSON.parse(response.text || "{}") as Plan;
     } catch (e) {
-      console.error("Failed to parse plan JSON", e);
-      throw new Error("Atlas Strategic failed to generate a coherent neural roadmap.");
+      console.error("Plan Parsing Error", e);
+      throw new Error("Neural decomposition failed to synchronize. Structure compromised.");
     }
   }
 
   static async executeSubtask(
-    subtask: string, 
-    context: string, 
+    subtaskDescription: string, 
+    context: string,
     onChunk?: (text: string) => void
   ): Promise<{ text: string, citations: Citation[] }> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const responseStream = await ai.models.generateContentStream({
       model: this.EXECUTION_MODEL,
-      contents: `Context: ${context}\n\nCurrent Operational Task: ${subtask}\n\nExecute with technical precision. Provide results and reasoning.`,
+      contents: `Context: ${context}\n\nTask Directive: ${subtaskDescription}\n\nExecute with technical thoroughness. State reasoning and findings.`,
       config: {
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
         tools: [{ googleSearch: {} }]
@@ -76,15 +90,11 @@ export class AtlasService {
       const text = chunk.text || "";
       fullText += text;
       
-      // Extract grounding metadata from the stream chunks
-      const groundingMetadata = chunk.candidates?.[0]?.groundingMetadata;
-      if (groundingMetadata?.groundingChunks) {
-        groundingMetadata.groundingChunks.forEach(chunk => {
-          if (chunk.web) {
-            citations.push({
-              uri: chunk.web.uri,
-              title: chunk.web.title
-            });
+      const grounding = chunk.candidates?.[0]?.groundingMetadata;
+      if (grounding?.groundingChunks) {
+        grounding.groundingChunks.forEach(c => {
+          if (c.web) {
+            citations.push({ uri: c.web.uri, title: c.web.title });
           }
         });
       }
@@ -92,20 +102,18 @@ export class AtlasService {
       if (onChunk) onChunk(text);
     }
 
-    // Deduplicate citations
+    // Deduplicate
     const uniqueCitations = Array.from(new Map(citations.map(c => [c.uri, c])).values());
 
     return { text: fullText, citations: uniqueCitations };
   }
 
-  static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
+  static async summarizeMission(plan: Plan, history: string): Promise<string> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: this.PLANNING_MODEL,
-      contents: `Mission Summary Request.\nGoal: ${plan.goal}\nFull Execution History: ${executionHistory}\n\nProvide a high-level strategic synthesis and learning report.`,
-      config: {
-        systemInstruction: ATLAS_SYSTEM_INSTRUCTION
-      }
+      contents: `Phase 4 - Completion Summary.\nProject: ${plan.projectName}\nGoal: ${plan.goal}\nExecution Path: ${history}`,
+      config: { systemInstruction: ATLAS_SYSTEM_INSTRUCTION }
     });
     return response.text || "Mission synchronized successfully.";
   }

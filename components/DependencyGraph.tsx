@@ -15,6 +15,7 @@ import ReactFlow, {
 } from 'reactflow';
 import { SubTask, TaskStatus, Priority } from '../types';
 
+// Custom Node Component to match Atlas Strategic aesthetic
 const TaskNode = ({ data }: { data: { task: SubTask; isActive: boolean; isBlocked: boolean; onNodeClick: (id: string) => void } }) => {
   const { task, isActive, isBlocked, onNodeClick } = data;
   

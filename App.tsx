@@ -74,6 +74,7 @@ const App: React.FC = () => {
   const handleTaskSelect = (id: string) => {
     setActiveTaskId(id);
     setSidebarView('list');
+    // Scroll to the specific card
     setTimeout(() => {
       taskRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
@@ -108,18 +109,20 @@ const App: React.FC = () => {
         id: nextId,
         description: bankTask.description,
         category: bankTask.category,
-        priority: Priority.MEDIUM,
+        priority: bankTask.priority, // Imported priority
         status: TaskStatus.PENDING,
         dependencies: []
       };
       return { ...prev, tasks: [...prev.tasks, newTask] };
     });
-    addMessage('assistant', `✓ **Objective Synchronized:** Added "${bankTask.description}" to the active mission.`);
+    addMessage('assistant', `✓ **Objective Synchronized:** Added "${bankTask.description}" with **${bankTask.priority}** priority to the active mission.`);
   };
 
   const executePlan = async (plan: Plan) => {
     setCurrentPlan(plan);
     let history = "";
+    
+    // We use local state management with a loop to avoid stale closure issues
     let latestTasks = [...plan.tasks];
 
     const getNextTask = () => latestTasks.find(t => 
@@ -347,7 +350,7 @@ const App: React.FC = () => {
                               task={task} 
                               isActive={activeTaskId === task.id} 
                               isBlocked={isTaskBlocked(task, currentPlan.tasks)}
-                              onClick={() => setActiveTaskId(task.id)}
+                              onClick={() => handleTaskSelect(task.id)}
                             />
                           </div>
                         ))}

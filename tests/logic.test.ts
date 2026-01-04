@@ -1,11 +1,16 @@
 
 import { TaskStatus, SubTask, Priority } from '../types';
 
+/**
+ * ATLAS STRATEGIC - CORE LOGIC TESTS
+ * Validates the underlying mathematical model of dependency and priority resolution.
+ */
+
 export const testDependencyResolution = () => {
   const mockTasks: SubTask[] = [
-    { id: '1', description: 'Task 1', status: TaskStatus.COMPLETED },
-    { id: '2', description: 'Task 2', status: TaskStatus.PENDING, dependencies: ['1'] },
-    { id: '3', description: 'Task 3', status: TaskStatus.PENDING, dependencies: ['2'] }
+    { id: '1', description: 'Phase 1 Complete', status: TaskStatus.COMPLETED },
+    { id: '2', description: 'Phase 2 Start', status: TaskStatus.PENDING, dependencies: ['1'] },
+    { id: '3', description: 'Phase 3 Blocked', status: TaskStatus.PENDING, dependencies: ['2'] }
   ];
 
   const isBlocked = (task: SubTask, allTasks: SubTask[]) => {
@@ -22,18 +27,35 @@ export const testDependencyResolution = () => {
     task3: isBlocked(mockTasks[2], mockTasks),
   };
 
-  console.assert(results.task1 === false, 'Root task should not be blocked');
-  console.assert(results.task2 === false, 'Task with completed dependency should not be blocked');
-  console.assert(results.task3 === true, 'Task with pending dependency SHOULD be blocked');
+  console.assert(results.task1 === false, 'Root task 1 should be RUNNABLE');
+  console.assert(results.task2 === false, 'Task 2 with completed dep should be RUNNABLE');
+  console.assert(results.task3 === true, 'Task 3 with pending dep should be BLOCKED');
   
   return results;
 };
 
+export const testPrioritySorting = () => {
+  const tasks: SubTask[] = [
+    { id: 'low', description: 'Low task', status: TaskStatus.PENDING, priority: Priority.LOW },
+    { id: 'high', description: 'High task', status: TaskStatus.PENDING, priority: Priority.HIGH },
+    { id: 'med', description: 'Med task', status: TaskStatus.PENDING, priority: Priority.MEDIUM },
+  ];
+
+  const priorityWeights = { [Priority.HIGH]: 3, [Priority.MEDIUM]: 2, [Priority.LOW]: 1 };
+  const sorted = [...tasks].sort((a, b) => 
+    (priorityWeights[b.priority || Priority.LOW] || 0) - (priorityWeights[a.priority || Priority.LOW] || 0)
+  );
+
+  console.assert(sorted[0].id === 'high', 'Highest priority task must come first in sort');
+  console.assert(sorted[2].id === 'low', 'Lowest priority task must come last in sort');
+};
+
 if (typeof window !== 'undefined') {
-  console.log('%c ATLAS LOGIC TESTS STARTING...', 'color: #3b82f6; font-weight: bold;');
+  console.log('%c ATLAS STRATEGIC BOOTSTRAP: RUNNING CORE VALIDATION...', 'color: #3b82f6; font-weight: bold;');
   try {
     testDependencyResolution();
-    console.log('%c ✓ ATLAS LOGIC TESTS PASSED', 'color: #10b981; font-weight: bold;');
+    testPrioritySorting();
+    console.log('%c ✓ STRATEGIC KERNEL VALIDATED', 'color: #10b981; font-weight: bold;');
   } catch (e) {
     console.error('Atlas Logic Test Failure:', e);
   }

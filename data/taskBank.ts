@@ -1,126 +1,771 @@
-
-import { Priority } from '../types';
+import { Priority } from "../types";
 
 export interface BankTask {
   id: string;
   description: string;
   category: string;
-  theme: 'AI' | 'Global' | 'Infra' | 'ESG' | 'People' | 'Cyber';
+  theme: "AI" | "Global" | "Infra" | "ESG" | "People" | "Cyber";
   priority: Priority;
 }
 
 export const TASK_BANK: BankTask[] = [
   // --- AI & INTELLIGENT ORCHESTRATION (AI) ---
-  { id: "AI-26-001", description: "Deploy Multi-Modal Agent Orchestration for real-time strategic pivot analysis", category: "2026 Q1", theme: "AI", priority: Priority.HIGH },
-  { id: "AI-26-002", description: "Integrate Neural-Symbolic reasoning for zero-shot task decomposition", category: "2026 Q1", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-003", description: "Establish Level 4 Autonomous Supply Chain Decision Engine", category: "2026 Q2", theme: "AI", priority: Priority.HIGH },
-  { id: "AI-26-004", description: "Launch Generative Product Design system with automated FEA validation", category: "2026 Q2", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-005", description: "Implement Self-Correcting LLM Feedback Loops for automated code review", category: "2026 Q3", theme: "AI", priority: Priority.LOW },
-  { id: "AI-26-006", description: "Deploy Emotionally-Aware Agent Interface for high-stakes negotiation support", category: "2026 Q3", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-007", description: "Achieve Cross-Model Knowledge Distillation for edge-device optimization", category: "2026 Q4", theme: "AI", priority: Priority.LOW },
-  { id: "AI-26-008", description: "Establish 'Sovereign Intelligence' clusters for sensitive government contracts", category: "2026 Q4", theme: "AI", priority: Priority.HIGH },
-  { id: "AI-26-009", description: "Launch Agentic Workflow Marketplace for enterprise-wide task sharing", category: "2026 Q1", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-010", description: "Implement Federated Learning protocol for privacy-preserving R&D synthesis", category: "2026 Q2", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-011", description: "Deploy Vision-Language Models for autonomous warehouse maintenance", category: "2026 Q3", theme: "AI", priority: Priority.LOW },
-  { id: "AI-26-012", description: "Launch 'Chief AI Ethics' automated oversight & bias detection dashboard", category: "2026 Q4", theme: "AI", priority: Priority.HIGH },
-  { id: "AI-26-013", description: "Integrate Quantum-Hybrid algorithms for complex portfolio optimization", category: "2026 Q4", theme: "AI", priority: Priority.MEDIUM },
-  { id: "AI-26-014", description: "Deploy Autonomous Legal Discovery for M&A due diligence", category: "2026 Q1", theme: "AI", priority: Priority.HIGH },
-  { id: "AI-26-015", description: "Establish Real-time Market Sentiment Synthesis Engine", category: "2026 Q2", theme: "AI", priority: Priority.MEDIUM },
+  {
+    id: "AI-26-001",
+    description:
+      "Deploy Multi-Modal Agent Orchestration for real-time strategic pivot analysis",
+    category: "2026 Q1",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "AI-26-002",
+    description:
+      "Integrate Neural-Symbolic reasoning for zero-shot task decomposition",
+    category: "2026 Q1",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-003",
+    description: "Establish Level 4 Autonomous Supply Chain Decision Engine",
+    category: "2026 Q2",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "AI-26-004",
+    description:
+      "Launch Generative Product Design system with automated FEA validation",
+    category: "2026 Q2",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-005",
+    description:
+      "Implement Self-Correcting LLM Feedback Loops for automated code review",
+    category: "2026 Q3",
+    theme: "AI",
+    priority: Priority.LOW,
+  },
+  {
+    id: "AI-26-006",
+    description:
+      "Deploy Emotionally-Aware Agent Interface for high-stakes negotiation support",
+    category: "2026 Q3",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-007",
+    description:
+      "Achieve Cross-Model Knowledge Distillation for edge-device optimization",
+    category: "2026 Q4",
+    theme: "AI",
+    priority: Priority.LOW,
+  },
+  {
+    id: "AI-26-008",
+    description:
+      "Establish 'Sovereign Intelligence' clusters for sensitive government contracts",
+    category: "2026 Q4",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "AI-26-009",
+    description:
+      "Launch Agentic Workflow Marketplace for enterprise-wide task sharing",
+    category: "2026 Q1",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-010",
+    description:
+      "Implement Federated Learning protocol for privacy-preserving R&D synthesis",
+    category: "2026 Q2",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-011",
+    description:
+      "Deploy Vision-Language Models for autonomous warehouse maintenance",
+    category: "2026 Q3",
+    theme: "AI",
+    priority: Priority.LOW,
+  },
+  {
+    id: "AI-26-012",
+    description:
+      "Launch 'Chief AI Ethics' automated oversight & bias detection dashboard",
+    category: "2026 Q4",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "AI-26-013",
+    description:
+      "Integrate Quantum-Hybrid algorithms for complex portfolio optimization",
+    category: "2026 Q4",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "AI-26-014",
+    description: "Deploy Autonomous Legal Discovery for M&A due diligence",
+    category: "2026 Q1",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "AI-26-015",
+    description: "Establish Real-time Market Sentiment Synthesis Engine",
+    category: "2026 Q2",
+    theme: "AI",
+    priority: Priority.MEDIUM,
+  },
 
   // --- CYBERSECURITY & RESILIENCE (CY) ---
-  { id: "CY-26-001", description: "Deploy Zero-Trust Identity Fabric for all remote agents", category: "2026 Q1", theme: "Cyber", priority: Priority.HIGH },
-  { id: "CY-26-002", description: "Launch Autonomous Threat Hunting AI (T-Hunter Alpha)", category: "2026 Q2", theme: "Cyber", priority: Priority.HIGH },
-  { id: "CY-26-003", description: "Implement Deep-Fake Audio/Video Verification for Board Comms", category: "2026 Q1", theme: "Cyber", priority: Priority.MEDIUM },
-  { id: "CY-26-004", description: "Achieve SOC 3 compliance for Global Strategic Operations", category: "2026 Q3", theme: "Cyber", priority: Priority.LOW },
-  { id: "CY-26-005", description: "Establish Secure Quantum Key Distribution (QKD) between HQ nodes", category: "2026 Q4", theme: "Cyber", priority: Priority.HIGH },
-  { id: "CY-26-006", description: "Deploy Self-Healing Network Infrastructure for DDoS mitigation", category: "2026 Q2", theme: "Cyber", priority: Priority.MEDIUM },
-  { id: "CY-26-007", description: "Audit Privacy Preservation for all 2026 customer models", category: "2026 Q1", theme: "Cyber", priority: Priority.MEDIUM },
-  { id: "CY-26-008", description: "Establish Private Key Management via Decentralized MPC", category: "2026 Q3", theme: "Cyber", priority: Priority.LOW },
-  { id: "CY-26-009", description: "Launch 'Red-Team as a Service' for all enterprise clients", category: "2026 Q2", theme: "Cyber", priority: Priority.MEDIUM },
-  { id: "CY-26-010", description: "Implement Passive Biological Authentication for high-security labs", category: "2026 Q4", theme: "Cyber", priority: Priority.LOW },
-  { id: "CY-26-011", description: "Achieve GDPR v2 Global Compliance readiness", category: "2026 Q1", theme: "Cyber", priority: Priority.HIGH },
-  { id: "CY-26-012", description: "Deploy AI-driven Encryption re-keying on anomaly detection", category: "2026 Q3", theme: "Cyber", priority: Priority.MEDIUM },
-  { id: "CY-26-013", description: "Establish Cyber-Resilience fallback for LEO satellite loss", category: "2026 Q4", theme: "Cyber", priority: Priority.HIGH },
-  { id: "CY-26-014", description: "Audit Shadow IT usage across Global Sales departments", category: "2026 Q2", theme: "Cyber", priority: Priority.LOW },
-  { id: "CY-26-015", description: "Launch 'Secure Atlas' bug bounty program with $10M pool", category: "2026 Q1", theme: "Cyber", priority: Priority.MEDIUM },
+  {
+    id: "CY-26-001",
+    description: "Deploy Zero-Trust Identity Fabric for all remote agents",
+    category: "2026 Q1",
+    theme: "Cyber",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "CY-26-002",
+    description: "Launch Autonomous Threat Hunting AI (T-Hunter Alpha)",
+    category: "2026 Q2",
+    theme: "Cyber",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "CY-26-003",
+    description: "Implement Deep-Fake Audio/Video Verification for Board Comms",
+    category: "2026 Q1",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "CY-26-004",
+    description: "Achieve SOC 3 compliance for Global Strategic Operations",
+    category: "2026 Q3",
+    theme: "Cyber",
+    priority: Priority.LOW,
+  },
+  {
+    id: "CY-26-005",
+    description:
+      "Establish Secure Quantum Key Distribution (QKD) between HQ nodes",
+    category: "2026 Q4",
+    theme: "Cyber",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "CY-26-006",
+    description:
+      "Deploy Self-Healing Network Infrastructure for DDoS mitigation",
+    category: "2026 Q2",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "CY-26-007",
+    description: "Audit Privacy Preservation for all 2026 customer models",
+    category: "2026 Q1",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "CY-26-008",
+    description: "Establish Private Key Management via Decentralized MPC",
+    category: "2026 Q3",
+    theme: "Cyber",
+    priority: Priority.LOW,
+  },
+  {
+    id: "CY-26-009",
+    description: "Launch 'Red-Team as a Service' for all enterprise clients",
+    category: "2026 Q2",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "CY-26-010",
+    description:
+      "Implement Passive Biological Authentication for high-security labs",
+    category: "2026 Q4",
+    theme: "Cyber",
+    priority: Priority.LOW,
+  },
+  {
+    id: "CY-26-011",
+    description: "Achieve GDPR v2 Global Compliance readiness",
+    category: "2026 Q1",
+    theme: "Cyber",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "CY-26-012",
+    description: "Deploy AI-driven Encryption re-keying on anomaly detection",
+    category: "2026 Q3",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "CY-26-013",
+    description: "Establish Cyber-Resilience fallback for LEO satellite loss",
+    category: "2026 Q4",
+    theme: "Cyber",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "CY-26-014",
+    description: "Audit Shadow IT usage across Global Sales departments",
+    category: "2026 Q2",
+    theme: "Cyber",
+    priority: Priority.LOW,
+  },
+  {
+    id: "CY-26-015",
+    description: "Launch 'Secure Atlas' bug bounty program with $10M pool",
+    category: "2026 Q1",
+    theme: "Cyber",
+    priority: Priority.MEDIUM,
+  },
 
   // --- ESG, ETHICS & GOVERNANCE (ES) ---
-  { id: "ES-26-001", description: "Achieve Net-Zero Carbon Certification for FY2026 Operations", category: "2026 Q4", theme: "ESG", priority: Priority.HIGH },
-  { id: "ES-26-002", description: "Implement Ethical AI Fairness Scorecard for all public-facing agents", category: "2026 Q1", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "ES-26-003", description: "Establish Circular Economy Hardware Recycling Program", category: "2026 Q2", theme: "ESG", priority: Priority.LOW },
-  { id: "ES-26-004", description: "Audit Global Supply Chain for Modern Slavery Compliance", category: "2026 Q1", theme: "ESG", priority: Priority.HIGH },
-  { id: "ES-26-005", description: "Launch Atlas Community Impact Portal for social innovation", category: "2026 Q3", theme: "ESG", priority: Priority.LOW },
-  { id: "ES-26-006", description: "Implement Water-Neutral cooling strategy for APAC Data Centers", category: "2026 Q2", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "ES-26-007", description: "Formalize AI Governance Charter with International Stakeholders", category: "2026 Q3", theme: "ESG", priority: Priority.HIGH },
-  { id: "ES-26-008", description: "Launch Sustainability Transparency Dashboard for shareholders", category: "2026 Q4", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "ES-26-009", description: "Establish STEM Education grants in underserved tech regions", category: "2026 Q3", theme: "ESG", priority: Priority.LOW },
-  { id: "ES-26-010", description: "Audit Internal Gender Pay Equality across all 15 global hubs", category: "2026 Q1", theme: "ESG", priority: Priority.HIGH },
-  { id: "ES-26-011", description: "Deploy AI-driven Biodiversity Protection analytics for field ops", category: "2026 Q3", theme: "ESG", priority: Priority.LOW },
-  { id: "ES-26-012", description: "Implement Zero-Waste Micro-Manufacturing for hardware prototypes", category: "2026 Q2", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "ES-26-013", description: "Launch Ethical Data Sourcing protocol for model training", category: "2026 Q1", theme: "ESG", priority: Priority.HIGH },
-  { id: "ES-26-014", description: "Establish Refugee Tech-Upskilling program with UN partnerships", category: "2026 Q4", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "ES-26-015", description: "Achieve 5-Star ESG Rating from Global Rating Agencies", category: "2026 Q4", theme: "ESG", priority: Priority.HIGH },
+  {
+    id: "ES-26-001",
+    description: "Achieve Net-Zero Carbon Certification for FY2026 Operations",
+    category: "2026 Q4",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "ES-26-002",
+    description:
+      "Implement Ethical AI Fairness Scorecard for all public-facing agents",
+    category: "2026 Q1",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "ES-26-003",
+    description: "Establish Circular Economy Hardware Recycling Program",
+    category: "2026 Q2",
+    theme: "ESG",
+    priority: Priority.LOW,
+  },
+  {
+    id: "ES-26-004",
+    description: "Audit Global Supply Chain for Modern Slavery Compliance",
+    category: "2026 Q1",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "ES-26-005",
+    description: "Launch Atlas Community Impact Portal for social innovation",
+    category: "2026 Q3",
+    theme: "ESG",
+    priority: Priority.LOW,
+  },
+  {
+    id: "ES-26-006",
+    description:
+      "Implement Water-Neutral cooling strategy for APAC Data Centers",
+    category: "2026 Q2",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "ES-26-007",
+    description:
+      "Formalize AI Governance Charter with International Stakeholders",
+    category: "2026 Q3",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "ES-26-008",
+    description:
+      "Launch Sustainability Transparency Dashboard for shareholders",
+    category: "2026 Q4",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "ES-26-009",
+    description: "Establish STEM Education grants in underserved tech regions",
+    category: "2026 Q3",
+    theme: "ESG",
+    priority: Priority.LOW,
+  },
+  {
+    id: "ES-26-010",
+    description: "Audit Internal Gender Pay Equality across all 15 global hubs",
+    category: "2026 Q1",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "ES-26-011",
+    description:
+      "Deploy AI-driven Biodiversity Protection analytics for field ops",
+    category: "2026 Q3",
+    theme: "ESG",
+    priority: Priority.LOW,
+  },
+  {
+    id: "ES-26-012",
+    description:
+      "Implement Zero-Waste Micro-Manufacturing for hardware prototypes",
+    category: "2026 Q2",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "ES-26-013",
+    description: "Launch Ethical Data Sourcing protocol for model training",
+    category: "2026 Q1",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "ES-26-014",
+    description:
+      "Establish Refugee Tech-Upskilling program with UN partnerships",
+    category: "2026 Q4",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "ES-26-015",
+    description: "Achieve 5-Star ESG Rating from Global Rating Agencies",
+    category: "2026 Q4",
+    theme: "ESG",
+    priority: Priority.HIGH,
+  },
 
   // --- GLOBAL STRATEGIC EXPANSION (GL) ---
-  { id: "GL-26-001", description: "Establish APAC Headquarters in Singapore for Regional Synergy", category: "2026 Q2", theme: "Global", priority: Priority.HIGH },
-  { id: "GL-26-002", description: "Launch European Data Sovereignty Hub in Frankfurt", category: "2026 Q1", theme: "Global", priority: Priority.HIGH },
-  { id: "GL-26-003", description: "Formalize Strategic Partnership with African Tech Leopards (ATL) Initiative", category: "2026 Q3", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-004", description: "Deploy Localized Atlas Core for Middle Eastern Financial Markets", category: "2026 Q1", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-005", description: "Execute Latin American Market Entry Strategy focusing on Brazil", category: "2026 Q4", theme: "Global", priority: Priority.LOW },
-  { id: "GL-26-006", description: "Establish Arctic Data Node for ultra-secure strategic backups", category: "2026 Q4", theme: "Global", priority: Priority.LOW },
-  { id: "GL-26-007", description: "Launch Global Talent Portability Pass for cross-border engineering", category: "2026 Q2", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-008", description: "Audit International Trade Compliance for 2027 export controls", category: "2026 Q1", theme: "Global", priority: Priority.HIGH },
-  { id: "GL-26-009", description: "Establish Pan-Pacific Cloud-Link for low-latency collaboration", category: "2026 Q3", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-010", description: "Launch Emerging Market Micro-Subscription model for Atlas Lite", category: "2026 Q2", theme: "Global", priority: Priority.LOW },
-  { id: "GL-26-011", description: "Secure Sovereign Cloud certifications in GCC nations", category: "2026 Q3", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-012", description: "Deploy Localized AI Governance Frameworks for Japanese Markets", category: "2026 Q4", theme: "Global", priority: Priority.MEDIUM },
-  { id: "GL-26-013", description: "Establish Strategic Alliance with Indian Deep-Tech R&D parks", category: "2026 Q1", theme: "Global", priority: Priority.HIGH },
-  { id: "GL-26-014", description: "Launch Atlas Global Impact Fund for sustainable local innovation", category: "2026 Q4", theme: "Global", priority: Priority.LOW },
-  { id: "GL-26-015", description: "Audit Cross-Continental Supply Chain Resiliency", category: "2026 Q2", theme: "Global", priority: Priority.HIGH },
+  {
+    id: "GL-26-001",
+    description:
+      "Establish APAC Headquarters in Singapore for Regional Synergy",
+    category: "2026 Q2",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "GL-26-002",
+    description: "Launch European Data Sovereignty Hub in Frankfurt",
+    category: "2026 Q1",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "GL-26-003",
+    description:
+      "Formalize Strategic Partnership with African Tech Leopards (ATL) Initiative",
+    category: "2026 Q3",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-004",
+    description:
+      "Deploy Localized Atlas Core for Middle Eastern Financial Markets",
+    category: "2026 Q1",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-005",
+    description:
+      "Execute Latin American Market Entry Strategy focusing on Brazil",
+    category: "2026 Q4",
+    theme: "Global",
+    priority: Priority.LOW,
+  },
+  {
+    id: "GL-26-006",
+    description:
+      "Establish Arctic Data Node for ultra-secure strategic backups",
+    category: "2026 Q4",
+    theme: "Global",
+    priority: Priority.LOW,
+  },
+  {
+    id: "GL-26-007",
+    description:
+      "Launch Global Talent Portability Pass for cross-border engineering",
+    category: "2026 Q2",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-008",
+    description:
+      "Audit International Trade Compliance for 2027 export controls",
+    category: "2026 Q1",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "GL-26-009",
+    description:
+      "Establish Pan-Pacific Cloud-Link for low-latency collaboration",
+    category: "2026 Q3",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-010",
+    description:
+      "Launch Emerging Market Micro-Subscription model for Atlas Lite",
+    category: "2026 Q2",
+    theme: "Global",
+    priority: Priority.LOW,
+  },
+  {
+    id: "GL-26-011",
+    description: "Secure Sovereign Cloud certifications in GCC nations",
+    category: "2026 Q3",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-012",
+    description:
+      "Deploy Localized AI Governance Frameworks for Japanese Markets",
+    category: "2026 Q4",
+    theme: "Global",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "GL-26-013",
+    description: "Establish Strategic Alliance with Indian Deep-Tech R&D parks",
+    category: "2026 Q1",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "GL-26-014",
+    description:
+      "Launch Atlas Global Impact Fund for sustainable local innovation",
+    category: "2026 Q4",
+    theme: "Global",
+    priority: Priority.LOW,
+  },
+  {
+    id: "GL-26-015",
+    description: "Audit Cross-Continental Supply Chain Resiliency",
+    category: "2026 Q2",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
 
   // --- INFRASTRUCTURE & SCALABILITY (IN) ---
-  { id: "IN-26-001", description: "Transition to 6G-Ready High-Bandwidth Core Infrastructure", category: "2026 Q1", theme: "Infra", priority: Priority.HIGH },
-  { id: "IN-26-002", description: "Deploy Serverless Mesh Architecture for global micro-service sync", category: "2026 Q1", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-003", description: "Migrate Core Databases to Quantum-Resistant Ledger Systems", category: "2026 Q2", theme: "Infra", priority: Priority.HIGH },
-  { id: "IN-26-004", description: "Establish High-Density Edge-Compute Clusters in top 50 global cities", category: "2026 Q2", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-005", description: "Launch Holographic Workspace Virtualization for R&D teams", category: "2026 Q3", theme: "Infra", priority: Priority.LOW },
-  { id: "IN-26-006", description: "Achieve 99.9999% Reliability on Distributed Decision Fabric", category: "2026 Q3", theme: "Infra", priority: Priority.HIGH },
-  { id: "IN-26-007", description: "Deploy Autonomous Fleet Logistics for hardware distribution", category: "2026 Q4", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-008", description: "Integrate Smart-Grid Energy Optimization for all Data Centers", category: "2026 Q1", theme: "Infra", priority: Priority.LOW },
-  { id: "IN-26-009", description: "Establish DNA-Based Long-Term Storage Archive for legacy data", category: "2026 Q4", theme: "Infra", priority: Priority.LOW },
-  { id: "IN-26-010", description: "Launch Private Satellite-Link for high-security executive comms", category: "2026 Q3", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-011", description: "Implement Micro-DC (Data Center) cooling via recycled ocean heat", category: "2026 Q2", theme: "Infra", priority: Priority.LOW },
-  { id: "IN-26-012", description: "Transition to ARM-based high-efficiency compute for all LLM inference", category: "2026 Q1", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-013", description: "Establish Cross-Provider Cloud Abstraction layer for cost arbitrage", category: "2026 Q3", theme: "Infra", priority: Priority.MEDIUM },
-  { id: "IN-26-014", description: "Deploy Terabit-per-second Backplane for internal data training", category: "2026 Q2", theme: "Infra", priority: Priority.HIGH },
-  { id: "IN-26-015", description: "Achieve Carbon-Neutral Power matching for Global Operations", category: "2026 Q4", theme: "Infra", priority: Priority.HIGH },
+  {
+    id: "IN-26-001",
+    description: "Transition to 6G-Ready High-Bandwidth Core Infrastructure",
+    category: "2026 Q1",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "IN-26-002",
+    description:
+      "Deploy Serverless Mesh Architecture for global micro-service sync",
+    category: "2026 Q1",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-003",
+    description: "Migrate Core Databases to Quantum-Resistant Ledger Systems",
+    category: "2026 Q2",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "IN-26-004",
+    description:
+      "Establish High-Density Edge-Compute Clusters in top 50 global cities",
+    category: "2026 Q2",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-005",
+    description: "Launch Holographic Workspace Virtualization for R&D teams",
+    category: "2026 Q3",
+    theme: "Infra",
+    priority: Priority.LOW,
+  },
+  {
+    id: "IN-26-006",
+    description: "Achieve 99.9999% Reliability on Distributed Decision Fabric",
+    category: "2026 Q3",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "IN-26-007",
+    description: "Deploy Autonomous Fleet Logistics for hardware distribution",
+    category: "2026 Q4",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-008",
+    description:
+      "Integrate Smart-Grid Energy Optimization for all Data Centers",
+    category: "2026 Q1",
+    theme: "Infra",
+    priority: Priority.LOW,
+  },
+  {
+    id: "IN-26-009",
+    description:
+      "Establish DNA-Based Long-Term Storage Archive for legacy data",
+    category: "2026 Q4",
+    theme: "Infra",
+    priority: Priority.LOW,
+  },
+  {
+    id: "IN-26-010",
+    description:
+      "Launch Private Satellite-Link for high-security executive comms",
+    category: "2026 Q3",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-011",
+    description:
+      "Implement Micro-DC (Data Center) cooling via recycled ocean heat",
+    category: "2026 Q2",
+    theme: "Infra",
+    priority: Priority.LOW,
+  },
+  {
+    id: "IN-26-012",
+    description:
+      "Transition to ARM-based high-efficiency compute for all LLM inference",
+    category: "2026 Q1",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-013",
+    description:
+      "Establish Cross-Provider Cloud Abstraction layer for cost arbitrage",
+    category: "2026 Q3",
+    theme: "Infra",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "IN-26-014",
+    description:
+      "Deploy Terabit-per-second Backplane for internal data training",
+    category: "2026 Q2",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "IN-26-015",
+    description: "Achieve Carbon-Neutral Power matching for Global Operations",
+    category: "2026 Q4",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
 
   // --- PEOPLE, CULTURE & TALENT (PE) ---
-  { id: "PE-26-001", description: "Deploy 4-Day Work Week Standard across Global Product Teams", category: "2026 Q1", theme: "People", priority: Priority.HIGH },
-  { id: "PE-26-002", description: "Establish Atlas VR Empathy training for all Leadership", category: "2026 Q2", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-003", description: "Launch 'Neural-Collaborator' program for AI-Human Synergy", category: "2026 Q1", theme: "People", priority: Priority.HIGH },
-  { id: "PE-26-004", description: "Implement Neurodiversity-First Recruitment framework", category: "2026 Q3", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-005", description: "Establish Global Employee Wellness Monitoring via IoT Hubs", category: "2026 Q2", theme: "People", priority: Priority.LOW },
-  { id: "PE-26-006", description: "Launch Micro-Equity distribution platform for all staff", category: "2026 Q4", theme: "People", priority: Priority.LOW },
-  { id: "PE-26-007", description: "Achieve 95% Talent Retention for AI Engineering staff", category: "2026 Q4", theme: "People", priority: Priority.HIGH },
-  { id: "PE-26-008", description: "Establish 'Future Leaders' mentorship program for APAC hub", category: "2026 Q1", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-009", description: "Deploy VR-based Remote Onboarding for global hires", category: "2026 Q3", theme: "People", priority: Priority.LOW },
-  { id: "PE-26-010", description: "Audit Internal Communications for Psychological Safety", category: "2026 Q2", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-011", description: "Establish Decentralized Autonomous Organization (DAO) for internal perks", category: "2026 Q4", theme: "People", priority: Priority.LOW },
-  { id: "PE-26-012", description: "Launch 'Atlas Academy' for continuous AI prompt engineering", category: "2026 Q1", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-013", description: "Deploy AI-driven Career Pathing recommendation engine", category: "2026 Q3", theme: "People", priority: Priority.MEDIUM },
-  { id: "PE-26-014", description: "Establish Cross-Cultural Competency workshop for global sales", category: "2026 Q2", theme: "People", priority: Priority.LOW },
-  { id: "PE-26-015", description: "Achieve 'Top 10 Global Tech Employer' status", category: "2026 Q4", theme: "People", priority: Priority.HIGH },
+  {
+    id: "PE-26-001",
+    description: "Deploy 4-Day Work Week Standard across Global Product Teams",
+    category: "2026 Q1",
+    theme: "People",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "PE-26-002",
+    description: "Establish Atlas VR Empathy training for all Leadership",
+    category: "2026 Q2",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-003",
+    description: "Launch 'Neural-Collaborator' program for AI-Human Synergy",
+    category: "2026 Q1",
+    theme: "People",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "PE-26-004",
+    description: "Implement Neurodiversity-First Recruitment framework",
+    category: "2026 Q3",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-005",
+    description: "Establish Global Employee Wellness Monitoring via IoT Hubs",
+    category: "2026 Q2",
+    theme: "People",
+    priority: Priority.LOW,
+  },
+  {
+    id: "PE-26-006",
+    description: "Launch Micro-Equity distribution platform for all staff",
+    category: "2026 Q4",
+    theme: "People",
+    priority: Priority.LOW,
+  },
+  {
+    id: "PE-26-007",
+    description: "Achieve 95% Talent Retention for AI Engineering staff",
+    category: "2026 Q4",
+    theme: "People",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "PE-26-008",
+    description: "Establish 'Future Leaders' mentorship program for APAC hub",
+    category: "2026 Q1",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-009",
+    description: "Deploy VR-based Remote Onboarding for global hires",
+    category: "2026 Q3",
+    theme: "People",
+    priority: Priority.LOW,
+  },
+  {
+    id: "PE-26-010",
+    description: "Audit Internal Communications for Psychological Safety",
+    category: "2026 Q2",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-011",
+    description:
+      "Establish Decentralized Autonomous Organization (DAO) for internal perks",
+    category: "2026 Q4",
+    theme: "People",
+    priority: Priority.LOW,
+  },
+  {
+    id: "PE-26-012",
+    description: "Launch 'Atlas Academy' for continuous AI prompt engineering",
+    category: "2026 Q1",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-013",
+    description: "Deploy AI-driven Career Pathing recommendation engine",
+    category: "2026 Q3",
+    theme: "People",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "PE-26-014",
+    description:
+      "Establish Cross-Cultural Competency workshop for global sales",
+    category: "2026 Q2",
+    theme: "People",
+    priority: Priority.LOW,
+  },
+  {
+    id: "PE-26-015",
+    description: "Achieve 'Top 10 Global Tech Employer' status",
+    category: "2026 Q4",
+    theme: "People",
+    priority: Priority.HIGH,
+  },
 
   // --- FINAL VISIONARY OBJECTIVES (VI) ---
-  { id: "VI-26-001", description: "Achieve Level 5 Autonomous Strategic Synthesis: Vision 2027", category: "2026 Vision", theme: "AI", priority: Priority.HIGH },
-  { id: "VI-26-002", description: "Launch 'The Atlas Collective' Human-AI Hybrid Governance", category: "2026 Vision", theme: "People", priority: Priority.HIGH },
-  { id: "VI-26-003", description: "Establish Inter-Planetary Communication Relay Feasibility Study", category: "2026 Vision", theme: "Infra", priority: Priority.LOW },
-  { id: "VI-26-004", description: "Achieve 100% Operational Transparency via real-time Blockchain Audit", category: "2026 Vision", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "VI-26-005", description: "Scale Atlas Platform to 1 Billion Autonomous Agent nodes", category: "2026 Vision", theme: "Infra", priority: Priority.HIGH },
-  { id: "VI-26-006", description: "Deploy Global Ubiquitous Strategic Intelligence Layer", category: "2026 Vision", theme: "AI", priority: Priority.HIGH },
-  { id: "VI-26-007", description: "Finalize FY2027-2030 Strategic Roadmap Synthesis", category: "2026 Vision", theme: "Global", priority: Priority.HIGH },
-  { id: "VI-26-008", description: "Launch Atlas Open-Source Ethics Core to the world", category: "2026 Vision", theme: "ESG", priority: Priority.MEDIUM },
-  { id: "VI-26-009", description: "Secure 'World's Most Innovative Company' Triple-Crown", category: "2026 Vision", theme: "Global", priority: Priority.HIGH },
-  { id: "VI-26-010", description: "The Singularity Readiness Assessment: Milestone Alpha", category: "2027 Beyond", theme: "AI", priority: Priority.HIGH },
+  {
+    id: "VI-26-001",
+    description: "Achieve Level 5 Autonomous Strategic Synthesis: Vision 2027",
+    category: "2026 Vision",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-002",
+    description: "Launch 'The Atlas Collective' Human-AI Hybrid Governance",
+    category: "2026 Vision",
+    theme: "People",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-003",
+    description:
+      "Establish Inter-Planetary Communication Relay Feasibility Study",
+    category: "2026 Vision",
+    theme: "Infra",
+    priority: Priority.LOW,
+  },
+  {
+    id: "VI-26-004",
+    description:
+      "Achieve 100% Operational Transparency via real-time Blockchain Audit",
+    category: "2026 Vision",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "VI-26-005",
+    description: "Scale Atlas Platform to 1 Billion Autonomous Agent nodes",
+    category: "2026 Vision",
+    theme: "Infra",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-006",
+    description: "Deploy Global Ubiquitous Strategic Intelligence Layer",
+    category: "2026 Vision",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-007",
+    description: "Finalize FY2027-2030 Strategic Roadmap Synthesis",
+    category: "2026 Vision",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-008",
+    description: "Launch Atlas Open-Source Ethics Core to the world",
+    category: "2026 Vision",
+    theme: "ESG",
+    priority: Priority.MEDIUM,
+  },
+  {
+    id: "VI-26-009",
+    description: "Secure 'World's Most Innovative Company' Triple-Crown",
+    category: "2026 Vision",
+    theme: "Global",
+    priority: Priority.HIGH,
+  },
+  {
+    id: "VI-26-010",
+    description: "The Singularity Readiness Assessment: Milestone Alpha",
+    category: "2027 Beyond",
+    theme: "AI",
+    priority: Priority.HIGH,
+  },
 ];

@@ -3,12 +3,12 @@ import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, Citation } from "../types";
 
 export class AtlasService {
-  private static PLANNING_MODEL = 'gemini-3-pro-preview';
-  private static EXECUTION_MODEL = 'gemini-3-flash-preview';
+  private static PLANNING_MODEL = "gemini-3-pro-preview";
+  private static EXECUTION_MODEL = "gemini-3-flash-preview";
 
   static async generatePlan(userPrompt: string): Promise<Plan> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
+
     const response = await ai.models.generateContent({
       model: this.PLANNING_MODEL,
       contents: `Strategic Request: ${userPrompt}\n\nInitiate Phase 2 - Strategic Decomposition. Create a hierarchical, multi-level plan.`,
@@ -28,16 +28,25 @@ export class AtlasService {
                 properties: {
                   id: { type: Type.STRING },
                   description: { type: Type.STRING },
-                  status: { type: Type.STRING, description: 'Must be "pending"' },
-                  priority: { type: Type.STRING, enum: ["high", "medium", "low"] },
+                  status: {
+                    type: Type.STRING,
+                    description: 'Must be "pending"',
+                  },
+                  priority: {
+                    type: Type.STRING,
+                    enum: ["high", "medium", "low"],
+                  },
                   category: { type: Type.STRING },
-                  dependencies: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  dependencies: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
                   parentId: { type: Type.STRING },
                   duration: { type: Type.STRING },
-                  output: { type: Type.STRING }
+                  output: { type: Type.STRING },
                 },
-                required: ["id", "description", "status", "priority"]
-              }
+                required: ["id", "description", "status", "priority"],
+              },
             },
             milestones: {
               type: Type.ARRAY,
@@ -48,39 +57,41 @@ export class AtlasService {
                   name: { type: Type.STRING },
                   date: { type: Type.STRING },
                   successCriteria: { type: Type.STRING },
-                  isReached: { type: Type.BOOLEAN }
+                  isReached: { type: Type.BOOLEAN },
                 },
-                required: ["id", "name", "successCriteria"]
-              }
-            }
+                required: ["id", "name", "successCriteria"],
+              },
+            },
           },
-          required: ["projectName", "goal", "tasks"]
-        }
-      }
+          required: ["projectName", "goal", "tasks"],
+        },
+      },
     });
 
     try {
       return JSON.parse(response.text || "{}") as Plan;
     } catch (e) {
       console.error("Plan Parsing Error", e);
-      throw new Error("Neural decomposition failed to synchronize. Structure compromised.");
+      throw new Error(
+        "Neural decomposition failed to synchronize. Structure compromised.",
+      );
     }
   }
 
   static async executeSubtask(
-    subtaskDescription: string, 
+    subtaskDescription: string,
     context: string,
-    onChunk?: (text: string) => void
-  ): Promise<{ text: string, citations: Citation[] }> {
+    onChunk?: (text: string) => void,
+  ): Promise<{ text: string; citations: Citation[] }> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
+
     const responseStream = await ai.models.generateContentStream({
       model: this.EXECUTION_MODEL,
       contents: `Context: ${context}\n\nTask Directive: ${subtaskDescription}\n\nExecute with technical thoroughness. State reasoning and findings.`,
       config: {
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
-        tools: [{ googleSearch: {} }]
-      }
+        tools: [{ googleSearch: {} }],
+      },
     });
 
     let fullText = "";
@@ -89,10 +100,10 @@ export class AtlasService {
     for await (const chunk of responseStream) {
       const text = chunk.text || "";
       fullText += text;
-      
+
       const grounding = chunk.candidates?.[0]?.groundingMetadata;
       if (grounding?.groundingChunks) {
-        grounding.groundingChunks.forEach(c => {
+        grounding.groundingChunks.forEach((c) => {
           if (c.web) {
             citations.push({ uri: c.web.uri, title: c.web.title });
           }
@@ -103,7 +114,9 @@ export class AtlasService {
     }
 
     // Deduplicate
-    const uniqueCitations = Array.from(new Map(citations.map(c => [c.uri, c])).values());
+    const uniqueCitations = Array.from(
+      new Map(citations.map((c) => [c.uri, c])).values(),
+    );
 
     return { text: fullText, citations: uniqueCitations };
   }
@@ -113,7 +126,7 @@ export class AtlasService {
     const response = await ai.models.generateContent({
       model: this.PLANNING_MODEL,
       contents: `Phase 4 - Completion Summary.\nProject: ${plan.projectName}\nGoal: ${plan.goal}\nExecution Path: ${history}`,
-      config: { systemInstruction: ATLAS_SYSTEM_INSTRUCTION }
+      config: { systemInstruction: ATLAS_SYSTEM_INSTRUCTION },
     });
     return response.text || "Mission synchronized successfully.";
   }

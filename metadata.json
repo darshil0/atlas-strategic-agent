@@ -1,0 +1,7 @@
+{
+  "name": "Atlas Agent",
+  "description": "Atlas is an Autonomous Task & Learning Assistant System designed to decompose complex goals into manageable subtasks, execute them methodically, and provide transparent progress updates.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

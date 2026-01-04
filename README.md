@@ -1,9 +1,5 @@
 # Atlas Strategic Agent 🗺️
 
-<div align="center">
-
-![Atlas Banner](https://private-user-images.githubusercontent.com/159876365/477138731-0aa67016-6eaf-458a-adb2-6e31a0763ed6.png)
-
 **Breaking down mountains into manageable stones**
 
 [![Google AI Studio](https://img.shields.io/badge/Google-AI_Studio-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.studio)

@@ -125,7 +125,26 @@ To run Atlas, you need to provide a Google Gemini API key.
 
 ---
 
+## 🧪 Testing
+
+The project uses [Vitest](https://vitest.dev/) for unit and component testing. To run the test suite, use the following command:
+
+```bash
+npm test
+```
+
+This will execute all test files located in the `tests/` directory and provide a coverage report.
+
+---
+
 ## 📜 Version History
+
+### v1.2.0 (In Progress)
+
+-   **Test Suite Enhancement:**
+    -   Fixed the existing test suite, which was failing due to a misconfiguration.
+    -   Added unit tests for the `TaskCard` component to ensure UI reliability.
+    -   Configured the testing environment to support React component testing with `jsdom` and `@testing-library/react`.
 
 ### v1.1.0
 

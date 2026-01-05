@@ -1,7 +1,8 @@
 import React from "react";
+import { TaskStatus } from "./types";
 
-export const ICONS = {
-  PENDING: (
+export const ICONS: Record<string, JSX.Element> = {
+  [TaskStatus.PENDING]: (
     <svg
       className="w-4 h-4 text-slate-400"
       fill="none"
@@ -16,7 +17,7 @@ export const ICONS = {
       />
     </svg>
   ),
-  IN_PROGRESS: (
+  [TaskStatus.IN_PROGRESS]: (
     <svg
       className="w-4 h-4 text-blue-400 animate-spin"
       fill="none"
@@ -31,7 +32,7 @@ export const ICONS = {
       />
     </svg>
   ),
-  COMPLETED: (
+  [TaskStatus.COMPLETED]: (
     <svg
       className="w-4 h-4 text-emerald-400"
       fill="none"
@@ -46,7 +47,7 @@ export const ICONS = {
       />
     </svg>
   ),
-  FAILED: (
+  [TaskStatus.FAILED]: (
     <svg
       className="w-4 h-4 text-rose-400"
       fill="none"
@@ -67,6 +68,7 @@ export const ICONS = {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      aria-label="Blocked"
     >
       <path
         strokeLinecap="round"
@@ -76,7 +78,7 @@ export const ICONS = {
       />
     </svg>
   ),
-  WAITING: (
+  [TaskStatus.WAITING]: (
     <svg
       className="w-4 h-4 text-amber-400"
       fill="none"

@@ -1,7 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./tests/logic.test"; // Run conceptual logic tests
+
+// Only import test code in non-production environments to avoid bundling it
+if (process.env.NODE_ENV !== "production") {
+  // eslint-disable-next-line import/no-import-module-exports, @typescript-eslint/no-var-requires
+  require("./tests/logic.test");
+}
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -9,6 +14,7 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
+
 root.render(
   <React.StrictMode>
     <App />

@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, Citation } from "../types";
 
@@ -7,65 +7,61 @@ const getGoogleAI = () => {
   if (!apiKey) {
     throw new Error("API_KEY environment variable not set");
   }
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenerativeAI(apiKey);
 };
 
 export class AtlasService {
-  private static PLANNING_MODEL = "gemini-3-pro-preview";
-  private static EXECUTION_MODEL = "gemini-3-flash-preview";
+  private static readonly PLANNING_MODEL = "gemini-1.5-pro";
+  private static readonly EXECUTION_MODEL = "gemini-1.5-flash";
 
   static async generatePlan(userPrompt: string): Promise<Plan> {
     try {
-      const ai = getGoogleAI();
-      const response = await ai.models.generateContent({
+      const genAI = getGoogleAI();
+      const model = genAI.getGenerativeModel({
         model: this.PLANNING_MODEL,
-        contents: `Strategic Request: ${userPrompt}\n\nInitiate Phase 2 - Strategic Decomposition. Create a hierarchical, multi-level plan.`,
-        config: {
-          systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+        systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+        generationConfig: {
           responseMimeType: "application/json",
           responseSchema: {
-            type: Type.OBJECT,
+            type: SchemaType.OBJECT,
             properties: {
-              projectName: { type: Type.STRING },
-              timeline: { type: Type.STRING },
-              goal: { type: Type.STRING },
+              projectName: { type: SchemaType.STRING },
+              timeline: { type: SchemaType.STRING },
+              goal: { type: SchemaType.STRING },
               tasks: {
-                type: Type.ARRAY,
+                type: SchemaType.ARRAY,
                 items: {
-                  type: Type.OBJECT,
+                  type: SchemaType.OBJECT,
                   properties: {
-                    id: { type: Type.STRING },
-                    description: { type: Type.STRING },
-                    status: {
-                      type: Type.STRING,
-                      description: 'Must be "pending"',
-                    },
+                    id: { type: SchemaType.STRING },
+                    description: { type: SchemaType.STRING },
+                    status: { type: SchemaType.STRING },
                     priority: {
-                      type: Type.STRING,
+                      type: SchemaType.STRING,
                       enum: ["high", "medium", "low"],
                     },
-                    category: { type: Type.STRING },
+                    category: { type: SchemaType.STRING },
                     dependencies: {
-                      type: Type.ARRAY,
-                      items: { type: Type.STRING },
+                      type: SchemaType.ARRAY,
+                      items: { type: SchemaType.STRING },
                     },
-                    parentId: { type: Type.STRING },
-                    duration: { type: Type.STRING },
-                    output: { type: Type.STRING },
+                    parentId: { type: SchemaType.STRING },
+                    duration: { type: SchemaType.STRING },
+                    output: { type: SchemaType.STRING },
                   },
                   required: ["id", "description", "status", "priority"],
                 },
               },
               milestones: {
-                type: Type.ARRAY,
+                type: SchemaType.ARRAY,
                 items: {
-                  type: Type.OBJECT,
+                  type: SchemaType.OBJECT,
                   properties: {
-                    id: { type: Type.STRING },
-                    name: { type: Type.STRING },
-                    date: { type: Type.STRING },
-                    successCriteria: { type: Type.STRING },
-                    isReached: { type: Type.BOOLEAN },
+                    id: { type: SchemaType.STRING },
+                    name: { type: SchemaType.STRING },
+                    date: { type: SchemaType.STRING },
+                    successCriteria: { type: SchemaType.STRING },
+                    isReached: { type: SchemaType.BOOLEAN },
                   },
                   required: ["id", "name", "successCriteria"],
                 },
@@ -76,15 +72,20 @@ export class AtlasService {
         },
       });
 
-      return JSON.parse(response.text || "{}") as Plan;
+      const result = await model.generateContent(
+        `Strategic Request: ${userPrompt}\n\nInitiate Phase 2 - Strategic Decomposition.`
+      );
+
+      // 'result.response.text()' is an async getter in newer SDK versions.
+      const responseText = await result.response.text();
+      return JSON.parse(responseText ?? "{}") as Plan;
     } catch (error) {
       console.error("Error generating plan:", error);
-      if (error instanceof SyntaxError) {
-        throw new Error(
-          "Neural decomposition failed to synchronize. Structure compromised."
-        );
-      }
-      throw new Error("Failed to generate a valid plan from the API.");
+      throw new Error(
+        error instanceof Error
+          ? `Failed to generate plan: ${error.message}`
+          : "Failed to generate a valid plan from the API."
+      );
     }
   }
 
@@ -94,61 +95,74 @@ export class AtlasService {
     onChunk?: (text: string) => void
   ): Promise<{ text: string; citations: Citation[] }> {
     try {
-      const ai = getGoogleAI();
-      const responseStream = await ai.models.generateContentStream({
+      const genAI = getGoogleAI();
+      const model = genAI.getGenerativeModel({
         model: this.EXECUTION_MODEL,
-        contents: `Context: ${context}\n\nTask Directive: ${subtaskDescription}\n\nExecute with technical thoroughness. State reasoning and findings.`,
-        config: {
-          systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
-          tools: [{ googleSearch: {} }],
-        },
+        systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+        tools: [{ googleSearchRetrieval: {} } as any],
+      });
+
+      const result = await model.generateContentStream({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: `Context: ${context}\n\nTask Directive: ${subtaskDescription}` },
+            ],
+          },
+        ],
       });
 
       let fullText = "";
-      let citations: Citation[] = [];
+      const citations: Citation[] = [];
 
-      for await (const chunk of responseStream) {
-        const text = chunk.text || "";
+      for await (const chunk of result.stream) {
+        const text = chunk.text();
         fullText += text;
 
-        const grounding = chunk.candidates?.[0]?.groundingMetadata;
-        if (grounding?.groundingChunks) {
-          grounding.groundingChunks.forEach((c) => {
-            if (c.web) {
-              citations.push({ uri: c.web.uri, title: c.web.title });
-            }
+        const groundingMetadata = chunk.candidates?.[0]?.groundingMetadata;
+        if (groundingMetadata?.searchEntryPoint) {
+          // Optionally collect citation details if provided in metadata
+          citations.push({
+            source: groundingMetadata.searchEntryPoint.displayName ?? "Google Search",
+            url: groundingMetadata.searchEntryPoint?.uri ?? "",
           });
         }
 
         if (onChunk) onChunk(text);
       }
 
-      const uniqueCitations = Array.from(
-        new Map(citations.map((c) => [c.uri, c])).values()
-      );
-
-      return { text: fullText, citations: uniqueCitations };
+      return { text: fullText.trim(), citations };
     } catch (error) {
       console.error("Error executing subtask:", error);
-      throw new Error("Failed to execute subtask due to an API error.");
+      throw new Error(
+        error instanceof Error
+          ? `Failed to execute subtask: ${error.message}`
+          : "Failed to execute subtask due to an API error."
+      );
     }
   }
 
-  static async summarizeMission(
-    plan: Plan,
-    history: string
-  ): Promise<string> {
+  static async summarizeMission(plan: Plan, history: string): Promise<string> {
     try {
-      const ai = getGoogleAI();
-      const response = await ai.models.generateContent({
+      const genAI = getGoogleAI();
+      const model = genAI.getGenerativeModel({
         model: this.PLANNING_MODEL,
-        contents: `Phase 4 - Completion Summary.\nProject: ${plan.projectName}\nGoal: ${plan.goal}\nExecution Path: ${history}`,
-        config: { systemInstruction: ATLAS_SYSTEM_INSTRUCTION },
+        systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
       });
-      return response.text || "Mission synchronized successfully.";
+
+      const result = await model.generateContent(
+        `Phase 4 - Completion Summary.\nProject: ${plan.projectName}\nGoal: ${plan.goal}\nExecution Path: ${history}`
+      );
+
+      return await result.response.text();
     } catch (error) {
       console.error("Error summarizing mission:", error);
-      throw new Error("Failed to summarize the mission due to an API error.");
+      throw new Error(
+        error instanceof Error
+          ? `Failed to summarize mission: ${error.message}`
+          : "Failed to summarize the mission."
+      );
     }
   }
 }

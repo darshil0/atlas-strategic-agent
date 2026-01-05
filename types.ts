@@ -49,9 +49,11 @@ export interface Plan {
   criticalPath?: string[];
 }
 
+export type MessageRole = "user" | "assistant" | "system";
+
 export interface Message {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: MessageRole;
   content: string;
   timestamp: number;
 }

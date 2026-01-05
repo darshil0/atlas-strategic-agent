@@ -1,12 +1,10 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, GenerativeModelResult, GenerateContentResult } from "@google/generative-ai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, Citation } from "../types";
 
 const getGoogleAI = () => {
   const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API_KEY environment variable not set");
-  }
+  if (!apiKey) throw new Error("API_KEY environment variable not set");
   return new GoogleGenerativeAI(apiKey);
 };
 
@@ -15,8 +13,9 @@ export class AtlasService {
   private static readonly EXECUTION_MODEL = "gemini-1.5-flash";
 
   static async generatePlan(userPrompt: string): Promise<Plan> {
+    const genAI = getGoogleAI();
+
     try {
-      const genAI = getGoogleAI();
       const model = genAI.getGenerativeModel({
         model: this.PLANNING_MODEL,
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
@@ -72,19 +71,18 @@ export class AtlasService {
         },
       });
 
-      const result = await model.generateContent(
+      const result: GenerateContentResult = await model.generateContent(
         `Strategic Request: ${userPrompt}\n\nInitiate Phase 2 - Strategic Decomposition.`
       );
 
-      // 'result.response.text()' is an async getter in newer SDK versions.
-      const responseText = await result.response.text();
-      return JSON.parse(responseText ?? "{}") as Plan;
+      const responseText = await result.response?.text();
+      return JSON.parse(responseText || "{}") as Plan;
     } catch (error) {
       console.error("Error generating plan:", error);
       throw new Error(
         error instanceof Error
           ? `Failed to generate plan: ${error.message}`
-          : "Failed to generate a valid plan from the API."
+          : "Unknown error during plan generation"
       );
     }
   }
@@ -94,12 +92,12 @@ export class AtlasService {
     context: string,
     onChunk?: (text: string) => void
   ): Promise<{ text: string; citations: Citation[] }> {
+    const genAI = getGoogleAI();
     try {
-      const genAI = getGoogleAI();
       const model = genAI.getGenerativeModel({
         model: this.EXECUTION_MODEL,
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
-        tools: [{ googleSearchRetrieval: {} } as any],
+        tools: [{ googleSearchRetrieval: {} }],
       });
 
       const result = await model.generateContentStream({
@@ -118,18 +116,19 @@ export class AtlasService {
 
       for await (const chunk of result.stream) {
         const text = chunk.text();
-        fullText += text;
-
-        const groundingMetadata = chunk.candidates?.[0]?.groundingMetadata;
-        if (groundingMetadata?.searchEntryPoint) {
-          // Optionally collect citation details if provided in metadata
-          citations.push({
-            source: groundingMetadata.searchEntryPoint.displayName ?? "Google Search",
-            url: groundingMetadata.searchEntryPoint?.uri ?? "",
-          });
+        if (text) {
+          fullText += text;
+          if (onChunk) onChunk(text);
         }
 
-        if (onChunk) onChunk(text);
+        const grounding = chunk.candidates?.[0]?.groundingMetadata;
+        const entry = grounding?.searchEntryPoint;
+        if (entry) {
+          citations.push({
+            source: entry.displayName ?? "Google Search",
+            url: entry.uri ?? "",
+          });
+        }
       }
 
       return { text: fullText.trim(), citations };
@@ -138,20 +137,20 @@ export class AtlasService {
       throw new Error(
         error instanceof Error
           ? `Failed to execute subtask: ${error.message}`
-          : "Failed to execute subtask due to an API error."
+          : "Failed to execute subtask due to an API issue"
       );
     }
   }
 
   static async summarizeMission(plan: Plan, history: string): Promise<string> {
+    const genAI = getGoogleAI();
     try {
-      const genAI = getGoogleAI();
       const model = genAI.getGenerativeModel({
         model: this.PLANNING_MODEL,
         systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
       });
 
-      const result = await model.generateContent(
+      const result: GenerateContentResult = await model.generateContent(
         `Phase 4 - Completion Summary.\nProject: ${plan.projectName}\nGoal: ${plan.goal}\nExecution Path: ${history}`
       );
 
@@ -161,7 +160,7 @@ export class AtlasService {
       throw new Error(
         error instanceof Error
           ? `Failed to summarize mission: ${error.message}`
-          : "Failed to summarize the mission."
+          : "Failed to summarize mission."
       );
     }
   }

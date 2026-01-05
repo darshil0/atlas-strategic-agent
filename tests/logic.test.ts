@@ -2,11 +2,10 @@ import { TaskStatus, SubTask, Priority } from "../types";
 
 /**
  * ATLAS STRATEGIC - CORE LOGIC TESTS
- * Validates the underlying mathematical model of dependency and priority resolution.
+ * Validates dependency resolution and priority sorting mechanisms.
  */
 
 export const testDependencyResolution = () => {
-  // FIX: Added required 'priority' field to mockTasks to satisfy SubTask interface.
   const mockTasks: SubTask[] = [
     {
       id: "1",
@@ -30,11 +29,11 @@ export const testDependencyResolution = () => {
     },
   ];
 
-  const isBlocked = (task: SubTask, allTasks: SubTask[]) => {
-    if (!task.dependencies || task.dependencies.length === 0) return false;
+  const isBlocked = (task: SubTask, allTasks: SubTask[]): boolean => {
+    if (!task.dependencies?.length) return false;
     return task.dependencies.some((depId) => {
       const depTask = allTasks.find((t) => t.id === depId);
-      return depTask && depTask.status !== TaskStatus.COMPLETED;
+      return !depTask || depTask.status !== TaskStatus.COMPLETED;
     });
   };
 
@@ -44,15 +43,12 @@ export const testDependencyResolution = () => {
     task3: isBlocked(mockTasks[2], mockTasks),
   };
 
-  console.assert(results.task1 === false, "Root task 1 should be RUNNABLE");
-  console.assert(
-    results.task2 === false,
-    "Task 2 with completed dep should be RUNNABLE",
-  );
-  console.assert(
-    results.task3 === true,
-    "Task 3 with pending dep should be BLOCKED",
-  );
+  if (results.task1 !== false)
+    throw new Error("Task 1 should be RUNNABLE (no dependencies).");
+  if (results.task2 !== false)
+    throw new Error("Task 2 should be RUNNABLE (dependency completed).");
+  if (results.task3 !== true)
+    throw new Error("Task 3 should be BLOCKED (pending dependency).");
 
   return results;
 };
@@ -61,58 +57,57 @@ export const testPrioritySorting = () => {
   const tasks: SubTask[] = [
     {
       id: "low",
-      description: "Low task",
+      description: "Low priority task",
       status: TaskStatus.PENDING,
       priority: Priority.LOW,
     },
     {
       id: "high",
-      description: "High task",
+      description: "High priority task",
       status: TaskStatus.PENDING,
       priority: Priority.HIGH,
     },
     {
-      id: "med",
-      description: "Med task",
+      id: "medium",
+      description: "Medium priority task",
       status: TaskStatus.PENDING,
       priority: Priority.MEDIUM,
     },
   ];
 
-  const priorityWeights = {
+  const weight = {
     [Priority.HIGH]: 3,
     [Priority.MEDIUM]: 2,
     [Priority.LOW]: 1,
   };
+
   const sorted = [...tasks].sort(
-    (a, b) =>
-      (priorityWeights[b.priority || Priority.LOW] || 0) -
-      (priorityWeights[a.priority || Priority.LOW] || 0),
+    (a, b) => weight[b.priority] - weight[a.priority]
   );
 
-  console.assert(
-    sorted[0].id === "high",
-    "Highest priority task must come first in sort",
-  );
-  console.assert(
-    sorted[2].id === "low",
-    "Lowest priority task must come last in sort",
-  );
+  if (sorted[0].id !== "high")
+    throw new Error("Highest priority task must appear first.");
+  if (sorted[2].id !== "low")
+    throw new Error("Lowest priority task must appear last.");
+
+  return sorted;
 };
 
-if (typeof window !== "undefined") {
+// Automatically validate logic when running in a browser or Node environment
+if (typeof globalThis !== "undefined") {
   console.log(
-    "%c ATLAS STRATEGIC BOOTSTRAP: RUNNING CORE VALIDATION...",
-    "color: #3b82f6; font-weight: bold;",
+    "%c[ATLAS STRATEGIC]: Bootstrapping core validation...",
+    "color:#3b82f6; font-weight:bold;"
   );
   try {
-    testDependencyResolution();
-    testPrioritySorting();
+    const depResults = testDependencyResolution();
+    const sortResults = testPrioritySorting();
     console.log(
-      "%c ✓ STRATEGIC KERNEL VALIDATED",
-      "color: #10b981; font-weight: bold;",
+      "%c✓ CORE LOGIC VALIDATED",
+      "color:#10b981; font-weight:bold;"
     );
-  } catch (e) {
-    console.error("Atlas Logic Test Failure:", e);
+    console.table({ depResults, sortResults });
+  } catch (err) {
+    console.error("%c✗ Logic validation failed:", "color:#ef4444;", err);
   }
 }

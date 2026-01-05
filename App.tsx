@@ -11,13 +11,13 @@ import {
   TaskStatus,
   AgentMode,
   SubTask,
-  Priority,
 } from "./types";
 import { AtlasService } from "./services/geminiService";
 import TaskCard from "./components/TaskCard";
 import DependencyGraph from "./components/DependencyGraph";
 import TaskBank from "./components/TaskBank";
 import { BankTask } from "./data/taskBank";
+
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -34,7 +34,10 @@ const App: React.FC = () => {
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(() => scrollToBottom(), [messages, isThinking]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isThinking]);
 
   const addMessage = (role: "user" | "assistant", content: string) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -100,25 +103,24 @@ const App: React.FC = () => {
               t.status === TaskStatus.COMPLETED ||
               t.status === TaskStatus.FAILED,
           )
-        )
+        ) {
           break;
+        }
         await new Promise((r) => setTimeout(r, 1000));
         continue;
       }
 
       setActiveTaskId(nextTask.id);
-      setCurrentPlan((prev) =>
-        prev
-          ? {
-              ...prev,
-              tasks: prev.tasks.map((t) =>
-                t.id === nextTask.id
-                  ? { ...t, status: TaskStatus.IN_PROGRESS }
-                  : t,
-              ),
-            }
-          : null,
-      );
+      setCurrentPlan((prev) => {
+        if (!prev) return prev;
+        const tasks = prev.tasks.map((t) =>
+          t.id === nextTask.id
+            ? { ...t, status: TaskStatus.IN_PROGRESS }
+            : t,
+        );
+        latestTasks = tasks;
+        return { ...prev, tasks };
+      });
 
       const msgId = addMessage(
         "assistant",
@@ -218,16 +220,33 @@ const App: React.FC = () => {
     }
   };
 
-  const hierarchicalTasks = useMemo(() => {
+  const hierarchicalTasks: SubTask[] = useMemo(() => {
     if (!currentPlan) return [];
-    // Recursive grouping or sorting by ID depth
     return [...currentPlan.tasks].sort((a, b) => a.id.localeCompare(b.id));
   }, [currentPlan]);
+
+  const handleAddBankTask = (task: BankTask) => {
+    if (!currentPlan) return;
+    // Example: append as a new pending subtask
+    const newSubTask: SubTask = {
+      id: task.id,
+      description: task.description,
+      status: TaskStatus.PENDING,
+      priority: task.priority,
+      category: task.category,
+      dependencies: [],
+    };
+    setCurrentPlan((prev) =>
+      prev ? { ...prev, tasks: [...prev.tasks, newSubTask] } : prev,
+    );
+  };
 
   return (
     <div className="flex h-screen bg-slate-950 overflow-hidden text-slate-200">
       <aside
-        className={`${isSidebarOpen ? "w-80" : "w-0"} transition-all duration-300 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col relative z-20 overflow-hidden`}
+        className={`${
+          isSidebarOpen ? "w-80" : "w-0"
+        } transition-all duration-300 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col relative z-20 overflow-hidden`}
       >
         <div className="p-4 border-b border-slate-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -328,13 +347,21 @@ const App: React.FC = () => {
           <div className="p-4 border-t border-slate-800 flex bg-slate-900/40 shrink-0">
             <button
               onClick={() => setSidebarView("list")}
-              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${sidebarView === "list" ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500"}`}
+              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${
+                sidebarView === "list"
+                  ? "border-blue-500 text-blue-400"
+                  : "border-transparent text-slate-500"
+              }`}
             >
               List View
             </button>
             <button
               onClick={() => setSidebarView("graph")}
-              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${sidebarView === "graph" ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500"}`}
+              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${
+                sidebarView === "graph"
+                  ? "border-blue-500 text-blue-400"
+                  : "border-transparent text-slate-500"
+              }`}
             >
               Graph View
             </button>
@@ -369,16 +396,28 @@ const App: React.FC = () => {
               Atlas <span className="text-blue-600 non-italic">Strategic</span>
             </h1>
           </div>
-          <div className="flex bg-slate-900/50 rounded-xl p-1 border border-slate-800/50">
-            {Object.values(AgentMode).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${mode === m ? "bg-blue-600 text-white" : "text-slate-500 hover:text-slate-300"}`}
-              >
-                {m}
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsTaskBankOpen((v) => !v)}
+              className="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-700 bg-slate-900/70 text-slate-400 hover:text-white hover:border-blue-500 hover:bg-slate-900/90 transition-all"
+            >
+              {isTaskBankOpen ? "Hide Task Bank" : "Open Task Bank"}
+            </button>
+            <div className="flex bg-slate-900/50 rounded-xl p-1 border border-slate-800/50">
+              {Object.values(AgentMode).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${
+                    mode === m
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-500 hover:text-slate-300"
+                  }`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
           </div>
         </header>
 
@@ -426,14 +465,22 @@ const App: React.FC = () => {
             messages.map((m) => (
               <div
                 key={m.id}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-4 duration-500`}
+                className={`flex ${
+                  m.role === "user" ? "justify-end" : "justify-start"
+                } animate-in fade-in slide-in-from-bottom-4 duration-500`}
               >
                 <div
-                  className={`max-w-[85%] rounded-[2rem] p-6 ${m.role === "user" ? "bg-blue-600 text-white shadow-xl shadow-blue-600/10" : "bg-slate-900/80 border border-slate-800 text-slate-100 backdrop-blur-xl"}`}
+                  className={`max-w-[85%] rounded-[2rem] p-6 ${
+                    m.role === "user"
+                      ? "bg-blue-600 text-white shadow-xl shadow-blue-600/10"
+                      : "bg-slate-900/80 border border-slate-800 text-slate-100 backdrop-blur-xl"
+                  }`}
                 >
                   <div className="flex items-center gap-2 mb-3 text-[9px] font-black uppercase tracking-widest opacity-40">
                     <div
-                      className={`w-1.5 h-1.5 rounded-full ${m.role === "user" ? "bg-white" : "bg-blue-600"}`}
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        m.role === "user" ? "bg-white" : "bg-blue-600"
+                      }`}
                     ></div>
                     {m.role === "user"
                       ? "Operational Directive"
@@ -497,7 +544,23 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
-      <style>{`@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } } ::-webkit-scrollbar { width: 0; }`}</style>
+
+      {isTaskBankOpen && (
+        <div className="w-96 border-l border-slate-800 bg-slate-950/95 backdrop-blur-2xl">
+          <TaskBank
+            onAddTask={handleAddBankTask}
+            onClose={() => setIsTaskBankOpen(false)}
+          />
+        </div>
+      )}
+
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        ::-webkit-scrollbar { width: 0; }
+      `}</style>
     </div>
   );
 };

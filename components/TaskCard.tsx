@@ -26,7 +26,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
   }, [isActive]);
 
   const getStatusIcon = (status: TaskStatus) => {
-    if (isBlocked && status === TaskStatus.PENDING) return ICONS.BLOCKED;
+    if (isBlocked && status === TaskStatus.PENDING) {
+      // Add data-testid to the blocked icon for reliable testing
+      return (
+        <div data-testid="blocked-icon" aria-label="blocked">
+          {ICONS.BLOCKED}
+        </div>
+      );
+    }
     switch (status) {
       case TaskStatus.COMPLETED:
         return ICONS.COMPLETED;
@@ -70,7 +77,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <div
       ref={cardRef}
-      className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(task.status)} ${isActive ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg" : ""}`}
+      className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(
+        task.status
+      )} ${
+        isActive
+          ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg"
+          : ""
+      }`}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
@@ -78,7 +91,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
               <p
-                className={`text-sm font-semibold leading-tight ${task.status === TaskStatus.COMPLETED ? "text-slate-500 line-through" : "text-slate-200"}`}
+                className={`text-sm font-semibold leading-tight ${
+                  task.status === TaskStatus.COMPLETED
+                    ? "text-slate-500 line-through"
+                    : "text-slate-200"
+                }`}
               >
                 {task.description}
               </p>
@@ -89,7 +106,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             <div className="mt-2 flex flex-wrap gap-2 items-center">
               <span
-                className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(task.priority)}`}
+                className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(
+                  task.priority
+                )}`}
               >
                 {task.priority}
               </span>
@@ -121,7 +140,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
                   }}
-                  className={`text-[9px] font-bold uppercase tracking-wider transition-all ${isExpanded ? "text-blue-400" : "text-slate-500"}`}
+                  className={`text-[9px] font-bold uppercase tracking-wider transition-all ${
+                    isExpanded ? "text-blue-400" : "text-slate-500"
+                  }`}
                 >
                   {isExpanded ? "Seal" : "Declassify"}
                 </button>

@@ -110,6 +110,51 @@ TOTAL TASKS: [Count]
 
 ---
 
+## 🔧 Setup & Configuration
+
+To run Atlas, you need to provide a Google Gemini API key.
+
+1.  Create a file named `.env` in the root of the project.
+2.  Add the following line to the `.env` file, replacing `your_api_key_here` with your actual API key:
+
+    ```
+    API_KEY=your_api_key_here
+    ```
+
+3.  The application will automatically load this key. **Do not commit the `.env` file to version control.**
+
+---
+
+## 🧪 Testing
+
+The project uses [Vitest](https://vitest.dev/) for unit and component testing. To run the test suite, use the following command:
+
+```bash
+npm test
+```
+
+This will execute all test files located in the `tests/` directory and provide a coverage report.
+
+---
+
+## 📜 Version History
+
+### v1.2.0 (In Progress)
+
+-   **Test Suite Enhancement:**
+    -   Fixed the existing test suite, which was failing due to a misconfiguration.
+    -   Added unit tests for the `TaskCard` component to ensure UI reliability.
+    -   Configured the testing environment to support React component testing with `jsdom` and `@testing-library/react`.
+
+### v1.1.0
+
+-   **Service Layer Refactoring:** Overhauled `geminiService.ts` to improve maintainability, security, and robustness.
+-   **Improved Error Handling:** Added comprehensive error handling for all API interactions to prevent crashes and provide clearer debugging information.
+-   **Secure API Key Management:** Migrated API key handling from source code to use environment variables (`.env` file), enhancing security.
+-   **Code Quality:** Centralized the `GoogleGenAI` client initialization to reduce code duplication and streamline service configuration.
+
+---
+
 ## ⚡ Operational Trigger
 
 **Initial Boot Sequence:**

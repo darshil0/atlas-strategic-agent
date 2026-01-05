@@ -18,6 +18,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Only scroll once when activated
   useEffect(() => {
     if (isActive && cardRef.current) {
       cardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -26,19 +27,24 @@ const TaskCard: React.FC<TaskCardProps> = ({
   }, [isActive]);
 
   const getStatusIcon = (status: TaskStatus) => {
-    if (isBlocked && status === TaskStatus.PENDING) return ICONS.BLOCKED;
-    switch (status) {
-      case TaskStatus.COMPLETED:
-        return ICONS.COMPLETED;
-      case TaskStatus.FAILED:
-        return ICONS.FAILED;
-      case TaskStatus.IN_PROGRESS:
-        return ICONS.IN_PROGRESS;
-      case TaskStatus.WAITING:
-        return ICONS.WAITING;
-      default:
-        return ICONS.PENDING;
+    if (isBlocked && status === TaskStatus.PENDING) {
+      return (
+        <span
+          role="img"
+          aria-label="Blocked"
+          data-testid="blocked-icon"
+          className="text-slate-600"
+        >
+          {ICONS.BLOCKED ?? "🚫"}
+        </span>
+      );
     }
+    const icon = ICONS[status] ?? "⚙️";
+    return (
+      <span role="img" aria-label={status} className="text-slate-400">
+        {icon}
+      </span>
+    );
   };
 
   const getStatusColor = (status: TaskStatus) => {
@@ -51,6 +57,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
         return "border-rose-500/30 bg-rose-500/5 hover:border-rose-500/50";
       case TaskStatus.IN_PROGRESS:
         return "border-blue-500/50 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.1)]";
+      case TaskStatus.WAITING:
+        return "border-amber-500/30 bg-amber-500/5";
       default:
         return "border-slate-800 bg-slate-900/50 hover:border-slate-700";
     }
@@ -70,7 +78,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <div
       ref={cardRef}
-      className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(task.status)} ${isActive ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg" : ""}`}
+      className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(
+        task.status
+      )} ${
+        isActive
+          ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg"
+          : ""
+      }`}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
@@ -78,7 +92,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
               <p
-                className={`text-sm font-semibold leading-tight ${task.status === TaskStatus.COMPLETED ? "text-slate-500 line-through" : "text-slate-200"}`}
+                className={`text-sm font-semibold leading-tight ${
+                  task.status === TaskStatus.COMPLETED
+                    ? "text-slate-500 line-through"
+                    : "text-slate-200"
+                }`}
               >
                 {task.description}
               </p>
@@ -89,9 +107,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             <div className="mt-2 flex flex-wrap gap-2 items-center">
               <span
-                className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(task.priority)}`}
+                className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(
+                  task.priority
+                )}`}
               >
-                {task.priority}
+                {task.priority.toLowerCase()}
               </span>
               {task.duration && (
                 <span className="text-[9px] text-slate-500 font-mono">
@@ -107,7 +127,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             {task.status === TaskStatus.IN_PROGRESS && (
               <div className="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 animate-[shimmer_2s_infinite]"></div>
+                <div className="h-full bg-blue-500 animate-[shimmer_2s_infinite]" />
               </div>
             )}
 
@@ -117,11 +137,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </span>
               {(task.result || task.output) && (
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsExpanded(!isExpanded);
+                    setIsExpanded((prev) => !prev);
                   }}
-                  className={`text-[9px] font-bold uppercase tracking-wider transition-all ${isExpanded ? "text-blue-400" : "text-slate-500"}`}
+                  className={`text-[9px] font-bold uppercase tracking-wider transition-all ${
+                    isExpanded ? "text-blue-400" : "text-slate-500"
+                  }`}
                 >
                   {isExpanded ? "Seal" : "Declassify"}
                 </button>
@@ -143,6 +166,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </p>
             </div>
           )}
+
           {task.result && (
             <div className="mb-3">
               <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">
@@ -153,6 +177,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </p>
             </div>
           )}
+
           {task.citations && task.citations.length > 0 && (
             <div className="pt-2 border-t border-slate-800/50">
               <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">

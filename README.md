@@ -1,6 +1,8 @@
 # Atlas Agent: Autonomous Task & Learning Assistant System
 
-Atlas is a high-performance **Autonomous Task & Learning Assistant System** designed for Google AI Studio (Gemini 2.0). It specializes in decomposing complex, multi-year goals into structured roadmaps with visual dependency graphing.
+Atlas is a high-performance **Autonomous Task & Learning Assistant System** that integrates with Google AI Studio (Gemini 2.0). It specializes in decomposing complex, multi-year goals into structured roadmaps with visual dependency graphing.
+
+This repository contains both the AI system prompt configuration and a web-based interface for interacting with Atlas.
 
 ---
 
@@ -66,22 +68,33 @@ TOTAL TASKS: [Count]
 │   │   - Output: [Deliverable]
 │   │
 │   └─ Milestone: [Name] (Date: [Target])
-
+│
+├─ PHASE 2: [Phase Name] ([Duration])
+│   ├─ Task 2.1: [Task Name]
+│   │   - ID: task_2_1
+│   │   - Status: PENDING
+│   │   - Priority: MEDIUM
+│   │   - Dependencies: task_1_1
+│   │   - Output: [Deliverable]
+│
+└─ PROJECT COMPLETION: [Expected Date]
 ```
 
 ---
 
 ## 📞 Communication Symbols
 
-- ✓ `COMPLETE`
-- ⚡ `IN_PROGRESS`
-- ⚠ `ISSUE/WARNING`
-- ⏸ `BLOCKED`
-- ⏭ `SKIPPED`
+- ✓ `COMPLETE` - Task successfully finished
+- ⚡ `IN_PROGRESS` - Currently being executed
+- ⚠ `ISSUE/WARNING` - Attention required
+- ⏸ `BLOCKED` - Cannot proceed due to dependencies
+- ⏭ `SKIPPED` - Intentionally bypassed
 
 ---
 
-## ⚙️ Configuration Parameters (JSON)
+## ⚙️ AI Model Configuration
+
+Atlas uses the following Gemini 2.0 configuration:
 
 ```json
 {
@@ -96,67 +109,165 @@ TOTAL TASKS: [Count]
   "safetySettings": [
     { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH" },
     { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH" },
-    {
-      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-      "threshold": "BLOCK_ONLY_HIGH"
-    },
-    {
-      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-      "threshold": "BLOCK_ONLY_HIGH"
-    }
+    { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH" },
+    { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH" }
   ]
 }
 ```
 
 ---
 
-## 🔧 Setup & Configuration
+## 🔧 Installation & Setup
 
-To run Atlas, you need to provide a Google Gemini API key.
+### Prerequisites
 
-1.  Create a file named `.env` in the root of the project.
-2.  Add the following line to the `.env` file, replacing `your_api_key_here` with your actual API key:
+- Node.js 16+ and npm
+- Google Gemini API key ([Get one here](https://ai.google.dev/))
 
-    ```
-    API_KEY=your_api_key_here
-    ```
+### Installation Steps
 
-3.  The application will automatically load this key. **Do not commit the `.env` file to version control.**
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/atlas-agent.git
+   cd atlas-agent
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure API Key:**
+   
+   Create a `.env` file in the root directory:
+   ```bash
+   echo "API_KEY=your_gemini_api_key_here" > .env
+   ```
+   
+   Replace `your_gemini_api_key_here` with your actual API key.
+   
+   **⚠️ Security Note:** Never commit the `.env` file to version control. It's already included in `.gitignore`.
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access the application:**
+   
+   Open your browser to `http://localhost:3000`
 
 ---
 
 ## 🧪 Testing
 
-The project uses [Vitest](https://vitest.dev/) for unit and component testing. To run the test suite, use the following command:
+The project uses [Vitest](https://vitest.dev/) for unit and component testing.
+
+### Run Tests
 
 ```bash
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
 ```
 
-This will execute all test files located in the `tests/` directory and provide a coverage report.
+Test files are located in the `tests/` directory and follow the naming pattern `*.test.ts` or `*.test.tsx`.
+
+---
+
+## 📂 Project Structure
+
+```
+atlas-agent/
+├── src/
+│   ├── components/       # React components (TaskCard, etc.)
+│   ├── services/         # API services (geminiService.ts)
+│   ├── types/           # TypeScript type definitions
+│   └── utils/           # Utility functions
+├── tests/               # Test files
+├── .env                 # Environment variables (not in repo)
+├── .env.example         # Example environment file
+└── README.md            # This file
+```
 
 ---
 
 ## 📜 Version History
 
-### v1.2.0 (In Progress)
+### v1.2.0 (Current)
 
--   **Test Suite Enhancement:**
-    -   Fixed the existing test suite, which was failing due to a misconfiguration.
-    -   Added unit tests for the `TaskCard` component to ensure UI reliability.
-    -   Configured the testing environment to support React component testing with `jsdom` and `@testing-library/react`.
+- **Test Suite Enhancement:**
+  - Fixed failing test suite due to configuration issues
+  - Added unit tests for `TaskCard` component
+  - Configured testing environment with `jsdom` and `@testing-library/react`
+  - Improved test coverage across core components
 
 ### v1.1.0
 
--   **Service Layer Refactoring:** Overhauled `geminiService.ts` to improve maintainability, security, and robustness.
--   **Improved Error Handling:** Added comprehensive error handling for all API interactions to prevent crashes and provide clearer debugging information.
--   **Secure API Key Management:** Migrated API key handling from source code to use environment variables (`.env` file), enhancing security.
--   **Code Quality:** Centralized the `GoogleGenAI` client initialization to reduce code duplication and streamline service configuration.
+- **Service Layer Refactoring:**
+  - Overhauled `geminiService.ts` for better maintainability
+  - Improved error handling for all API interactions
+  - Migrated to secure API key management via environment variables
+  - Centralized `GoogleGenAI` client initialization
+
+### v1.0.0
+
+- Initial release
+- Core task decomposition engine
+- Basic web interface
+- Gemini 2.0 integration
 
 ---
 
-## ⚡ Operational Trigger
+## 🤝 Contributing
 
-**Initial Boot Sequence:**
-Upon receiving a prompt, Atlas must first acknowledge its identity:
-_"Atlas System Online. Awaiting objective for decomposition."_ Then, immediately proceed to **Phase 1: Understanding**.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## ⚡ Usage Example
+
+When you start a new session with Atlas:
+
+```
+User: "Help me plan a career transition to software engineering over 18 months"
+
+Atlas: "Atlas System Online. Awaiting objective for decomposition."
+
+[Enters Phase 1: Understanding]
+- What is your current professional background?
+- Do you have any programming experience?
+- What are your budget constraints for this transition?
+- Are you able to study full-time or part-time?
+```
+
+Atlas will then create a comprehensive roadmap with phases, tasks, dependencies, and milestones.
+
+---
+
+## 🆘 Support
+
+- **Issues:** [GitHub Issues](https://github.com/yourusername/atlas-agent/issues)
+- **Documentation:** [Wiki](https://github.com/yourusername/atlas-agent/wiki)
+- **Email:** support@atlas-agent.com
+
+---
+
+**Atlas System Status:** ✓ Operational

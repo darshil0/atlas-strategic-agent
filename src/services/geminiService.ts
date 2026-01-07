@@ -1,13 +1,11 @@
-
 import { GoogleGenAI, SchemaType } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
-import { Plan, TaskStatus, Priority } from "../types";
-import { A2UIMessage } from "../lib/adk/protocol";
+import { Plan } from "../types";
 
 // Support both Vite's import.meta.env and the defined process.env from vite.config.ts
 const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
-  (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '') ||
-  (typeof process !== 'undefined' ? process.env.API_KEY : '');
+  (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.GEMINI_API_KEY : '') ||
+  (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.API_KEY : '');
 
 const genAI = new GoogleGenAI(apiKey || "");
 
@@ -81,8 +79,9 @@ Example:
   }
 
   static async executeSubtask(
-    subtask: string,
-    context: string,
+    subtask: any,
+    plan: Plan,
+    history: string,
     onChunk?: (text: string) => void
   ): Promise<{ text: string; a2ui?: string }> {
     const model = genAI.getGenerativeModel({
@@ -91,7 +90,7 @@ Example:
     });
 
     const result = await model.generateContentStream({
-      contents: [{ role: 'user', parts: [{ text: `Context: ${context}\n\nCurrent Task: ${subtask}\n\nPlease execute this subtask. Describe your actions and provide the result.` }] }],
+      contents: [{ role: 'user', parts: [{ text: `Plan Goal: ${plan.goal}\nExecution History: ${history}\n\nCurrent Task: ${typeof subtask === 'string' ? subtask : subtask.description}\n\nPlease execute this subtask. Describe your actions and provide the result.` }] }],
     });
 
     let fullText = "";
@@ -103,7 +102,7 @@ Example:
 
     // Extract A2UI if present
     const a2uiMatch = fullText.match(/<a2ui>([\s\S]*?)<\/a2ui>/);
-    const a2ui = a2uiMatch ? a2uiMatch[1].trim() : undefined;
+    const a2ui = (a2uiMatch && a2uiMatch[1]) ? a2uiMatch[1].trim() : undefined;
     const cleanText = fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, '').trim();
 
     return { text: cleanText, a2ui };

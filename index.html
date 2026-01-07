@@ -2,30 +2,38 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>Atlas Strategic Agent V3.1.0</title>
-    <meta
-      name="description"
-      content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis."
-    />
+    <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Atlas Strategic Agent | V3.1.0</title>
+    <meta name="description" content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis." />
 
-    <!-- Tailwind CSS (for production, prefer Vite + PostCSS build config instead of CDN) [web:64] -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Atlas Strategic Agent" />
+    <meta property="og:description" content="Autonomous strategic reasoning powered by Gemini 1.5 Flash." />
+    <meta property="og:image" content="/og-preview.png" />
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              atlas: {
+                blue: '#3b82f6',
+                indigo: '#6366f1',
+                slate: '#0f172a'
+              }
+            }
+          }
+        }
+      }
+    </script>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
     <style>
       :root {
@@ -38,133 +46,68 @@
       body {
         font-family: "Inter", sans-serif;
         background-color: var(--atlas-bg);
-        background-image:
-          radial-gradient(
-            at 0% 0%,
-            rgba(59, 130, 246, 0.08) 0px,
-            transparent 40%
-          ),
-          radial-gradient(
-            at 100% 100%,
-            rgba(99, 102, 241, 0.08) 0px,
-            transparent 40%
-          );
+        /* Subtle deep space gradient */
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
         color: #f8fafc;
+        margin: 0;
+        height: 100vh;
         overflow: hidden;
         -webkit-font-smoothing: antialiased;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      .font-display {
-        font-family: "Outfit", sans-serif;
-      }
-
-      .font-mono {
-        font-family: "JetBrains Mono", monospace;
       }
 
       /* Premium Glassmorphism */
       .glass {
         background: var(--atlas-surface);
         backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
         border: 1px solid var(--atlas-border);
       }
 
-      .glass-hover {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Initial Boot Loader */
+      #loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--atlas-bg);
+        z-index: 9999;
+        transition: opacity 0.5s ease;
       }
 
-      .glass-hover:hover {
-        background: rgba(30, 41, 59, 0.7);
-        border-color: rgba(59, 130, 246, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      .pulse-ring {
+        width: 60px;
+        height: 60px;
+        border: 2px solid var(--atlas-accent);
+        border-radius: 50%;
+        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
       }
 
-      /* Webkit Utilities */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-
-      ::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: #1e293b;
-        border-radius: 10px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: #334155;
-      }
-
-      /* Animation Keyframes */
-      @keyframes fade-in {
-        from {
-          opacity: 0;
-        }
-
-        to {
-          opacity: 1;
-        }
-      }
-
-      @keyframes slide-up {
-        from {
-          transform: translateY(10px);
-          opacity: 0;
-        }
-
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      .animate-fade-in {
-        animation: fade-in 0.5s ease-out forwards;
-      }
-
-      .animate-slide-up {
-        animation: slide-up 0.5s ease-out forwards;
-      }
-
-      /* React Flow Styling Overrides */
-      .react-flow__node {
-        border-radius: 16px;
-        padding: 0;
-        border: none;
-        background: transparent;
-      }
-
-      .react-flow__edge-path {
-        stroke: rgba(255, 255, 255, 0.1);
-        stroke-width: 2.5;
-      }
-
-      .react-flow__attribution {
-        display: none;
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: .3; transform: scale(1.1); }
       }
     </style>
   </head>
 
   <body>
+    <div id="loader">
+      <div class="pulse-ring"></div>
+    </div>
+
     <div id="root"></div>
+
     <script type="module" src="/src/index.tsx"></script>
+
+    <script>
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 500);
+        }
+      });
+    </script>
   </body>
 </html>

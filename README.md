@@ -1,10 +1,10 @@
-# 🌌 Atlas Strategic Agent V3.0
+# 🌌 Atlas Strategic Agent V3.1.0
 
 [![Version](https://img.shields.io/badge/version-3.1.0-blue.svg?style=for-the-badge&logo=atlas)](./CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-Enterprise--Ready-emerald.svg?style=for-the-badge)](https://github.com/darshil0/atlas-strategic-agent)
 [![Stack](https://img.shields.io/badge/Stack-React%20%7C%20Gemini%20%7C%20TypeScript-rose.svg?style=for-the-badge)](./package.json)
 
-**Atlas V3.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
+**Atlas V3.1.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
 
 ---
 

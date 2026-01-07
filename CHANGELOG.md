@@ -63,5 +63,7 @@ Atlas has been transformed from a task decomposition tool into a full-scale **En
 
 ## [1.0.0] - 2025-11-01
 
+### Added
+
 * **Initial Release**: Core graph-based strategy mapping using Gemini 1.5 Flash.
 * **MVP Features**: Basic task breakdown and visual node representation.

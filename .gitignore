@@ -1,38 +1,51 @@
-# Logs
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# --- Dependencies ---
+# Block all node_modules, but ensure lockfiles are tracked for consistency
+node_modules/
+jspm_packages/
+
+# --- Environment & Secrets ---
+# Crucial: Never commit your VITE_GEMINI_API_KEY
+.env
+.env*.local
+*.pem
+
+# --- Build & Distribution ---
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# --- Logs ---
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Node / build artifacts
-node_modules
-dist
-dist-ssr
-*.local
+# --- Testing ---
+/coverage
+.nyc_output
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Editor directories and files
+# --- IDEs / Editors ---
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 
-# Testing
-coverage
-
-# Vite artifacts
-*.tsbuildinfo
+# --- Project Specific ---
+# If your simulation engine generates local artifacts
+/simulations/results/*.json

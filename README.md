@@ -23,8 +23,8 @@ Atlas operates through a triumvirate of specialized personas orchestrated by a d
 ### 🎨 Enterprise Design System
 
 * **Lucide Iconography**: Professional vector-based visual language.
-* **Motion Orchestration**: Fluid layout transitions and reactive UI elements via Framer Motion.
-* **Glassmorphism**: Advanced frosted-glass aesthetics with nested blur layers for a premium enterprise feel.
+* **Motion Orchestration**: Fluid layout transitions via Framer Motion.
+* **Glassmorphism**: Advanced frosted-glass aesthetics with nested blur layers.
 
 ---
 
@@ -55,7 +55,7 @@ graph TD
 * **Core Intelligence**: Gemini 1.5 Flash (Optimized for strategic reasoning)
 * **Frontend Framework**: React 19 + Vite (Next-gen performance)
 * **Animation Engine**: Framer Motion (High-fidelity layout transitions)
-* **Visualization**: React Flow 11 (High-performance graph engine)
+* **Visualization**: React Flow / XYFlow (High-performance graph engine)
 * **Styling System**: Tailwind CSS + Lucide Icons
 * **State & Logic**: 100% Strict TypeScript (Zero-Any Architecture)
 
@@ -65,8 +65,8 @@ graph TD
 
 ### Prerequisites
 
-* Node.js (v18 or higher)
-* An API Key from [Google AI Studio](https://aistudio.google.com/)
+* **Node.js**: v18.0.0 or higher
+* **API Access**: Google AI Studio API Key
 
 ### 1. Installation
 

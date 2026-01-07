@@ -1,299 +1,71 @@
-# Atlas Agent: Autonomous Task & Learning Assistant System
+# Atlas Strategic Agent V2.0
 
-Atlas is a high-performance **Autonomous Task & Learning Assistant System** that integrates with Google AI Studio (Gemini 2.0). It specializes in decomposing complex, multi-year goals into structured roadmaps with visual dependency graphing.
+![Atlas Strategic](https://img.shields.io/badge/Atlas-Strategic_v2.0-blue?style=for-the-badge&logo=google-gemini)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-This repository contains both the AI system prompt configuration and a web-based interface for interacting with Atlas.
+**Atlas Strategic** is a powerful, multi-agent strategic engine designed to decompose complex objectives into actionable, structured roadmaps. Evolved from a simple task-list into a persistent, collaborative, and highly interactive strategic environment.
 
----
+## 🚀 Key Features (v2.0)
 
-## 🚀 Core Identity & Behavior
+### 🧠 Multi-Agent Orchestration
+Powered by specialized AI personas working in coordination:
+- **Strategist**: Architects roadmap structure and logical decomposition.
+- **Analyst**: Reviews data grounding and ensures technical feasibility.
+- **Critic**: Automated risk assessment and constraint validation.
 
-- **Name:** Atlas
-- **Motto:** _"Breaking down mountains into manageable stones"_
-- **Personality Traits:** Methodical, curious, adaptive, and thorough
+### 🌐 Interactive Strategy Graph
+Visual design meets tactical execution:
+- **Recursive Decomposition ("Explode")**: Directly break down high-level nodes into sub-plans.
+- **Dynamic Dependency Linking**: Draw connections between nodes to define strategic prerequisites.
+- **Reactive State Flow**: Real-time visualization of task progress across the network.
 
-### Behavioral Configuration
+### 🍱 Advanced A2UI Component Library
+Native rendering of agent-generated UI components including:
+- **Analytical Charts**: Visual feedback on metrics and feasibility.
+- **Interactive Forms**: Selects, checkboxes, and inputs for parameter-driven strategy.
+- **Context Grounding**: Dedicated section for injecting URLs and technical snippets.
 
-| Trait            | Level | Description                                   |
-| ---------------- | ----- | --------------------------------------------- |
-| **Thoroughness** | 95%   | Ensures completeness and accuracy (Optimized) |
-| **Creativity**   | 75%   | Finds innovative solutions when needed        |
-| **Efficiency**   | 85%   | Balances speed with quality                   |
-| **Caution**      | 60%   | Takes measured risks appropriately            |
+### ✨ Premium Aesthetics
+- **Glassmorphism UI**: High-end transparency and blur effects.
+- **Modern Typography**: High-impact "Outfit" display font and "Inter" body text.
+- **Micro-interactions**: Shimmer effects, smooth transitions, and reactive hover states.
 
----
-
-## 🛠 Execution Protocol (Strict Adherence Required)
-
-### PHASE 1 — Understanding
-
-1. Parse user intent and define success criteria.
-2. Identify constraints (budget, resources, deadlines).
-3. Ask clarifying questions **before** moving to Phase 2.
-
-### PHASE 2 — Planning (Dependency Graph Generation)
-
-1. Break tasks into hierarchical subtasks (max 5 levels).
-2. Assign Relationship Tags: `MUST_PRECEDE` or `CAN_PARALLEL`.
-3. Output a visual-ready tree structure using the **Task Structure Format**.
-
-### PHASE 3 — Execution
-
-1. Announce current Task ID (e.g., "Executing `task_1_1`").
-2. Update statuses: `PENDING`, `IN_PROGRESS`, `COMPLETE`, `BLOCKED`.
-3. If an error occurs: Mark `BLOCKED`, provide reason, and offer 3 recovery paths.
-
-### PHASE 4 — Learning & Memory
-
-- Post-project analysis of actual vs. estimated time.
-- Retention of user preferences and successful strategy patterns.
-
----
-
-## 📊 Task Structure Format
-
-**Use this specific format for all planning outputs:**
-
-```text
-PROJECT: [Project Name]
-TIMELINE: [Start Date] – [End Date]
-TOTAL TASKS: [Count]
-
-├─ PHASE 1: [Phase Name] ([Duration])
-│   ├─ Task 1.1: [Task Name]
-│   │   - ID: task_1_1
-│   │   - Status: PENDING
-│   │   - Priority: HIGH
-│   │   - Dependencies: None
-│   │   - Output: [Deliverable]
-│   │
-│   └─ Milestone: [Name] (Date: [Target])
-│
-├─ PHASE 2: [Phase Name] ([Duration])
-│   ├─ Task 2.1: [Task Name]
-│   │   - ID: task_2_1
-│   │   - Status: PENDING
-│   │   - Priority: MEDIUM
-│   │   - Dependencies: task_1_1
-│   │   - Output: [Deliverable]
-│
-└─ PROJECT COMPLETION: [Expected Date]
-```
-
----
-
-## 📞 Communication Symbols
-
-- ✓ `COMPLETE` - Task successfully finished
-- ⚡ `IN_PROGRESS` - Currently being executed
-- ⚠ `ISSUE/WARNING` - Attention required
-- ⏸ `BLOCKED` - Cannot proceed due to dependencies
-- ⏭ `SKIPPED` - Intentionally bypassed
-
----
-
-## ⚙️ AI Model Configuration
-
-Atlas uses the following Gemini 2.0 configuration:
-
-```json
-{
-  "model": "gemini-2.0-flash-exp",
-  "generationConfig": {
-    "temperature": 0.7,
-    "topP": 0.95,
-    "topK": 40,
-    "maxOutputTokens": 8192,
-    "responseMimeType": "text/plain"
-  },
-  "safetySettings": [
-    { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH" },
-    { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH" },
-    { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH" },
-    { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH" }
-  ]
-}
-```
-
----
+## 🛠️ Technology Stack
+- **Core**: React 18, TypeScript, Vite
+- **AI**: Google Gemini 1.5 Flash (via `@google/genai`)
+- **Graphing**: React Flow
+- **Styling**: Tailwind CSS + Custom CSS Variables
+- **Persistence**: LocalState Hydration Service
 
 ## 🔧 Installation & Setup
 
-### Prerequisites
-
-- Node.js 16+ and npm
-- Google Gemini API key ([Get one here](https://ai.google.dev/))
-
-### Installation Steps
-
-1. **Clone the repository:**
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/atlas-agent.git
-   cd atlas-agent
+   git clone https://github.com/darshil0/atlas-strategic-agent.git
+   cd atlas-strategic-agent
    ```
 
-2. **Install dependencies:**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Configure API Key:**
-   
+3. **Configure Environment**
    Create a `.env` file in the root directory:
-   ```bash
-   echo "API_KEY=your_gemini_api_key_here" > .env
+   ```env
+   VITE_GEMINI_API_KEY=your_gemini_api_key_here
    ```
-   
-   Replace `your_gemini_api_key_here` with your actual API key.
-   
-   **⚠️ Security Note:** Never commit the `.env` file to version control. It's already included in `.gitignore`.
 
-4. **Start the development server:**
+4. **Launch Application**
    ```bash
    npm run dev
    ```
 
-5. **Access the application:**
-   
-   Open your browser to `http://localhost:3000`
+## 📖 Version History
 
----
-
-## 🧪 Testing
-
-The project uses [Vitest](https://vitest.dev/) for unit and component testing.
-
-### Run Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-```
-
-Test files are located in the `tests/` directory and follow the naming pattern `*.test.ts` or `*.test.tsx`.
-
----
-
-## 📂 Project Structure
-
-```
-atlas-strategic-agent/
-├── components/          # React components (TaskCard, DependencyGraph)
-│   └── a2ui/            # A2UI Protocol native renderers
-├── data/                # Static data and Task Bank definitions
-├── lib/
-│   └── adk/             # Agent Development Kit (Protocol, Base Classes)
-├── services/            # API services (geminiService.ts)
-├── tests/               # Unit and component tests
-├── types.ts             # Global TypeScript type definitions
-├── constants.tsx        # System prompts and UI constants
-├── index.tsx            # Main React entry point
-└── README.md            # This file
-```
-
----
-
-## 📜 Version History
-
-### v1.3.0 (Current)
-
-- **A2UI & ADK Integration**:
-  - Implemented the Agent Development Kit for structured workflows.
-  - Native rendering of agent-generated UI components.
-  - Bidirectional interaction support via AG-UI protocol.
-  - Codebase cleanup and structural optimization.
-
-### v1.2.0
-
-- **Test Suite Enhancement:**
-  - Fixed failing test suite due to configuration issues
-  - Added unit tests for `TaskCard` component
-  - Configured testing environment with `jsdom` and `@testing-library/react`
-  - Improved test coverage across core components
-
-### v1.1.0
-
-- **Service Layer Refactoring:**
-  - Overhauled `geminiService.ts` for better maintainability
-  - Improved error handling for all API interactions
-  - Migrated to secure API key management via environment variables
-  - Centralized `GoogleGenAI` client initialization
-
-### v1.0.0
-
-- Initial release
-- Core task decomposition engine
-- Basic web interface
-- Gemini 2.0 integration
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
+- **v2.0.0**: Premium UI overhaul, Multi-agent orchestration, "Explode" recursive breakdown, and Context Grounding.
+- **v1.5.0**: Persistence integration and Graph interactivity.
+- **v1.0.0**: Initial release with Gemini strategy synthesis.
 
 ## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## ⚡ Usage Example
-
-When you start a new session with Atlas:
-
-```
-User: "Help me plan a career transition to software engineering over 18 months"
-
-Atlas: "Atlas System Online. Awaiting objective for decomposition."
-
-[Enters Phase 1: Understanding]
-- What is your current professional background?
-- Do you have any programming experience?
-- What are your budget constraints for this transition?
-- Are you able to study full-time or part-time?
-```
-
-Atlas will then create a comprehensive roadmap with phases, tasks, dependencies, and milestones.
-
----
-
-## 🆘 Support
-
-- **Issues:** [GitHub Issues](https://github.com/yourusername/atlas-agent/issues)
-- **Documentation:** [Wiki](https://github.com/yourusername/atlas-agent/wiki)
-- **Email:** support@atlas-agent.com
-
----
-
-**Atlas System Status:** ✓ Operational
-
----
-
-## 🚀 Advanced Capabilities
-
-### Agent Development Kit (ADK)
-Atlas now includes a built-in Agent Development Kit (`lib/adk`) that allows developers to:
-- Define structured agentic workflows using the `BaseAgent` class.
-- Handle state and context transitions through the `UIOrchestrator`.
-- Generate native UI payloads declaratively via the `UIBuilder`.
-
-### A2UI & AG-UI Protocols
-We have implemented the **Agent-to-User Interface (A2UI)** and **Agent-to-User Interaction (AG-UI)** protocols:
-- **A2UI**: Standardizes how Atlas generates interactive native components (Buttons, Progress Bars, Cards) without executing arbitrary code.
-- **AG-UI**: Provides the bi-directional communication layer, allowing user interactions in the UI to be sent back to the agent as structured events.
-
+This project is licensed under the MIT License.

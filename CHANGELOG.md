@@ -2,40 +2,37 @@
 
 All notable changes to the Atlas Strategic Agent project will be documented in this file.
 
-## [1.3.0] - 2026-01-06
+## [2.0.0] - 2026-01-06
 
 ### Added
-- **Agent Development Kit (ADK)**: Core framework in `lib/adk` for building structured agentic workflows.
-- **A2UI Protocol**: Support for native UI component rendering from agent payloads.
-- **AG-UI Protocol**: Bi-directional event transport for UI interactions.
-- **A2UIRenderer Component**: Native React renderer for agent-generated UI.
-- **UIBuilder & BaseAgent**: Tools for developers to create sophisticated agent behaviors.
+- **Multi-Agent Orchestration**: Implemented `MissionControl` to coordinate `Strategist`, `Analyst`, and `Critic` personas.
+- **Recursive Task Decomposition**: Added "Explode" capability to task cards for breaking down nodes into detailed sub-plans.
+- **Context Grounding**: New sidebar section for injecting URLs and data snippets to steer roadmap generation.
+- **Advanced A2UI Components**: Added support for `CHECKBOX`, `SELECT`, `CHART`, and `INPUT` components in the native agent-to-UI bridge.
+- **Interactive Graph Linking**: Enabled manual creation of dependencies directly within the `DependencyGraph`.
 
 ### Changed
-- **AtlasService**: Enhanced to support A2UI instruction extraction and structured response parsing.
-- **App.tsx**: Integrated `A2UIRenderer` into the message stream with event handling.
-- **Task Structure**: Expanded `Message` interface to support optional A2UI payloads.
-- **TSConfig**: Refactored module resolution and path mappings for the new project structure.
+- **Premium UI Overhaul**: Complete redesign with glassmorphism, Outfit/Inter typography, and refined reactive hover states.
+- **Enhanced A2UI Renderer**: Re-engineered for industrial-grade UI generation with shimmering effects and better accessibility.
+- **Persistence Layer**: Optimized `PersistenceService` for better state recovery and hydration across sessions.
 
-### Fixed
-- **Cleanup**: Removed redundant `metadata.json` and legacy test-injection blocks from entry points.
-- **Formatting**: Standardized the codebase format.
+### Removed
+- Legacy planning artifacts and `.agent` workflow directory.
+- Redundant JSON placeholders and temporary test files.
 
-## [1.2.0] - 2026-01-03
+## [1.5.0] - 2026-01-05
 
 ### Added
-- **Test Suite**: Comprehensive unit tests for `TaskCard` and core logic.
-- **Testing Environment**: Integrated Vitest and JSDOM.
-
-## [1.1.0] - 2025-12-30
+- **Task Interactivity**: Direct task selection and focus from both list and graph views.
+- **Persistence Layer**: Integrated `localStorage` support for saving messages and plan states.
+- **Graph Visualization**: Integrated `React Flow` for visualizing task dependencies.
 
 ### Changed
-- **Gemini Service**: Rebuilt for the latest `@google/genai` SDK.
-- **Architecture**: Improved environment variable handling and model selection.
+- Refactored `AtlasService` to use standard Google Generative AI SDK syntax.
 
-## [1.0.0] - 2025-12-28
+## [1.0.0] - 2026-01-04
 
 ### Added
-- Initial release of Atlas Strategic Agent.
-- Task decomposition engine.
-- Visual dependency graphing.
+- Initial release with Gemini 1.5 Flash integration.
+- Core strategy decomposition logic.
+- Basic task bank and execution simulation.

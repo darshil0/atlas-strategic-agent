@@ -14,6 +14,7 @@ Refined the V3.0 release by eliminating technical debt and streamlining core log
 - **Dead Code**: Stripped out unused `fromMermaid` parser from the export engine.
 - **Service Stubs**: Removed unutilized `searchExternal` and `memoryStorage` properties from `AtlasService` to simplify the strategic core.
 - **Orphaned Types**: Eliminated several unused interfaces (`Milestone`, `AgentState`) and enum members (`AgentMode.GUIDED`) from the global type system.
+- **Documentation Sync**: Synchronized `README.md` headers and introductory text with the V3.1 architecture.
 
 ## [3.0.0] - 2026-01-07
 ### ✨ Massive Architecture Rebirth

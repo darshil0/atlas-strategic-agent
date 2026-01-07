@@ -58,9 +58,8 @@ const TaskNode = ({
   return (
     <div
       onClick={() => onNodeClick(task.id)}
-      className={`flex rounded-xl border text-[10px] w-48 overflow-hidden transition-all duration-500 backdrop-blur-sm select-none ${
-        getStatusStyles()
-      } ${isActive ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-950 scale-105 z-40 shadow-2xl shadow-blue-500/20" : ""}`}
+      className={`flex rounded-xl border text-[10px] w-48 overflow-hidden transition-all duration-500 backdrop-blur-sm select-none ${getStatusStyles()
+        } ${isActive ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-950 scale-105 z-40 shadow-2xl shadow-blue-500/20" : ""}`}
     >
       <div className={`w-1.5 shrink-0 ${getPriorityAccent()}`} />
       <div className="flex-1 px-3 py-2.5 relative">
@@ -73,22 +72,20 @@ const TaskNode = ({
             </span>
           </div>
           <p
-            className={`font-semibold leading-snug line-clamp-2 min-h-[2.4em] ${
-              task.status === TaskStatus.COMPLETED
+            className={`font-semibold leading-snug line-clamp-2 min-h-[2.4em] ${task.status === TaskStatus.COMPLETED
                 ? "text-slate-500"
                 : "text-slate-100"
-            }`}
+              }`}
           >
             {task.description}
           </p>
           <div className="flex items-center justify-between mt-1">
             <div className="flex items-center gap-1.5">
               <span
-                className={`w-1 h-1 rounded-full ${
-                  task.status === TaskStatus.IN_PROGRESS
+                className={`w-1 h-1 rounded-full ${task.status === TaskStatus.IN_PROGRESS
                     ? "animate-pulse bg-blue-400"
                     : "bg-slate-600"
-                }`}
+                  }`}
               ></span>
               <span className="text-[7px] uppercase font-black tracking-tighter text-slate-500">
                 {task.status.replace("-", " ")}
@@ -109,6 +106,7 @@ interface DependencyGraphProps {
   activeTaskId: string | null;
   onTaskSelect: (id: string) => void;
   isTaskBlocked: (task: SubTask, allTasks: SubTask[]) => boolean;
+  onConnect?: (source: string, target: string) => void;
 }
 
 const DependencyGraph: React.FC<DependencyGraphProps> = ({

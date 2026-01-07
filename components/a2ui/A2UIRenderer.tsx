@@ -34,8 +34,8 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                         key={id}
                         onClick={() => handleAction('click', props.actionData)}
                         className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${props.variant === 'primary'
-                                ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
-                                : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                            ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                             } ${props.className}`}
                     >
                         {props.label}
@@ -70,8 +70,58 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                     </div>
                 );
 
+            case A2UIComponentType.INPUT:
+                return (
+                    <div key={id} className="space-y-1.5 w-full">
+                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label}</label>}
+                        <input
+                            type={props.inputType || 'text'}
+                            placeholder={props.placeholder}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 transition-colors"
+                            onBlur={(e) => handleAction('input_blur', { value: e.target.value })}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleAction('input_submit', { value: (e.target as HTMLInputElement).value });
+                            }}
+                        />
+                    </div>
+                );
+
+            case A2UIComponentType.LIST:
+                return (
+                    <ul key={id} className="space-y-2">
+                        {props.items?.map((item: any, idx: number) => (
+                            <li
+                                key={`${id}_${idx}`}
+                                className="flex items-center gap-3 p-2 rounded-lg bg-slate-900/30 border border-slate-800/50 hover:border-slate-700 transition-all cursor-pointer"
+                                onClick={() => handleAction('item_click', item)}
+                            >
+                                {item.icon && <span className="text-blue-500">{item.icon}</span>}
+                                <span className="text-xs font-semibold text-slate-300">{item.label || item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                );
+
+            case A2UIComponentType.CHART:
+                return (
+                    <div key={id} className="p-4 rounded-xl bg-slate-900/40 border border-slate-800">
+                        <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">{props.title || 'Data Analysis'}</h4>
+                        <div className="flex items-end gap-2 h-24">
+                            {props.data?.map((val: any, idx: number) => (
+                                <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
+                                    <div
+                                        className="w-full bg-blue-600/30 border-t-2 border-blue-500 rounded-t-sm group-hover:bg-blue-600/50 transition-all"
+                                        style={{ height: `${(val.value / (props.maxValue || 100)) * 100}%` }}
+                                    ></div>
+                                    <span className="text-[8px] font-bold text-slate-600 group-hover:text-slate-400">{val.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+
             default:
-                return <div key={id} className="text-xs text-slate-600">Unknown UI element: {type}</div>;
+                return <div key={id} className="text-xs text-slate-600 italic px-2">Unknown component type: {type}</div>;
         }
     };
 

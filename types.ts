@@ -47,6 +47,7 @@ export interface Plan {
   tasks: SubTask[];
   milestones?: Milestone[];
   criticalPath?: string[];
+  groundingData?: string[]; // URLs, file names, or text snippets for grounding
 }
 
 export type MessageRole = "user" | "assistant" | "system";

@@ -44,3 +44,18 @@ export interface AGUISession {
     agentId: string;
     history: A2UIMessage[];
 }
+
+export function validateA2UIMessage(data: any): A2UIMessage | null {
+    if (!data || typeof data !== 'object') return null;
+    if (!data.version || !Array.isArray(data.elements)) return null;
+
+    // Basic structural validation
+    const validElements = data.elements.filter((el: any) => {
+        return el && typeof el === 'object' && el.id && el.type;
+    });
+
+    return {
+        version: data.version,
+        elements: validElements as A2UIElement[]
+    };
+}

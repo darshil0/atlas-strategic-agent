@@ -13,6 +13,7 @@ import {
   SubTask,
 } from "./types";
 import { AtlasService } from "./services/geminiService";
+import { PersistenceService } from "./services/persistenceService";
 import TaskCard from "./components/TaskCard";
 import DependencyGraph from "./components/DependencyGraph";
 import TaskBank from "./components/TaskBank";
@@ -40,6 +41,21 @@ const App: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isThinking]);
+
+  useEffect(() => {
+    const savedMessages = PersistenceService.getMessages();
+    const savedPlan = PersistenceService.getPlan();
+    if (savedMessages.length > 0) setMessages(savedMessages);
+    if (savedPlan) setCurrentPlan(savedPlan);
+  }, []);
+
+  useEffect(() => {
+    PersistenceService.saveMessages(messages);
+  }, [messages]);
+
+  useEffect(() => {
+    PersistenceService.savePlan(currentPlan);
+  }, [currentPlan]);
 
   const addMessage = (role: "user" | "assistant", content: string, a2ui?: string) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -199,6 +215,21 @@ const App: React.FC = () => {
     // Here logic would normally go back to the agent for processing via ADK
   };
 
+  const handleConnect = (source: string, target: string) => {
+    setCurrentPlan((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        tasks: prev.tasks.map((t) =>
+          t.id === target
+            ? { ...t, dependencies: [...new Set([...(t.dependencies || []), source])] }
+            : t,
+        ),
+      };
+    });
+    addMessage("assistant", `✓ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
+  };
+
   const handleSend = async (customPrompt?: string) => {
     const text = (customPrompt || input).trim();
     if (!text || isThinking) return;
@@ -325,6 +356,7 @@ const App: React.FC = () => {
                     activeTaskId={activeTaskId}
                     onTaskSelect={handleTaskSelect}
                     isTaskBlocked={isTaskBlocked}
+                    onConnect={handleConnect}
                   />
                 </div>
               )}

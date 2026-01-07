@@ -2,9 +2,15 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { SubTask, TaskStatus, Priority } from "../types";
+import { SubTask, TaskStatus, Priority, type Citation } from "../types";
 import { ICONS } from "../constants";
-import { Plus, ChevronDown, ChevronUp, Link as LinkIcon, Clock } from "lucide-react";
+import {
+  Plus,
+  ChevronDown,
+  ChevronUp,
+  Link as LinkIcon,
+  Clock,
+} from "lucide-react";
 
 /**
  * Utility for merging tailwind classes with clsx logic.
@@ -21,26 +27,30 @@ interface TaskCardProps {
   onDecompose?: (id: string) => void;
 }
 
-const TaskCard = ({
+const TaskCard: React.FC<TaskCardProps> = ({
   task,
   isActive,
   isBlocked,
   onClick,
   onDecompose,
-}: TaskCardProps) => {
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (isActive && cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      cardRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
       setIsExpanded(true);
     }
   }, [isActive]);
 
   const getStatusColor = (status: TaskStatus) => {
-    if (isBlocked && status === TaskStatus.PENDING)
+    if (isBlocked && status === TaskStatus.PENDING) {
       return "border-slate-800 bg-slate-900 opacity-60";
+    }
     switch (status) {
       case TaskStatus.COMPLETED:
         return "border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50";
@@ -75,18 +85,25 @@ const TaskCard = ({
       className={cn(
         "rounded-2xl border transition-all duration-300 group overflow-hidden glass",
         getStatusColor(task.status),
-        isActive && "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20"
+        isActive &&
+          "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20",
       )}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="mt-1 shrink-0">{ICONS[isBlocked ? 'BLOCKED' : task.status]}</div>
+          <div className="mt-1 shrink-0">
+            {ICONS[isBlocked ? "BLOCKED" : task.status]}
+          </div>
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
-              <p className={cn(
-                "text-sm font-semibold leading-tight",
-                task.status === TaskStatus.COMPLETED ? "text-slate-500 line-through" : "text-slate-200"
-              )}>
+              <p
+                className={cn(
+                  "text-sm font-semibold leading-tight",
+                  task.status === TaskStatus.COMPLETED
+                    ? "text-slate-500 line-through"
+                    : "text-slate-200",
+                )}
+              >
                 {task.description}
               </p>
               <span className="text-[9px] font-mono text-slate-600 ml-2 uppercase shrink-0">
@@ -95,10 +112,12 @@ const TaskCard = ({
             </div>
 
             <div className="mt-2 flex flex-wrap gap-2 items-center">
-              <span className={cn(
-                "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border",
-                getPriorityColor(task.priority)
-              )}>
+              <span
+                className={cn(
+                  "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border",
+                  getPriorityColor(task.priority),
+                )}
+              >
                 {task.priority.toLowerCase()}
               </span>
               {task.duration && (
@@ -131,14 +150,22 @@ const TaskCard = ({
                     type="button"
                     onClick={(e: React.MouseEvent) => {
                       e.stopPropagation();
-                      setIsExpanded((prev: boolean) => !prev);
+                      setIsExpanded((prev) => !prev);
                     }}
                     className={cn(
                       "text-[9px] font-bold uppercase tracking-wider transition-all inline-flex items-center gap-1",
-                      isExpanded ? "text-blue-400" : "text-slate-500"
+                      isExpanded ? "text-blue-400" : "text-slate-500",
                     )}
                   >
-                    {isExpanded ? <>Seal <ChevronUp className="w-3 h-3" /></> : <>Declassify <ChevronDown className="w-3 h-3" /></>}
+                    {isExpanded ? (
+                      <>
+                        Seal <ChevronUp className="w-3 h-3" />
+                      </>
+                    ) : (
+                      <>
+                        Declassify <ChevronDown className="w-3 h-3" />
+                      </>
+                    )}
                   </button>
                 )}
               </div>
@@ -157,23 +184,40 @@ const TaskCard = ({
           >
             {task.output && (
               <div className="mb-3">
-                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Expected Output</span>
-                <p className="text-[10px] text-slate-400 font-medium italic">{task.output}</p>
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">
+                  Expected Output
+                </span>
+                <p className="text-[10px] text-slate-400 font-medium italic">
+                  {task.output}
+                </p>
               </div>
             )}
             {task.result && (
               <div className="mb-3">
-                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Execution Log</span>
-                <p className="text-[11px] text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">{task.result}</p>
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">
+                  Execution Log
+                </span>
+                <p className="text-[11px] text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">
+                  {task.result}
+                </p>
               </div>
             )}
             {task.citations && task.citations.length > 0 && (
               <div className="pt-2 border-t border-slate-800/50">
-                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Grounding Citations</span>
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">
+                  Grounding Citations
+                </span>
                 <div className="flex flex-wrap gap-2">
-                  {task.citations.map((c: any, i: number) => (
-                    <a key={i} href={c.uri} target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 hover:underline truncate max-w-[150px] inline-flex items-center gap-1">
-                      <LinkIcon className="w-2.5 h-2.5" /> {c.title || c.uri}
+                  {task.citations.map((c: Citation, i: number) => (
+                    <a
+                      key={i}
+                      href={c.uri}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[10px] text-blue-400 hover:underline truncate max-w-[150px] inline-flex items-center gap-1"
+                    >
+                      <LinkIcon className="w-2.5 h-2.5" />{" "}
+                      {c.title || c.uri}
                     </a>
                   ))}
                 </div>

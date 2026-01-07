@@ -74,7 +74,7 @@ graph TD
 
 ### Prerequisites
 
-* **Node.js**: v18.0.0 or higher
+* **Node.js**: v19.0.0
 * **API Access**: Google AI Studio API Key
 
 ### Installation

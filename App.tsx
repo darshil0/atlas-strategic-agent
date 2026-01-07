@@ -293,12 +293,12 @@ const App: React.FC = () => {
         className={`${isSidebarOpen ? "w-80" : "w-0"
           } transition-all duration-300 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col relative z-20 overflow-hidden`}
       >
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center font-black text-sm">
+        <div className="p-5 border-b border-slate-800/50 flex items-center justify-between shrink-0 bg-slate-950/20">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-blue-500/20">
               A
             </div>
-            <h2 className="font-bold text-slate-100">Atlas Command</h2>
+            <h2 className="font-display font-black text-xs uppercase tracking-widest text-slate-100">Atlas Command</h2>
           </div>
           <button
             onClick={() => setIsSidebarOpen(false)}
@@ -323,13 +323,18 @@ const App: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar">
           {currentPlan ? (
             <>
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-600 block mb-2">
-                  Project: {currentPlan.projectName}
-                </span>
-                <p className="text-sm font-bold text-slate-100 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
-                  {currentPlan.goal}
-                </p>
+              <div className="space-y-4">
+                <div className="glass p-4 rounded-2xl">
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 block mb-3">
+                    Active Operation
+                  </span>
+                  <h3 className="font-display text-lg font-extrabold text-blue-400 leading-tight mb-2">
+                    {currentPlan.projectName}
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-300 leading-relaxed">
+                    {currentPlan.goal}
+                  </p>
+                </div>
                 {currentPlan.timeline && (
                   <span className="text-[9px] text-blue-400 font-mono mt-2 block">
                     Timeline: {currentPlan.timeline}
@@ -442,16 +447,16 @@ const App: React.FC = () => {
         )}
       </aside>
 
-      <main className="flex-1 flex flex-col min-w-0 relative z-10">
-        <header className="h-16 border-b border-slate-800/80 flex items-center justify-between px-8 bg-slate-950/80 backdrop-blur-xl shrink-0">
-          <div className="flex items-center gap-4">
+      <main className="flex-1 flex flex-col min-w-0 relative z-10 bg-slate-950/30">
+        <header className="h-20 border-b border-slate-800/40 flex items-center justify-between px-10 glass shrink-0">
+          <div className="flex items-center gap-6">
             {!isSidebarOpen && (
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="text-slate-400 hover:text-slate-100 p-2"
+                className="text-slate-500 hover:text-white p-2 transition-colors"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -459,14 +464,15 @@ const App: React.FC = () => {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M4 6h16M4 12h16M4 18h16"
                   />
                 </svg>
               </button>
             )}
-            <h1 className="text-lg font-black tracking-tighter uppercase italic text-slate-100">
-              Atlas <span className="text-blue-600 non-italic">Strategic</span>
+            <h1 className="text-2xl font-display font-black tracking-tighter uppercase italic text-white flex items-center gap-3">
+              Atlas <span className="text-blue-600 non-italic font-black -ml-1">Strategic</span>
+              <span className="text-[9px] font-black bg-blue-600/10 text-blue-500 px-2 py-0.5 rounded border border-blue-500/20 tracking-widest non-italic">V2.0</span>
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -496,9 +502,9 @@ const App: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar scroll-smooth">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-6 max-w-2xl mx-auto">
-              <div className="w-20 h-20 bg-blue-600/5 rounded-3xl flex items-center justify-center border border-blue-500/20 animate-pulse">
+              <div className="w-24 h-24 glass rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-blue-500/10 shimmer">
                 <svg
-                  className="w-10 h-10 text-blue-600"
+                  className="w-12 h-12 text-blue-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -506,17 +512,17 @@ const App: React.FC = () => {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
               </div>
-              <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
+              <h2 className="text-6xl font-display font-black text-white tracking-tighter uppercase italic leading-none">
                 Strategic <span className="text-blue-600">Synthesis</span>
               </h2>
-              <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                Breaking down mountains into manageable stones. Provide your
-                high-level objective to initiate Phase 1.
+              <p className="text-slate-500 text-xl font-medium leading-relaxed max-w-xl">
+                The world's most advanced strategic decomposition engine.
+                Initiate Phase 1 by declaring your tactical objective.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full pt-4">
                 {[

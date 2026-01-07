@@ -56,13 +56,14 @@ const TaskNode = ({
   };
 
   return (
+  return (
     <div
       onClick={() => onNodeClick(task.id)}
-      className={`flex rounded-xl border text-[10px] w-48 overflow-hidden transition-all duration-500 backdrop-blur-sm select-none ${getStatusStyles()
-        } ${isActive ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-950 scale-105 z-40 shadow-2xl shadow-blue-500/20" : ""}`}
+      className={`flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 backdrop-blur-sm select-none glass ${getStatusStyles()
+        } ${isActive ? "ring-2 ring-blue-500 ring-offset-4 ring-offset-slate-950 scale-110 z-50 shadow-[0_0_40px_rgba(59,130,246,0.3)]" : "glass-hover"}`}
     >
-      <div className={`w-1.5 shrink-0 ${getPriorityAccent()}`} />
-      <div className="flex-1 px-3 py-2.5 relative">
+      <div className={`w-2 shrink-0 ${getPriorityAccent()}`} />
+      <div className="flex-1 px-4 py-3.5 relative">
         <Handle type="target" position={Position.Top} className="opacity-0" />
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between items-center opacity-60 font-mono text-[7px] tracking-widest uppercase">
@@ -73,8 +74,8 @@ const TaskNode = ({
           </div>
           <p
             className={`font-semibold leading-snug line-clamp-2 min-h-[2.4em] ${task.status === TaskStatus.COMPLETED
-                ? "text-slate-500"
-                : "text-slate-100"
+              ? "text-slate-500"
+              : "text-slate-100"
               }`}
           >
             {task.description}
@@ -83,8 +84,8 @@ const TaskNode = ({
             <div className="flex items-center gap-1.5">
               <span
                 className={`w-1 h-1 rounded-full ${task.status === TaskStatus.IN_PROGRESS
-                    ? "animate-pulse bg-blue-400"
-                    : "bg-slate-600"
+                  ? "animate-pulse bg-blue-400"
+                  : "bg-slate-600"
                   }`}
               ></span>
               <span className="text-[7px] uppercase font-black tracking-tighter text-slate-500">

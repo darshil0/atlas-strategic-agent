@@ -28,14 +28,13 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                     </p>
                 );
 
-            case A2UIComponentType.BUTTON:
                 return (
                     <button
                         key={id}
                         onClick={() => handleAction('click', props.actionData)}
-                        className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${props.variant === 'primary'
-                            ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
-                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 ${props.variant === 'primary'
+                            ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20'
+                            : 'glass glass-hover text-slate-300'
                             } ${props.className}`}
                     >
                         {props.label}
@@ -44,10 +43,10 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
 
             case A2UIComponentType.CARD:
                 return (
-                    <div key={id} className={`p-4 rounded-xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm ${props.className}`}>
-                        {props.title && <h3 className="text-sm font-bold text-white mb-2">{props.title}</h3>}
+                    <div key={id} className={`p-5 rounded-2xl glass ${props.className}`}>
+                        {props.title && <h3 className="font-display text-sm font-black text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-2">{props.title}</h3>}
                         {element.children && (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {element.children.map(child => renderElement(child))}
                             </div>
                         )}
@@ -104,16 +103,16 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
 
             case A2UIComponentType.CHART:
                 return (
-                    <div key={id} className="p-4 rounded-xl bg-slate-900/40 border border-slate-800">
-                        <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">{props.title || 'Data Analysis'}</h4>
-                        <div className="flex items-end gap-2 h-24">
+                    <div key={id} className={`p-5 rounded-2xl glass ${props.className}`}>
+                        <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-6">{props.title || 'Data Analysis'}</h4>
+                        <div className="flex items-end gap-3 h-32">
                             {props.data?.map((val: any, idx: number) => (
-                                <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
+                                <div key={idx} className="flex-1 flex flex-col items-center gap-3 group">
                                     <div
-                                        className="w-full bg-blue-600/30 border-t-2 border-blue-500 rounded-t-sm group-hover:bg-blue-600/50 transition-all"
+                                        className="w-full bg-blue-500/10 border-t-2 border-blue-500/50 rounded-t-lg group-hover:bg-blue-500/20 group-hover:border-blue-500 transition-all duration-500 shimmer"
                                         style={{ height: `${(val.value / (props.maxValue || 100)) * 100}%` }}
                                     ></div>
-                                    <span className="text-[8px] font-bold text-slate-600 group-hover:text-slate-400">{val.label}</span>
+                                    <span className="text-[9px] font-bold text-slate-600 group-hover:text-slate-400 font-mono">{val.label}</span>
                                 </div>
                             ))}
                         </div>

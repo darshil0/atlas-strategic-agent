@@ -76,13 +76,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   return (
+  return (
     <div
       ref={cardRef}
-      className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(
+      className={`rounded-2xl border transition-all duration-300 group overflow-hidden glass ${getStatusColor(
         task.status
       )} ${isActive
-          ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg"
-          : ""
+        ? "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20"
+        : "glass-hover"
         }`}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
@@ -92,8 +93,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
             <div className="flex justify-between items-start">
               <p
                 className={`text-sm font-semibold leading-tight ${task.status === TaskStatus.COMPLETED
-                    ? "text-slate-500 line-through"
-                    : "text-slate-200"
+                  ? "text-slate-500 line-through"
+                  : "text-slate-200"
                   }`}
               >
                 {task.description}

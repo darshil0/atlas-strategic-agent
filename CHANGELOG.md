@@ -2,7 +2,7 @@
 
 ## [3.0.0] - 2026-01-07
 ### Added
-- **Enterprise OS**: Multi-agent orchestrator with Strategist/Analyst/Critic personas.
+- **Enterprise Agent**: Multi-agent orchestrator with Strategist/Analyst/Critic personas.
 - **What-If Engine**: Risk analysis with failure cascades and mission scoring.
 - **Visuals**: GANTT Timeline view and Mermaid.js export/import support.
 - **Connectivity**: External Tool Bridge (GitHub/Slack) and Live Search grounding.

@@ -1,9 +1,9 @@
-# Atlas Strategic agent V3.0
+# Atlas Strategic Agent V3.0
 
 ![Version](https://img.shields.io/badge/version-3.0.0-blue.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Enterprise--Ready-emerald.svg?style=for-the-badge)
 
-Atlas V3.0 is a full-scale **Enterprise Strategic Operating System** featuring multi-agent collaboration, real-world grounding, and advanced visualization.
+Atlas V3.0 transforms the platform from a simple task decompressor into a full-scale **Enterprise Strategic Agent**. It features multi-agent collaborative synthesis, real-world grounding, and advanced strategic visualizations.
 
 ## 🚀 Core Capabilities
 

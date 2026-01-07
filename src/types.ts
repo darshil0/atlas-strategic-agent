@@ -1,3 +1,4 @@
+
 export enum TaskStatus {
   PENDING = "pending",
   IN_PROGRESS = "in-progress",
@@ -18,14 +19,6 @@ export interface Citation {
   title?: string;
 }
 
-export interface Milestone {
-  id: string;
-  name: string;
-  date: string;
-  successCriteria: string;
-  isReached: boolean;
-}
-
 export interface SubTask {
   id: string;
   description: string;
@@ -42,12 +35,9 @@ export interface SubTask {
 
 export interface Plan {
   projectName: string;
-  timeline: string;
   goal: string;
   tasks: SubTask[];
-  milestones?: Milestone[];
-  criticalPath?: string[];
-  groundingData?: string[]; // URLs, file names, or text snippets for grounding
+  groundingData?: string[];
 }
 
 export type MessageRole = "user" | "assistant" | "system";
@@ -63,12 +53,4 @@ export interface Message {
 export enum AgentMode {
   AUTONOMOUS = "Autonomous",
   COLLABORATIVE = "Collaborative",
-  GUIDED = "Guided",
-}
-
-export interface AgentState {
-  currentPlan: Plan | null;
-  activeTaskId: string | null;
-  mode: AgentMode;
-  isThinking: boolean;
 }

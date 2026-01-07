@@ -14,7 +14,6 @@ export class StrategistAgent extends BaseAgent {
     }
 
     async execute(prompt: string, context?: any): Promise<any> {
-        console.log(`Strategist executing: ${prompt}`);
         return context || { plan: "Draft Strategy" };
     }
 

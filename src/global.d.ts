@@ -4,6 +4,6 @@ declare namespace JSX {
         [elemName: string]: any;
     }
 }
-
+declare module "*";
 declare var process: any;
 declare var global: any;

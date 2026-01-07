@@ -13,7 +13,6 @@ const genAI = new GoogleGenAI(apiKey || "");
 
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';
-  private static memoryStorage: string[] = [];
 
   private static A2UI_INSTRUCTION = `
 Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.
@@ -103,17 +102,5 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     });
     const response = await result.response;
     return response.text();
-  }
-
-  static async searchExternal(query: string): Promise<string> {
-    return `External Intelligence: Verified strategic trends for "${query}".`;
-  }
-
-  static async recordStrategicPattern(pattern: string) {
-    this.memoryStorage.push(pattern);
-  }
-
-  static async recallStrategicPatterns(query: string): Promise<string[]> {
-    return this.memoryStorage.filter(p => p.toLowerCase().includes(query.toLowerCase()));
   }
 }

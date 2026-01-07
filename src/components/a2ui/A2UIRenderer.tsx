@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { A2UIElement, A2UIComponentType, AGUIEvent } from '../../lib/adk/protocol';
 
@@ -23,11 +22,12 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
         switch (type) {
             case A2UIComponentType.TEXT:
                 return (
-                    <p key={id} className={`text-sm ${props.className || 'text-slate-300'}`}>
+                    <p key={id} className={props.className || 'text-slate-300' + " text-sm"}>
                         {props.text}
                     </p>
                 );
 
+            case A2UIComponentType.BUTTON:
                 return (
                     <button
                         key={id}
@@ -35,7 +35,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                         className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 ${props.variant === 'primary'
                             ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20'
                             : 'glass glass-hover text-slate-300'
-                            } ${props.className}`}
+                            } ${props.className || ''}`}
                     >
                         {props.label}
                     </button>
@@ -43,7 +43,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
 
             case A2UIComponentType.CARD:
                 return (
-                    <div key={id} className={`p-5 rounded-2xl glass ${props.className}`}>
+                    <div key={id} className={`p-5 rounded-2xl glass ${props.className || ''}`}>
                         {props.title && <h3 className="font-display text-sm font-black text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-2">{props.title}</h3>}
                         {element.children && (
                             <div className="space-y-4">
@@ -77,8 +77,8 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                             type={props.inputType || 'text'}
                             placeholder={props.placeholder}
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 transition-colors"
-                            onBlur={(e) => handleAction('input_blur', { value: e.target.value })}
-                            onKeyDown={(e) => {
+                            onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleAction('input_blur', { value: e.target.value })}
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                 if (e.key === 'Enter') handleAction('input_submit', { value: (e.target as HTMLInputElement).value });
                             }}
                         />
@@ -103,7 +103,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
 
             case A2UIComponentType.CHART:
                 return (
-                    <div key={id} className={`p-5 rounded-2xl glass ${props.className}`}>
+                    <div key={id} className={`p-5 rounded-2xl glass ${props.className || ''}`}>
                         <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-6">{props.title || 'Data Analysis'}</h4>
                         <div className="flex items-end gap-3 h-32">
                             {props.data?.map((val: any, idx: number) => (
@@ -140,7 +140,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                         <select
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 appearance-none"
                             value={props.value}
-                            onChange={(e) => handleAction('select_change', { value: e.target.value })}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleAction('select_change', { value: e.target.value })}
                         >
                             {props.options?.map((opt: any) => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>

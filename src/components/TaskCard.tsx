@@ -1,6 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { twMerge } from "tailwind-merge";
+import { clsx, type ClassValue } from "clsx";
 import { SubTask, TaskStatus, Priority } from "../types";
 import { ICONS } from "../constants";
+import { Plus, ChevronDown, ChevronUp, Link as LinkIcon, Clock } from "lucide-react";
+
+/**
+ * Utility for merging tailwind classes with clsx logic.
+ */
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 interface TaskCardProps {
   task: SubTask;
@@ -20,34 +31,12 @@ const TaskCard = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Only scroll once when activated
   useEffect(() => {
     if (isActive && cardRef.current) {
       cardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
       setIsExpanded(true);
     }
   }, [isActive]);
-
-  const getStatusIcon = (status: TaskStatus) => {
-    if (isBlocked && status === TaskStatus.PENDING) {
-      return (
-        <span
-          role="img"
-          aria-label="Blocked"
-          data-testid="blocked-icon"
-          className="text-slate-600"
-        >
-          {ICONS.BLOCKED ?? "🚫"}
-        </span>
-      );
-    }
-    const icon = ICONS[status] ?? "⚙️";
-    return (
-      <span role="img" aria-label={status} className="text-slate-400">
-        {icon}
-      </span>
-    );
-  };
 
   const getStatusColor = (status: TaskStatus) => {
     if (isBlocked && status === TaskStatus.PENDING)
@@ -78,26 +67,26 @@ const TaskCard = ({
   };
 
   return (
-    <div
+    <motion.div
+      layout
       ref={cardRef}
-      className={`rounded-2xl border transition-all duration-300 group overflow-hidden glass ${getStatusColor(
-        task.status
-      )} ${isActive
-        ? "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20"
-        : "glass-hover"
-        }`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "rounded-2xl border transition-all duration-300 group overflow-hidden glass",
+        getStatusColor(task.status),
+        isActive && "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20"
+      )}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
-          <div className="mt-1 shrink-0">{getStatusIcon(task.status)}</div>
+          <div className="mt-1 shrink-0">{ICONS[isBlocked ? 'BLOCKED' : task.status]}</div>
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
-              <p
-                className={`text-sm font-semibold leading-tight ${task.status === TaskStatus.COMPLETED
-                  ? "text-slate-500 line-through"
-                  : "text-slate-200"
-                  }`}
-              >
+              <p className={cn(
+                "text-sm font-semibold leading-tight",
+                task.status === TaskStatus.COMPLETED ? "text-slate-500 line-through" : "text-slate-200"
+              )}>
                 {task.description}
               </p>
               <span className="text-[9px] font-mono text-slate-600 ml-2 uppercase shrink-0">
@@ -106,30 +95,18 @@ const TaskCard = ({
             </div>
 
             <div className="mt-2 flex flex-wrap gap-2 items-center">
-              <span
-                className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${getPriorityColor(
-                  task.priority
-                )}`}
-              >
+              <span className={cn(
+                "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border",
+                getPriorityColor(task.priority)
+              )}>
                 {task.priority.toLowerCase()}
               </span>
               {task.duration && (
-                <span className="text-[9px] text-slate-500 font-mono">
-                  🕒 {task.duration}
-                </span>
-              )}
-              {task.parentId && (
-                <span className="text-[9px] text-slate-600 font-mono">
-                  Parent: #{task.parentId}
+                <span className="text-[9px] text-slate-500 font-mono flex items-center gap-1">
+                  <Clock className="w-2.5 h-2.5" /> {task.duration}
                 </span>
               )}
             </div>
-
-            {task.status === TaskStatus.IN_PROGRESS && (
-              <div className="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 animate-[shimmer_2s_infinite]" />
-              </div>
-            )}
 
             <div className="mt-2 flex items-center justify-between gap-4">
               <span className="text-[8px] text-slate-600 uppercase tracking-widest font-black">
@@ -146,9 +123,7 @@ const TaskCard = ({
                     className="text-[9px] font-bold uppercase tracking-wider text-slate-500 hover:text-blue-400 transition-all flex items-center gap-1"
                   >
                     <span>Explode</span>
-                    <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                    </svg>
+                    <Plus className="w-2.5 h-2.5" />
                   </button>
                 )}
                 {(task.result || task.output) && (
@@ -158,10 +133,12 @@ const TaskCard = ({
                       e.stopPropagation();
                       setIsExpanded((prev: boolean) => !prev);
                     }}
-                    className={`text-[9px] font-bold uppercase tracking-wider transition-all ${isExpanded ? "text-blue-400" : "text-slate-500"
-                      }`}
+                    className={cn(
+                      "text-[9px] font-bold uppercase tracking-wider transition-all inline-flex items-center gap-1",
+                      isExpanded ? "text-blue-400" : "text-slate-500"
+                    )}
                   >
-                    {isExpanded ? "Seal" : "Declassify"}
+                    {isExpanded ? <>Seal <ChevronUp className="w-3 h-3" /></> : <>Declassify <ChevronDown className="w-3 h-3" /></>}
                   </button>
                 )}
               </div>
@@ -170,53 +147,42 @@ const TaskCard = ({
         </div>
       </div>
 
-      {isExpanded && (
-        <div className="border-t border-slate-800 bg-slate-950/50 p-3 animate-in fade-in slide-in-from-top-2">
-          {task.output && (
-            <div className="mb-3">
-              <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">
-                Expected Output
-              </span>
-              <p className="text-[10px] text-slate-400 font-medium italic">
-                {task.output}
-              </p>
-            </div>
-          )}
-
-          {task.result && (
-            <div className="mb-3">
-              <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">
-                Execution Log
-              </span>
-              <p className="text-[11px] text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">
-                {task.result}
-              </p>
-            </div>
-          )}
-
-          {task.citations && task.citations.length > 0 && (
-            <div className="pt-2 border-t border-slate-800/50">
-              <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1">
-                Grounding Citations
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {task.citations.map((c: any, i: number) => (
-                  <a
-                    key={i}
-                    href={c.uri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[10px] text-blue-400 hover:underline truncate max-w-[150px]"
-                  >
-                    🔗 {c.title || c.uri}
-                  </a>
-                ))}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="border-t border-slate-800 bg-slate-950/50 p-3 overflow-hidden"
+          >
+            {task.output && (
+              <div className="mb-3">
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Expected Output</span>
+                <p className="text-[10px] text-slate-400 font-medium italic">{task.output}</p>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            )}
+            {task.result && (
+              <div className="mb-3">
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Execution Log</span>
+                <p className="text-[11px] text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">{task.result}</p>
+              </div>
+            )}
+            {task.citations && task.citations.length > 0 && (
+              <div className="pt-2 border-t border-slate-800/50">
+                <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">Grounding Citations</span>
+                <div className="flex flex-wrap gap-2">
+                  {task.citations.map((c: any, i: number) => (
+                    <a key={i} href={c.uri} target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 hover:underline truncate max-w-[150px] inline-flex items-center gap-1">
+                      <LinkIcon className="w-2.5 h-2.5" /> {c.title || c.uri}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

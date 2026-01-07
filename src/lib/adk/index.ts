@@ -1,32 +1,9 @@
 
-import { A2UIMessage, A2UIElement, AGUIEvent, A2UIComponentType } from './protocol';
+import { A2UIMessage, A2UIElement, A2UIComponentType } from './protocol';
 
 /**
- * Base Agent Development Kit (ADK)
- * Provides the framework for building A2UI-compliant agents.
+ * UIBuilder: Fluent interface for creating A2UI-compliant JSON payloads.
  */
-
-export abstract class BaseAgent {
-    abstract name: string;
-    abstract description: string;
-
-    /**
-     * Processes an incoming event from the UI via AG-UI protocol.
-     */
-    abstract handleEvent(event: AGUIEvent): Promise<A2UIMessage>;
-
-    /**
-     * Executes a core reasoning step. 
-     * In V3, this is the primary entry point for agent logic.
-     */
-    abstract execute(prompt: string, context?: any): Promise<any>;
-
-    /**
-     * Generates an initial UI state.
-     */
-    abstract getInitialUI(): A2UIMessage;
-}
-
 export class UIBuilder {
     private elements: A2UIElement[] = [];
 
@@ -47,21 +24,12 @@ export class UIBuilder {
     }
 }
 
-export class AgentFactory {
-    static create(persona: AgentPersona): BaseAgent {
-        switch (persona) {
-            case AgentPersona.STRATEGIST: return new StrategistAgent();
-            case AgentPersona.ANALYST: return new AnalystAgent();
-            case AgentPersona.CRITIC: return new CriticAgent();
-            default: throw new Error(`Unknown persona: ${persona}`);
-        }
-    }
-}
-
-import { StrategistAgent, AnalystAgent, CriticAgent } from './agents';
-import { AgentPersona } from './orchestrator';
-
-export interface AgentContext {
-    sessionId: string;
-    metadata: Record<string, any>;
-}
+/**
+ * Re-export core ADK logic
+ */
+export * from './types';
+export * from './orchestrator';
+export * from './agents';
+export * from './protocol';
+export * from './exporter';
+export * from './factory';

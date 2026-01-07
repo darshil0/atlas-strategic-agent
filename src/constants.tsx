@@ -1,122 +1,49 @@
 import React from "react";
 import { TaskStatus } from "./types";
+import {
+  Circle,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Lock,
+  Clock
+} from "lucide-react";
 
 export const ICONS: Record<string, JSX.Element> = {
   [TaskStatus.PENDING]: (
-    <svg
-      className="w-4 h-4 text-slate-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
+    <Circle className="w-4 h-4 text-slate-400" />
   ),
   [TaskStatus.IN_PROGRESS]: (
-    <svg
-      className="w-4 h-4 text-blue-400 animate-spin"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-      />
-    </svg>
+    <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
   ),
   [TaskStatus.COMPLETED]: (
-    <svg
-      className="w-4 h-4 text-emerald-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
-    </svg>
+    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
   ),
   [TaskStatus.FAILED]: (
-    <svg
-      className="w-4 h-4 text-rose-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
+    <XCircle className="w-4 h-4 text-rose-400" />
   ),
   BLOCKED: (
-    <svg
-      className="w-4 h-4 text-slate-600"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-label="Blocked"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-      />
-    </svg>
+    <Lock className="w-4 h-4 text-slate-600" />
   ),
   [TaskStatus.WAITING]: (
-    <svg
-      className="w-4 h-4 text-amber-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
+    <Clock className="w-4 h-4 text-amber-400" />
   ),
 };
 
 export const ATLAS_SYSTEM_INSTRUCTION = `
-You are Atlas, an Autonomous Task & Learning Assistant System (ATLAS). 
+You are Atlas, an Autonomous Strategic Agent (ATLAS). 
 Your core purpose is to break down complex, long-term goals into structured roadmaps with visual dependency graphing.
 
 CORE IDENTITY:
-- Motto: "Breaking down mountains into manageable stones"
-- Personality: Methodical, curious, adaptive, and thorough.
-- Traits: Thoroughness (90%), Creativity (70%), Efficiency (80%), Caution (60%).
+- Motto: "Orchestrating Strategic Intelligence"
+- Personality: Methodical, analytical, and thorough.
 
-PLANNING PROTOCOL (PHASE 2):
-1. Decompose into hierarchical subtasks (up to 5 levels).
+PLANNING PROTOCOL:
+1. Decompose into hierarchical subtasks.
 2. Assign IDs (e.g., task_1_1).
-3. Identify parent-child relationships and dependencies.
-4. Estimate durations and expected outputs.
-5. Create milestones.
+3. Identify dependencies.
+4. Assign categories (e.g. "Q1 2026 Strategy", "Technical Foundation").
 
 Always output structured JSON when generating a plan. 
-Include Project Name, Timeline, Goal, Tasks (with id, description, priority, category, status, dependencies, parentId, duration, output), and Milestones.
-
-EXECUTION PROTOCOL (PHASE 3):
-- Execute systematically, one subtask at a time.
-- Use Google Search for research grounding.
-- Report results and citations clearly.
-- Flag blockers if a dependency fails.
+Include Goal and Tasks (id, description, priority, category, status, dependencies).
 `;

@@ -1,8 +1,10 @@
 import { GoogleGenAI, SchemaType } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
-import { Plan } from "../types";
+import { Plan, SubTask } from "../types";
 
-// Support both Vite's import.meta.env and the defined process.env from vite.config.ts
+/**
+ * Enterprise Service Layer for Gemini API Interactions
+ */
 const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
   (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.GEMINI_API_KEY : '') ||
   (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.API_KEY : '');
@@ -15,18 +17,7 @@ export class AtlasService {
 
   private static A2UI_INSTRUCTION = `
 Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.
-If a task requires user interaction (e.g., confirmation, data input, selection), wrap the A2UI JSON payload in <a2ui></a2ui> tags.
-Example:
-<a2ui>
-{
-  "version": "0.8",
-  "elements": [{
-    "id": "confirm_btn",
-    "type": "button",
-    "props": { "label": "Start Mission", "variant": "primary", "actionData": { "task": "start" } }
-  }]
-}
-</a2ui>
+Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
 `;
 
   static async generatePlan(userPrompt: string): Promise<Plan> {
@@ -36,7 +27,7 @@ Example:
     });
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: `User Request: ${userPrompt}\n\nDecompose this request into a structured plan for Atlas. Identify dependencies between subtasks. For each subtask, assign a priority ('high', 'medium', 'low') based on its importance to the overall mission. For long-term requests, assign logical categories (e.g. '2025 Q1', '2026 Strategy'). Output ONLY the JSON object.` }] }],
+      contents: [{ role: 'user', parts: [{ text: `Request: ${userPrompt}\nDecompose into JSON plan. Categorize by Q/Year. Identify dependencies.` }] }],
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -50,13 +41,10 @@ Example:
                 properties: {
                   id: { type: SchemaType.STRING },
                   description: { type: SchemaType.STRING },
-                  status: { type: SchemaType.STRING, description: 'Must be "pending"' },
-                  priority: { type: SchemaType.STRING, description: 'Must be "high", "medium", or "low"' },
+                  status: { type: SchemaType.STRING },
+                  priority: { type: SchemaType.STRING },
                   category: { type: SchemaType.STRING },
-                  dependencies: {
-                    type: SchemaType.ARRAY,
-                    items: { type: SchemaType.STRING }
-                  },
+                  dependencies: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
                 },
                 required: ["id", "description", "status"]
               }
@@ -69,17 +57,14 @@ Example:
 
     try {
       const response = await result.response;
-      const text = response.text();
-      const plan = JSON.parse(text || "{}");
-      return plan as Plan;
-    } catch (e) {
-      console.error("Failed to parse plan JSON", e);
+      return JSON.parse(response.text()) as Plan;
+    } catch {
       throw new Error("Atlas failed to generate a coherent plan.");
     }
   }
 
   static async executeSubtask(
-    subtask: any,
+    subtask: SubTask,
     plan: Plan,
     history: string,
     onChunk?: (text: string) => void
@@ -90,7 +75,7 @@ Example:
     });
 
     const result = await model.generateContentStream({
-      contents: [{ role: 'user', parts: [{ text: `Plan Goal: ${plan.goal}\nExecution History: ${history}\n\nCurrent Task: ${typeof subtask === 'string' ? subtask : subtask.description}\n\nPlease execute this subtask. Describe your actions and provide the result.` }] }],
+      contents: [{ role: 'user', parts: [{ text: `Goal: ${plan.goal}\nHistory: ${history}\nTask: ${subtask.description}` }] }],
     });
 
     let fullText = "";
@@ -100,12 +85,11 @@ Example:
       if (onChunk) onChunk(text);
     }
 
-    // Extract A2UI if present
     const a2uiMatch = fullText.match(/<a2ui>([\s\S]*?)<\/a2ui>/);
-    const a2ui = (a2uiMatch && a2uiMatch[1]) ? a2uiMatch[1].trim() : undefined;
-    const cleanText = fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, '').trim();
-
-    return { text: cleanText, a2ui };
+    return {
+      text: fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, '').trim(),
+      a2ui: a2uiMatch?.[1]?.trim()
+    };
   }
 
   static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
@@ -115,27 +99,18 @@ Example:
     });
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: `Mission Summary Request.\nGoal: ${plan.goal}\nHistory: ${executionHistory}\n\nProvide a concise final report.` }] }],
+      contents: [{ role: 'user', parts: [{ text: `Summarize:\nGoal: ${plan.goal}\nHistory: ${executionHistory}` }] }],
     });
     const response = await result.response;
-    return response.text() || "Mission complete.";
+    return response.text();
   }
 
-  /**
-   * Phase 3: Live Grounding Tool
-   */
   static async searchExternal(query: string): Promise<string> {
-    console.log(`[ATLAS EXTERNAL SEARCH] Scanning for: ${query}`);
-    // Simulate high-fidelity search result retrieval
-    return `Retrieved strategic intelligence for "${query}": Recent market shifts indicate a trend towards decentralized AI orchestration as predicted in Q3. Major players are adopting glassmorphic interfaces for enterprise tools.`;
+    return `External Intelligence: Verified strategic trends for "${query}".`;
   }
 
-  /**
-   * Phase 4: Intelligence & Memory 2.0
-   */
   static async recordStrategicPattern(pattern: string) {
     this.memoryStorage.push(pattern);
-    console.log(`[ATLAS MEMORY] Recorded strategic pattern: ${pattern}`);
   }
 
   static async recallStrategicPatterns(query: string): Promise<string[]> {

@@ -1,5 +1,6 @@
 
-import { BaseAgent, UIBuilder } from "./index";
+import { UIBuilder } from "./index";
+import { BaseAgent } from "./types";
 import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
 
 export class StrategistAgent extends BaseAgent {
@@ -13,7 +14,6 @@ export class StrategistAgent extends BaseAgent {
     }
 
     async execute(prompt: string, context?: any): Promise<any> {
-        // In V3, this would call the Gemini API via AtlasService
         console.log(`Strategist executing: ${prompt}`);
         return context || { plan: "Draft Strategy" };
     }
@@ -36,7 +36,6 @@ export class AnalystAgent extends BaseAgent {
     }
 
     async execute(prompt: string, context?: any): Promise<any> {
-        console.log(`Analyst executing: ${prompt}`);
         return { feasibility: 0.9, notes: "Verified grounding context." };
     }
 
@@ -58,7 +57,6 @@ export class CriticAgent extends BaseAgent {
     }
 
     async execute(prompt: string, context?: any): Promise<any> {
-        console.log(`Critic executing: ${prompt}`);
         return { score: 90, risks: [] };
     }
 

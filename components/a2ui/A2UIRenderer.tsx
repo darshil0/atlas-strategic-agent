@@ -120,6 +120,36 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                     </div>
                 );
 
+            case A2UIComponentType.CHECKBOX:
+                return (
+                    <div key={id} className="flex items-center gap-3 p-2 group cursor-pointer" onClick={() => handleAction('toggle', { checked: !props.checked })}>
+                        <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${props.checked ? 'bg-blue-600 border-blue-500' : 'border-slate-700 bg-slate-950 group-hover:border-slate-500'}`}>
+                            {props.checked && (
+                                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                            )}
+                        </div>
+                        <span className={`text-sm ${props.checked ? 'text-slate-300' : 'text-slate-500 group-hover:text-slate-400'}`}>{props.label}</span>
+                    </div>
+                );
+
+            case A2UIComponentType.SELECT:
+                return (
+                    <div key={id} className="space-y-1.5 w-full">
+                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label}</label>}
+                        <select
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 appearance-none"
+                            value={props.value}
+                            onChange={(e) => handleAction('select_change', { value: e.target.value })}
+                        >
+                            {props.options?.map((opt: any) => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                );
+
             default:
                 return <div key={id} className="text-xs text-slate-600 italic px-2">Unknown component type: {type}</div>;
         }

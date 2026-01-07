@@ -13,6 +13,8 @@ export enum A2UIComponentType {
     LIST = 'list',
     CHART = 'chart',
     PROGRESS = 'progress',
+    CHECKBOX = 'checkbox',
+    SELECT = 'select',
 }
 
 export interface A2UIMessage {

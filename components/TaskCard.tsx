@@ -80,11 +80,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
       ref={cardRef}
       className={`rounded-xl border transition-all duration-300 group overflow-hidden ${getStatusColor(
         task.status
-      )} ${
-        isActive
+      )} ${isActive
           ? "scale-[1.02] z-10 border-blue-400 ring-1 ring-blue-500/40 shadow-lg"
           : ""
-      }`}
+        }`}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
@@ -92,11 +91,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
               <p
-                className={`text-sm font-semibold leading-tight ${
-                  task.status === TaskStatus.COMPLETED
+                className={`text-sm font-semibold leading-tight ${task.status === TaskStatus.COMPLETED
                     ? "text-slate-500 line-through"
                     : "text-slate-200"
-                }`}
+                  }`}
               >
                 {task.description}
               </p>
@@ -131,24 +129,40 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </div>
             )}
 
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between gap-4">
               <span className="text-[8px] text-slate-600 uppercase tracking-widest font-black">
                 {task.category || "Strategic"}
               </span>
-              {(task.result || task.output) && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsExpanded((prev) => !prev);
-                  }}
-                  className={`text-[9px] font-bold uppercase tracking-wider transition-all ${
-                    isExpanded ? "text-blue-400" : "text-slate-500"
-                  }`}
-                >
-                  {isExpanded ? "Seal" : "Declassify"}
-                </button>
-              )}
+              <div className="flex gap-3">
+                {task.status === TaskStatus.PENDING && !isBlocked && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDecompose?.(task.id);
+                    }}
+                    className="text-[9px] font-bold uppercase tracking-wider text-slate-500 hover:text-blue-400 transition-all flex items-center gap-1"
+                  >
+                    <span>Explode</span>
+                    <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                )}
+                {(task.result || task.output) && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsExpanded((prev) => !prev);
+                    }}
+                    className={`text-[9px] font-bold uppercase tracking-wider transition-all ${isExpanded ? "text-blue-400" : "text-slate-500"
+                      }`}
+                  >
+                    {isExpanded ? "Seal" : "Declassify"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

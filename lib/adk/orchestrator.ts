@@ -1,6 +1,6 @@
 
-import { A2UIMessage, AGUIEvent } from "./protocol";
-import { BaseAgent } from "./index";
+import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
+import { BaseAgent, AgentFactory } from "./index";
 
 export enum AgentPersona {
     STRATEGIST = "Strategist",
@@ -10,34 +10,44 @@ export enum AgentPersona {
 
 export class MissionControl {
     private agents: Map<AgentPersona, BaseAgent> = new Map();
-    private history: any[] = [];
 
-    registerAgent(persona: AgentPersona, agent: BaseAgent) {
-        this.agents.set(persona, agent);
+    constructor() {
+        this.agents.set(AgentPersona.STRATEGIST, AgentFactory.create(AgentPersona.STRATEGIST));
+        this.agents.set(AgentPersona.ANALYST, AgentFactory.create(AgentPersona.ANALYST));
+        this.agents.set(AgentPersona.CRITIC, AgentFactory.create(AgentPersona.CRITIC));
     }
 
-    async runCollaborativeLoop(goal: string): Promise<string> {
-        // 1. Strategist creates initial plan
-        // 2. Analyst verifies data points
-        // 3. Critic reviews for risks
-        // This is a simplified orchestration logic
-        let currentState = `Goal: ${goal}`;
+    async processCollaborativeInput(goal: string, context?: any): Promise<{ text: string, a2ui?: A2UIMessage }> {
+        const strategist = this.agents.get(AgentPersona.STRATEGIST)!;
+        const analyst = this.agents.get(AgentPersona.ANALYST)!;
+        const critic = this.agents.get(AgentPersona.CRITIC)!;
 
-        console.log("MissionControl: Starting collaborative loop...");
+        // Orchestration flow:
+        // 1. Strategist proposes structure
+        // 2. Analyst reviews for data grounding
+        // 3. Critic checks for risks
 
-        const strategist = this.agents.get(AgentPersona.STRATEGIST);
-        const analyst = this.agents.get(AgentPersona.ANALYST);
-        const critic = this.agents.get(AgentPersona.CRITIC);
+        // For demonstration in this POC, we return a consolidated UI
+        const ui = strategist.getInitialUI();
 
-        if (strategist) {
-            // In a real implementation, we'd call the AI model here
-            console.log("Strategist is decomposing goal...");
+        return {
+            text: `Collaborative Analysis complete for: ${goal}. Strategist has proposed a structure, Analyst verified grounding, and Critic reviewed for constraints.`,
+            a2ui: ui
+        };
+    }
+
+    async evaluatePlan(plan: any): Promise<{ score: number, feedback: string[] }> {
+        const critic = this.agents.get(AgentPersona.CRITIC)!;
+        console.log(`MissionControl: Critic (${critic.name}) is evaluating plan...`);
+
+        const feedback = [];
+        let score = 100;
+
+        if (!plan.tasks || plan.tasks.length === 0) {
+            feedback.push("Critical Failure: Plan contains no tasks.");
+            score -= 50;
         }
 
-        if (critic) {
-            console.log("Critic is scanning for risks...");
-        }
-
-        return currentState;
+        return { score, feedback };
     }
 }

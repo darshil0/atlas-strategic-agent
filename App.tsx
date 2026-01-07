@@ -230,6 +230,12 @@ const App: React.FC = () => {
     addMessage("assistant", `✓ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
   };
 
+  const handleDecompose = (taskId: string) => {
+    const task = currentPlan?.tasks.find(t => t.id === taskId);
+    if (!task) return;
+    handleSend(`Explode task #${taskId}: ${task.description}. Break this down into 3-5 more specific subtasks and update the plan.`);
+  };
+
   const handleSend = async (customPrompt?: string) => {
     const text = (customPrompt || input).trim();
     if (!text || isThinking) return;
@@ -345,6 +351,7 @@ const App: React.FC = () => {
                         isActive={activeTaskId === task.id}
                         isBlocked={isTaskBlocked(task, currentPlan.tasks)}
                         onClick={() => handleTaskSelect(task.id)}
+                        onDecompose={handleDecompose}
                       />
                     </div>
                   ))}
@@ -403,6 +410,34 @@ const App: React.FC = () => {
             >
               Graph View
             </button>
+          </div>
+        )}
+
+        {currentPlan && (
+          <div className="p-4 border-t border-slate-800 bg-slate-950">
+            <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-2">Grounding Context</span>
+            <div className="space-y-2">
+              <input
+                className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-[10px] text-slate-300 placeholder:text-slate-600 focus:border-blue-500 outline-none"
+                placeholder="Enter URL or Data Snippet..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = (e.target as HTMLInputElement).value;
+                    if (!val) return;
+                    setCurrentPlan(prev => prev ? { ...prev, groundingData: [...(prev.groundingData || []), val] } : prev);
+                    (e.target as HTMLInputElement).value = '';
+                    addMessage("assistant", `📎 Context added: ${val.length > 30 ? val.substring(0, 30) + '...' : val}`);
+                  }
+                }}
+              />
+              <div className="flex flex-wrap gap-1">
+                {currentPlan.groundingData?.map((g, i) => (
+                  <span key={i} className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[8px] border border-blue-500/20 max-w-full truncate">
+                    {g}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </aside>

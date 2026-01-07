@@ -41,6 +41,20 @@ export class UIBuilder {
     }
 }
 
+export class AgentFactory {
+    static create(persona: AgentPersona): BaseAgent {
+        switch (persona) {
+            case AgentPersona.STRATEGIST: return new StrategistAgent();
+            case AgentPersona.ANALYST: return new AnalystAgent();
+            case AgentPersona.CRITIC: return new CriticAgent();
+            default: throw new Error(`Unknown persona: ${persona}`);
+        }
+    }
+}
+
+import { StrategistAgent, AnalystAgent, CriticAgent } from './agents';
+import { AgentPersona } from './orchestrator';
+
 export interface AgentContext {
     sessionId: string;
     metadata: Record<string, any>;

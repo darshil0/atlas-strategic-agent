@@ -1,154 +1,170 @@
 <!doctype html>
 <html lang="en" class="dark">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Atlas Strategic Agent V3.0</title>
-    <meta name="description"
-        content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis." />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Atlas Strategic Agent V3.1.0</title>
+    <meta
+      name="description"
+      content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis."
+    />
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (for production, prefer Vite + PostCSS build config instead of CDN) [web:64] -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
-        rel="stylesheet" />
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        :root {
-            --atlas-bg: #020617;
-            --atlas-surface: rgba(15, 23, 42, 0.6);
-            --atlas-border: rgba(255, 255, 255, 0.05);
-            --atlas-accent: #3b82f6;
+      :root {
+        --atlas-bg: #020617;
+        --atlas-surface: rgba(15, 23, 42, 0.6);
+        --atlas-border: rgba(255, 255, 255, 0.05);
+        --atlas-accent: #3b82f6;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--atlas-bg);
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(59, 130, 246, 0.08) 0px,
+            transparent 40%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(99, 102, 241, 0.08) 0px,
+            transparent 40%
+          );
+        color: #f8fafc;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-display {
+        font-family: "Outfit", sans-serif;
+      }
+
+      .font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Premium Glassmorphism */
+      .glass {
+        background: var(--atlas-surface);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--atlas-border);
+      }
+
+      .glass-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .glass-hover:hover {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(59, 130, 246, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Webkit Utilities */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+
+      /* Animation Keyframes */
+      @keyframes fade-in {
+        from {
+          opacity: 0;
         }
 
-        body {
-            font-family: "Inter", sans-serif;
-            background-color: var(--atlas-bg);
-            background-image:
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 40%),
-                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 40%);
-            color: #f8fafc;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slide-up {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        .font-display {
-            font-family: "Outfit", sans-serif;
+        to {
+          transform: translateY(0);
+          opacity: 1;
         }
+      }
 
-        .font-mono {
-            font-family: "JetBrains Mono", monospace;
-        }
+      .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+      }
 
-        /* Premium Glassmorphism */
-        .glass {
-            background: var(--atlas-surface);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--atlas-border);
-        }
+      .animate-slide-up {
+        animation: slide-up 0.5s ease-out forwards;
+      }
 
-        .glass-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      /* React Flow Styling Overrides */
+      .react-flow__node {
+        border-radius: 16px;
+        padding: 0;
+        border: none;
+        background: transparent;
+      }
 
-        .glass-hover:hover {
-            background: rgba(30, 41, 59, 0.7);
-            border-color: rgba(59, 130, 246, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-        }
+      .react-flow__edge-path {
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-width: 2.5;
+      }
 
-        /* Webkit Utilities */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
-
-        /* Animation Keyframes */
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slide-up {
-            from {
-                transform: translateY(10px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .animate-fade-in {
-            animation: fade-in 0.5s ease-out forwards;
-        }
-
-        .animate-slide-up {
-            animation: slide-up 0.5s ease-out forwards;
-        }
-
-        /* React Flow Styling Overrides */
-        .react-flow__node {
-            border-radius: 16px;
-            padding: 0;
-            border: none;
-            background: transparent;
-        }
-
-        .react-flow__edge-path {
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 2.5;
-        }
-
-        .react-flow__attribution {
-            display: none;
-        }
+      .react-flow__attribution {
+        display: none;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
-</body>
-
+  </body>
 </html>

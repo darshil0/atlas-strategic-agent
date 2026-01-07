@@ -1,8 +1,14 @@
 # 🌌 Atlas Strategic Agent V3.1.0
 
-**Atlas** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, Atlas doesn't just decompose tasks—it orchestrates intelligence.
+### *The Architect of Ambition*
 
-> **The Atlas Vision:** Traditional project management is reactive. Atlas is proactive. By utilizing a decoupled Agent Development Kit (ADK), Atlas simulates the entire lifecycle of a goal before the first task is even assigned, solving the "complexity debt" of long-term planning.
+**Atlas V3.1.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
+
+---
+
+## 📖 Executive Summary
+
+Traditional project management is **reactive**, relying on human updates and manual risk assessment. **Atlas** is **proactive**. It utilizes a decoupled Agent Development Kit (ADK) to simulate the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini API**, Atlas transforms abstract "moonshot" goals into structured, multi-year roadmaps with visual dependency mapping.
 
 ---
 
@@ -10,22 +16,22 @@
 
 ### 🧠 Multi-Agent Collaborative Synthesis (MACS)
 
-Atlas operates through a triumvirate of specialized personas orchestrated by a decoupled **Agent Development Kit (ADK)**. These agents debate and refine the roadmap:
+Atlas operates through a triumvirate of specialized personas that debate and refine every roadmap:
 
 * **The Strategist**: Architect of goal decomposition and recursive logic flows.
 * **The Analyst**: Feasibility expert focused on data grounding and verification.
 * **The Critic**: Risk assessor who identifies missing dependencies and failure points.
 
-### 📉 Strategic Visualization Suite
+### 📉 Strategic Visualization Engine
 
-* **Live Dependency Graph**: High-performance **XYFlow (React Flow)** visualization using a Directed Acyclic Graph (DAG) to map the critical path.
+* **Live Dependency Graph**: Interactive **XYFlow-based** visualization with high-fidelity glassmorphic nodes representing the critical path.
 * **GANTT Timeline**: A chronological roadmap view powered by **Framer Motion** for seamless temporal tracking.
 * **What-If Simulation**: A predictive engine that models mission failure cascades and calculates real-time risk scores.
 
 ### 🎨 Enterprise Design System
 
 * **Glassmorphism**: Advanced frosted-glass aesthetics with nested blur layers for a focused, low-cognitive-load UI.
-* **Motion Orchestration**: Fluid layout transitions and high-fidelity iconography via **Lucide**.
+* **Motion Orchestration**: Fluid layout transitions and professional vector iconography via **Lucide**.
 
 ---
 
@@ -51,33 +57,45 @@ graph TD
 
 ---
 
-## 💻 Tech Stack
+## 💻 Technical Specification
 
-* **Core Intelligence**: Gemini 1.5 Flash (Optimized for long-context strategic reasoning)
-* **Frontend**: React 19 + Vite (Next-gen performance)
-* **Visualization**: React Flow / XYFlow & Framer Motion
-* **Styling**: Tailwind CSS + Lucide Icons
-* **Type Safety**: 100% Strict TypeScript (Zero-Any Architecture)
+| Component | Technology |
+| --- | --- |
+| **Core Intelligence** | Gemini 1.5 Flash (Optimized for strategic reasoning) |
+| **Frontend Framework** | React 19 + Vite |
+| **Animation Engine** | Framer Motion |
+| **Visualization** | React Flow / XYFlow |
+| **Styling** | Tailwind CSS + Lucide Icons |
+| **Type Safety** | 100% Strict TypeScript (Zero-Any Architecture) |
 
 ---
 
 ## 🏃 Getting Started
 
-### 1. Prerequisites
+### Prerequisites
 
-* **Node.js**: v18.0.0+
+* **Node.js**: v18.0.0 or higher
 * **API Access**: Google AI Studio API Key
 
-### 2. Installation & Setup
+### Installation
 
 ```bash
-# Install dependencies
 npm install
 
-# Configure environment
-echo "VITE_GEMINI_API_KEY=your_api_key_here" > .env
+```
 
-# Launch the engine
+### Configuration
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_GEMINI_API_KEY=your_api_key_here
+
+```
+
+### Execution
+
+```bash
 npm run dev
 
 ```
@@ -86,10 +104,11 @@ npm run dev
 
 ## 🗺 Roadmap
 
-* [x] **V3.1.0 Core Release**: Multi-Agent Synthesis & Glassmorphic UI.
-* [x] **Predictive Simulation**: Real-time "What-If" failure modeling.
-* [ ] **V3.2.0 Ecosystem**: Direct GitHub/Jira Issue Sync.
-* [ ] **V4.0.0 Collaboration**: Real-time multi-user strategic planning.
+* [x] **Multi-Agent Synthesis Engine**: Decoupled ADK implementation.
+* [x] **Predictive Failure Simulation**: Real-time risk scoring and cascade modeling.
+* [x] **V3.1.0 Core Release**: Full Glassmorphic UI overhaul.
+* [ ] **V3.2.0 Sync Integration**: Direct GitHub/Jira Issue synchronization.
+* [ ] **V4.0.0 Collaboration**: Real-time multi-user collaborative planning.
 
 ---
 

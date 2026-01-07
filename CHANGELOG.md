@@ -2,6 +2,19 @@
 
 All notable changes to the **Atlas Strategic Agent** will be documented in this file.
 
+## [3.1.0] - 2026-01-07
+### 🧹 Codebase Optimization & Sanitization
+Refined the V3.0 release by eliminating technical debt and streamlining core logic for production readiness.
+
+### Fixed
+- **Unreachable Logic**: Fixed a regression in `A2UIRenderer` where the `BUTTON` component was logically unreachable due to a misplaced return.
+- **TypeScript Compliance**: Added missing React event types to `A2UIRenderer` and restored minimal global shims to eliminate environment lints.
+
+### Removed
+- **Dead Code**: Stripped out unused `fromMermaid` parser from the export engine.
+- **Service Stubs**: Removed unutilized `searchExternal` and `memoryStorage` properties from `AtlasService` to simplify the strategic core.
+- **Orphaned Types**: Eliminated several unused interfaces (`Milestone`, `AgentState`) and enum members (`AgentMode.GUIDED`) from the global type system.
+
 ## [3.0.0] - 2026-01-07
 ### ✨ Massive Architecture Rebirth
 Atlas has been transformed from a task decomposition tool into a full-scale **Enterprise Strategic Agent**.

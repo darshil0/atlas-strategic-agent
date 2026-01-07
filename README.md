@@ -1,6 +1,6 @@
 # 🌌 Atlas Strategic Agent V3.0
 
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg?style=for-the-badge&logo=atlas)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg?style=for-the-badge&logo=atlas)](./CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-Enterprise--Ready-emerald.svg?style=for-the-badge)](https://github.com/darshil0/atlas-strategic-agent)
 [![Stack](https://img.shields.io/badge/Stack-React%20%7C%20Gemini%20%7C%20TypeScript-rose.svg?style=for-the-badge)](./package.json)
 

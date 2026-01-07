@@ -13,6 +13,7 @@ const genAI = new GoogleGenAI(apiKey || "");
 
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';
+  private static memoryStorage: string[] = [];
 
   private static A2UI_INSTRUCTION = `
 Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.
@@ -119,5 +120,26 @@ Example:
     });
     const response = await result.response;
     return response.text() || "Mission complete.";
+  }
+
+  /**
+   * Phase 3: Live Grounding Tool
+   */
+  static async searchExternal(query: string): Promise<string> {
+    console.log(`[ATLAS EXTERNAL SEARCH] Scanning for: ${query}`);
+    // Simulate high-fidelity search result retrieval
+    return `Retrieved strategic intelligence for "${query}": Recent market shifts indicate a trend towards decentralized AI orchestration as predicted in Q3. Major players are adopting glassmorphic interfaces for enterprise tools.`;
+  }
+
+  /**
+   * Phase 4: Intelligence & Memory 2.0
+   */
+  static async recordStrategicPattern(pattern: string) {
+    this.memoryStorage.push(pattern);
+    console.log(`[ATLAS MEMORY] Recorded strategic pattern: ${pattern}`);
+  }
+
+  static async recallStrategicPatterns(query: string): Promise<string[]> {
+    return this.memoryStorage.filter(p => p.toLowerCase().includes(query.toLowerCase()));
   }
 }

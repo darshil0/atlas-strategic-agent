@@ -24,11 +24,18 @@ const TaskNode = ({
     isActive: boolean;
     isBlocked: boolean;
     onNodeClick: (id: string) => void;
+    isWhatIfEnabled: boolean;
+    isInCascade: boolean;
   };
 }) => {
-  const { task, isActive, isBlocked, onNodeClick } = data;
+  const { task, isActive, isBlocked, onNodeClick, isWhatIfEnabled, isInCascade } = data;
 
   const getStatusStyles = () => {
+    if (isWhatIfEnabled) {
+      if (isInCascade) return "border-rose-500 bg-rose-500/10 shadow-[0_0_15px_rgba(244,63,94,0.3)] ring-1 ring-rose-500";
+      return "border-slate-700 bg-slate-800/80 grayscale opacity-40";
+    }
+
     if (isBlocked && task.status === TaskStatus.PENDING)
       return "border-slate-800 bg-slate-900/80 opacity-50 grayscale-[0.5] cursor-not-allowed";
 
@@ -55,7 +62,6 @@ const TaskNode = ({
     }
   };
 
-  return (
   return (
     <div
       onClick={() => onNodeClick(task.id)}
@@ -108,6 +114,9 @@ interface DependencyGraphProps {
   onTaskSelect: (id: string) => void;
   isTaskBlocked: (task: SubTask, allTasks: SubTask[]) => boolean;
   onConnect?: (source: string, target: string) => void;
+  isWhatIfEnabled?: boolean;
+  simulationResult?: { cascade: string[], riskScore: number } | null;
+  onSimulateFailure?: (id: string) => void;
 }
 
 const DependencyGraph: React.FC<DependencyGraphProps> = ({
@@ -115,6 +124,9 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
   activeTaskId,
   onTaskSelect,
   isTaskBlocked,
+  isWhatIfEnabled = false,
+  simulationResult = null,
+  onSimulateFailure,
 }) => {
   const { initialNodes, initialEdges } = useMemo(() => {
     const depths: Record<string, number> = {};
@@ -148,7 +160,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
     // Build nodes
     const nodes: Node[] = tasks.map((task) => {
       const depth = depths[task.id] || 0;
-      const group = depthGroups[depth];
+      const group = depthGroups[depth] || [];
       const i = group.indexOf(task.id);
       const offset = (i - (group.length - 1) / 2) * 240;
 
@@ -160,7 +172,9 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
           task,
           isActive: activeTaskId === task.id,
           isBlocked: isTaskBlocked(task, tasks),
-          onNodeClick: onTaskSelect,
+          onNodeClick: isWhatIfEnabled && onSimulateFailure ? onSimulateFailure : onTaskSelect,
+          isWhatIfEnabled,
+          isInCascade: simulationResult?.cascade.includes(task.id) || false,
         },
       };
     });
@@ -191,7 +205,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
     }
 
     return { initialNodes: nodes, initialEdges: edges };
-  }, [tasks, activeTaskId, onTaskSelect, isTaskBlocked]);
+  }, [tasks, activeTaskId, onTaskSelect, isTaskBlocked, isWhatIfEnabled, simulationResult, onSimulateFailure]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

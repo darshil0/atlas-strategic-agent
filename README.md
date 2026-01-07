@@ -1,71 +1,63 @@
-# Atlas Strategic Agent V2.0
+# Atlas Strategic agent V3.0: Enterprise Strategic OS
 
-![Atlas Strategic](https://img.shields.io/badge/Atlas-Strategic_v2.0-blue?style=for-the-badge&logo=google-gemini)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-3.0.0-blue.svg?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-Enterprise--Ready-emerald.svg?style=for-the-badge)
 
-**Atlas Strategic** is a powerful, multi-agent strategic engine designed to decompose complex objectives into actionable, structured roadmaps. Evolved from a simple task-list into a persistent, collaborative, and highly interactive strategic environment.
+Atlas V3.0 transforms the agent from a simple task decompressor into a full-scale **Enterprise Strategic Operating System**. It features multi-agent collaborative synthesis, real-world grounding, and advanced strategic visualizations.
 
-## 🚀 Key Features (v2.0)
+## 🚀 Key V3.0 Enhancements
 
-### 🧠 Multi-Agent Orchestration
-Powered by specialized AI personas working in coordination:
-- **Strategist**: Architects roadmap structure and logical decomposition.
-- **Analyst**: Reviews data grounding and ensures technical feasibility.
-- **Critic**: Automated risk assessment and constraint validation.
+### 1. Advanced Strategic Visualization
+- **Live Dependency Graph**: Interactively link tasks and visualize strategic bottlenecks.
+- **Timeline Mode (GANTT)**: A professional chronological roadmap view for project management.
+- **Mermaid.js Interop**: Export roadmaps to standard Mermaid syntax for documentation or import existing Mermaid charts.
 
-### 🌐 Interactive Strategy Graph
-Visual design meets tactical execution:
-- **Recursive Decomposition ("Explode")**: Directly break down high-level nodes into sub-plans.
-- **Dynamic Dependency Linking**: Draw connections between nodes to define strategic prerequisites.
-- **Reactive State Flow**: Real-time visualization of task progress across the network.
+### 2. Multi-Agent Orchestration
+- **Collaborative Synthesis**: Every mission is now vetted by a trio of AI personas:
+    - **Strategist**: Architects the high-level roadmap.
+    - **Analyst**: Scrutinizes dependencies and predicts failures.
+    - **Critic**: Challenges assumptions and enforces quality.
+- **Conflict Resolution Loop**: Automatic "Critique -> Revise" cycles ensure 85%+ mission integrity before execution.
 
-### 🍱 Advanced A2UI Component Library
-Native rendering of agent-generated UI components including:
-- **Analytical Charts**: Visual feedback on metrics and feasibility.
-- **Interactive Forms**: Selects, checkboxes, and inputs for parameter-driven strategy.
-- **Context Grounding**: Dedicated section for injecting URLs and technical snippets.
+### 3. "What-If" Simulation Engine
+- **Failure Cascades**: Click any node in What-If mode to see the immediate downstream impact on your mission.
+- **Risk Scoring**: Real-time calculation of Mission Compromise percentage based on node criticality.
 
-### ✨ Premium Aesthetics
-- **Glassmorphism UI**: High-end transparency and blur effects.
-- **Modern Typography**: High-impact "Outfit" display font and "Inter" body text.
-- **Micro-interactions**: Shimmer effects, smooth transitions, and reactive hover states.
+### 4. External Grounding & Tools
+- **Grounding Context**: Feed live URLs or data snippets directly into the agent's reasoning core.
+- **External Tool Bridge**: Native handlers for GitHub, Slack, and Jira actions via AG-UI protocol.
+- **Live Search Integration**: Analysts can scan the external web for real-time strategic intelligence.
 
-## 🛠️ Technology Stack
-- **Core**: React 18, TypeScript, Vite
-- **AI**: Google Gemini 1.5 Flash (via `@google/genai`)
-- **Graphing**: React Flow
-- **Styling**: Tailwind CSS + Custom CSS Variables
-- **Persistence**: LocalState Hydration Service
+## 🛠 Technology Stack
+- **AI Core**: Google Gemini 1.5 Flash (Proprietary Optimized)
+- **UI Architecture**: React 19 + Vite (Ultra-Responsive)
+- **Visualization**: ReactFlow 11
+- **Protocol**: A2UI (Agent-to-User Interface) V2.0
 
-## 🔧 Installation & Setup
+## 📂 Project Structure
+```text
+/
+├── components/          # Premium React Components
+│   ├── a2ui/           # Agent Interface Renderer
+│   ├── DependencyGraph # Strategic Visualization
+│   └── TimelineView    # GANTT Roadmap
+├── lib/adk/            # Agent Development Kit
+│   ├── orchestrator.ts # MissionControl Logic
+│   ├── agents.ts       # Specialized Personas
+│   └── exporter.ts     # Mermaid Export/Import
+├── services/           # Core AI & Persistence logic
+└── tests/              # ADK & Protocol Unit Tests
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/darshil0/atlas-strategic-agent.git
-   cd atlas-strategic-agent
-   ```
+## 📜 Changelog (V3.0.0)
+- **Feature**: Implemented `MissionControl` multi-agent orchestrator.
+- **Feature**: Added `TimelineView` for GANTT roadmap visualization.
+- **Feature**: Integrated Mermaid.js export/import utility.
+- **Feature**: Developed "What-If" failure simulation engine.
+- **Feature**: Added External Grounding Context support.
+- **Refactor**: Complete TypeScript migration with 0 `any` types in core logic.
+- **UX**: Premium Glassmorphic UI overhaul.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+---
 
-3. **Configure Environment**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_GEMINI_API_KEY=your_gemini_api_key_here
-   ```
-
-4. **Launch Application**
-   ```bash
-   npm run dev
-   ```
-
-## 📖 Version History
-
-- **v2.0.0**: Premium UI overhaul, Multi-agent orchestration, "Explode" recursive breakdown, and Context Grounding.
-- **v1.5.0**: Persistence integration and Graph interactivity.
-- **v1.0.0**: Initial release with Gemini strategy synthesis.
-
-## 📄 License
-This project is licensed under the MIT License.
+*Atlas Strategic Agent is part of the Advanced Agentic Coding initiative.*

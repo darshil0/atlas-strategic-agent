@@ -16,6 +16,12 @@ export abstract class BaseAgent {
     abstract handleEvent(event: AGUIEvent): Promise<A2UIMessage>;
 
     /**
+     * Executes a core reasoning step. 
+     * In V3, this is the primary entry point for agent logic.
+     */
+    abstract execute(prompt: string, context?: any): Promise<any>;
+
+    /**
      * Generates an initial UI state.
      */
     abstract getInitialUI(): A2UIMessage;

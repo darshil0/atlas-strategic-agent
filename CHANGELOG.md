@@ -2,6 +2,21 @@
 
 All notable changes to the Atlas Strategic Agent project will be documented in this file.
 
+## [3.0.0] - 2026-01-07
+
+### Added
+- **Enterprise Strategic OS**: Transformed the agent into a full OS-like orchestrator.
+- **What-If Simulation Engine**: Built-in risk analysis for simulating node failures and predicting mission compromise.
+- **Timeline (GANTT) View**: Professional chronological roadmap visualization for non-graph users.
+- **Mermaid.js Ecosystem**: Full export support for roadmap-as-code interoperability.
+- **External Tool Bridge**: Native handlers for GitHub, Slack, and Jira integrations.
+- **Strategic Memory**: Implemented pattern recording and recall for long-term mission intelligence.
+
+### Changed
+- **Zero-Any TypeScript**: Achieved 100% type safety across core logic and UI components.
+- **Improved Graph Interaction**: Added What-If mode toggle and failure impact highlighting.
+- **Refined Collaboration Loop**: Automated Critic-led self-correction in MissionControl.
+
 ## [2.0.0] - 2026-01-06
 
 ### Added

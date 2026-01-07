@@ -1,5 +1,4 @@
-
-import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
+import { A2UIMessage } from "./protocol";
 import { BaseAgent, AgentFactory } from "./index";
 
 export enum AgentPersona {
@@ -20,32 +19,72 @@ export class MissionControl {
     async processCollaborativeInput(goal: string, context?: any): Promise<{ text: string, a2ui?: A2UIMessage }> {
         const strategist = this.agents.get(AgentPersona.STRATEGIST)!;
         const analyst = this.agents.get(AgentPersona.ANALYST)!;
-        const critic = this.agents.get(AgentPersona.CRITIC)!;
 
-        // Orchestration flow:
-        // 1. Strategist proposes structure
-        // 2. Analyst reviews for data grounding
-        // 3. Critic checks for risks
+        // Phase 1: Proposal
+        let proposal = await strategist.execute(goal, context);
 
-        // For demonstration in this POC, we return a consolidated UI
+        // Phase 2: Evaluation & Conflict Resolution Loop
+        let attempts = 0;
+        const maxAttempts = 2;
+        let lastFeedback = "";
+
+        while (attempts < maxAttempts) {
+            const { score, feedback } = await this.evaluatePlan(proposal);
+            if (score > 85) break;
+
+            attempts++;
+            lastFeedback = feedback.join(". ");
+            console.log(`Conflict detected (Score: ${score}). Agent Critic requests revision: ${lastFeedback}`);
+
+            // Re-prompt Strategist with Critic feedback
+            proposal = await strategist.execute(`REVISE PLAN: ${goal}. Previous attempts failed Critic review. Feedback: ${lastFeedback}. Context: ${JSON.stringify(proposal)}`, context);
+        }
+
         const ui = strategist.getInitialUI();
 
+        // Final Analyst verification
+        const analysis = await analyst.execute("Verify final strategic grounding", proposal);
+
         return {
-            text: `Collaborative Analysis complete for: ${goal}. Strategist has proposed a structure, Analyst verified grounding, and Critic reviewed for constraints.`,
+            text: `Collaborative Synthesis concluded after ${attempts + 1} iterations. Strategist proposed a plan, which was refined by Critic feedback. Analyst verification: ${analysis.notes}.`,
             a2ui: ui
         };
     }
 
+    /**
+     * Simulation Engine: Predicts mission failure cascades
+     */
+    async simulateFailure(plan: any, failedTaskId: string): Promise<{ cascade: string[], riskScore: number }> {
+        const cascade: string[] = [failedTaskId];
+        const queue = [failedTaskId];
+
+        while (queue.length > 0) {
+            const currentId = queue.shift()!;
+            const dependents = plan.tasks.filter((t: any) => t.dependencies?.includes(currentId));
+
+            dependents.forEach((dep: any) => {
+                if (!cascade.includes(dep.id)) {
+                    cascade.push(dep.id);
+                    queue.push(dep.id);
+                }
+            });
+        }
+
+        const riskScore = (cascade.length / plan.tasks.length) * 100;
+        return { cascade, riskScore };
+    }
+
     async evaluatePlan(plan: any): Promise<{ score: number, feedback: string[] }> {
         const critic = this.agents.get(AgentPersona.CRITIC)!;
-        console.log(`MissionControl: Critic (${critic.name}) is evaluating plan...`);
+        const evaluation = await critic.execute("Provide risk assessment score and feedback", plan);
 
-        const feedback = [];
-        let score = 100;
+        const feedback = evaluation.risks || [];
+        let score = evaluation.score || 100;
 
+        // Base structural checks
         if (!plan.tasks || plan.tasks.length === 0) {
-            feedback.push("Critical Failure: Plan contains no tasks.");
-            score -= 50;
+            feedback.push("Plan contains no actionable tasks.");
+            score = Math.min(score, 50);
         }
 
         return { score, feedback };

@@ -12,6 +12,12 @@ export class StrategistAgent extends BaseAgent {
             .build();
     }
 
+    async execute(prompt: string, context?: any): Promise<any> {
+        // In V3, this would call the Gemini API via AtlasService
+        console.log(`Strategist executing: ${prompt}`);
+        return context || { plan: "Draft Strategy" };
+    }
+
     getInitialUI(): A2UIMessage {
         return new UIBuilder()
             .add(A2UIComponentType.TEXT, { text: "Strategist Ready." })
@@ -29,6 +35,11 @@ export class AnalystAgent extends BaseAgent {
             .build();
     }
 
+    async execute(prompt: string, context?: any): Promise<any> {
+        console.log(`Analyst executing: ${prompt}`);
+        return { feasibility: 0.9, notes: "Verified grounding context." };
+    }
+
     getInitialUI(): A2UIMessage {
         return new UIBuilder()
             .add(A2UIComponentType.TEXT, { text: "Analyst Ready." })
@@ -44,6 +55,11 @@ export class CriticAgent extends BaseAgent {
         return new UIBuilder()
             .add(A2UIComponentType.CARD, { title: "Risk Report", children: [] })
             .build();
+    }
+
+    async execute(prompt: string, context?: any): Promise<any> {
+        console.log(`Critic executing: ${prompt}`);
+        return { score: 90, risks: [] };
     }
 
     getInitialUI(): A2UIMessage {

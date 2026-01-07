@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect } from "react";
+import { motion } from "framer-motion";
 import ReactFlow, {
   type Node,
   type Edge,
@@ -23,7 +24,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** --- Custom node typing --- */
+/** Custom node typings */
 
 type TaskNodeData = {
   task: SubTask;
@@ -73,7 +74,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
   };
 
   return (
-    <div
+    <motion.div
       onClick={() => !isWhatIfEnabled && onNodeClick(task.id)}
       className={cn(
         "flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 backdrop-blur-3xl select-none relative",
@@ -115,7 +116,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         </div>
         <Handle type="source" position={Position.Bottom} className="!opacity-0" />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -204,10 +205,7 @@ const DependencyGraph = ({
           target: task.id,
           animated: complete,
           type: "smoothstep",
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: complete ? "#3b82f6" : "#1e293b",
-          },
+          markerEnd: { type: MarkerType.ArrowClosed, color: complete ? "#3b82f6" : "#1e293b" },
           style: {
             stroke: complete ? "#3b82f6" : "#1e293b",
             strokeWidth: 2,
@@ -247,8 +245,8 @@ const DependencyGraph = ({
           size={1}
           color="rgba(30, 41, 59, 0.5)"
         />
-        <MiniMap
-          nodeColor={(n: Node<TaskNodeData>) => {
+        <MiniMap<TaskNodeType>
+          nodeColor={(n: TaskNodeType) => {
             const t = n.data?.task;
             if (t?.status === TaskStatus.COMPLETED) return "#10b981";
             if (t?.status === TaskStatus.IN_PROGRESS) return "#3b82f6";

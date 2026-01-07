@@ -73,14 +73,6 @@ const App: React.FC = () => {
     return id;
   };
 
-  const updateAssistantMessage = (id: string, newChunk: string) => {
-    setMessages((prev: Message[]) =>
-      prev.map((m: Message) =>
-        m.id === id ? { ...m, content: m.content + newChunk } : m,
-      ),
-    );
-  };
-
   const isTaskBlocked = useCallback((task: SubTask, allTasks: SubTask[]) => {
     if (!task.dependencies || task.dependencies.length === 0) return false;
     return task.dependencies.some((depId: string) => {
@@ -212,7 +204,7 @@ const App: React.FC = () => {
   };
 
   const handleDecompose = (taskId: string) => {
-    const task = currentPlan?.tasks.find(t => t.id === taskId);
+    const task = currentPlan?.tasks.find((t: SubTask) => t.id === taskId);
     if (!task) return;
     handleSend(`Explode task #${taskId}: ${task.description}. Break this down into 3-5 more specific subtasks and update the plan.`);
   };
@@ -303,10 +295,10 @@ const App: React.FC = () => {
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Mode:</span>
             <select
               value={mode}
-              onChange={(e) => setMode(e.target.value as AgentMode)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setMode(e.target.value as AgentMode)}
               className="bg-transparent text-[10px] font-black uppercase tracking-widest text-blue-400 outline-none cursor-pointer"
             >
-              {Object.values(AgentMode).map((m) => (
+              {[AgentMode.AUTONOMOUS, AgentMode.COLLABORATIVE].map((m: AgentMode) => (
                 <option key={m} value={m} className="bg-slate-950 text-slate-100">{m}</option>
               ))}
             </select>
@@ -331,7 +323,7 @@ const App: React.FC = () => {
               Export Mermaid
             </button>
             <button
-              onClick={() => setIsTaskBankOpen((v) => !v)}
+              onClick={() => setIsTaskBankOpen((v: boolean) => !v)}
               className="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-700 bg-slate-900/70 text-slate-400 hover:text-white hover:border-blue-500 hover:bg-slate-900/90 transition-all font-display"
             >
               Task Bank
@@ -568,7 +560,6 @@ const App: React.FC = () => {
 
         {isTaskBankOpen && (
           <TaskBank
-            isOpen={isTaskBankOpen}
             onClose={() => setIsTaskBankOpen(false)}
             onAddTask={handleAddBankTask}
           />

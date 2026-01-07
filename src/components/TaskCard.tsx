@@ -7,14 +7,16 @@ interface TaskCardProps {
   isActive: boolean;
   isBlocked: boolean;
   onClick?: () => void;
+  onDecompose?: (id: string) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({
+const TaskCard = ({
   task,
   isActive,
   isBlocked,
   onClick,
-}) => {
+  onDecompose,
+}: TaskCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -75,7 +77,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
-  return (
   return (
     <div
       ref={cardRef}
@@ -138,7 +139,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 {task.status === TaskStatus.PENDING && !isBlocked && (
                   <button
                     type="button"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent) => {
                       e.stopPropagation();
                       onDecompose?.(task.id);
                     }}
@@ -153,9 +154,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 {(task.result || task.output) && (
                   <button
                     type="button"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent) => {
                       e.stopPropagation();
-                      setIsExpanded((prev) => !prev);
+                      setIsExpanded((prev: boolean) => !prev);
                     }}
                     className={`text-[9px] font-bold uppercase tracking-wider transition-all ${isExpanded ? "text-blue-400" : "text-slate-500"
                       }`}
@@ -199,7 +200,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 Grounding Citations
               </span>
               <div className="flex flex-wrap gap-2">
-                {task.citations.map((c, i) => (
+                {task.citations.map((c: any, i: number) => (
                   <a
                     key={i}
                     href={c.uri}

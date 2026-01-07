@@ -119,7 +119,7 @@ interface DependencyGraphProps {
   onSimulateFailure?: (id: string) => void;
 }
 
-const DependencyGraph: React.FC<DependencyGraphProps> = ({
+const DependencyGraph = ({
   tasks,
   activeTaskId,
   onTaskSelect,
@@ -127,7 +127,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
   isWhatIfEnabled = false,
   simulationResult = null,
   onSimulateFailure,
-}) => {
+}: DependencyGraphProps) => {
   const { initialNodes, initialEdges } = useMemo(() => {
     const depths: Record<string, number> = {};
 
@@ -135,15 +135,15 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
       if (visited.has(id)) return 0;
       if (depths[id] !== undefined) return depths[id];
 
-      const task = tasks.find((t) => t.id === id);
+      const task = tasks.find((t: SubTask) => t.id === id);
       if (!task || !task.dependencies?.length) {
         depths[id] = 0;
         return 0;
       }
 
       visited.add(id);
-      const depDepths = task.dependencies.map((dep) =>
-        getDepth(dep, new Set(visited))
+      const depDepths = task.dependencies.map((depId: string) =>
+        getDepth(depId, new Set(visited))
       );
       const depth = Math.max(...depDepths, 0) + 1;
       depths[id] = depth;
@@ -151,14 +151,14 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
     };
 
     // Group tasks by dependency depth
-    tasks.forEach((t) => getDepth(t.id));
+    tasks.forEach((t: SubTask) => getDepth(t.id));
     const depthGroups: Record<number, string[]> = {};
-    Object.entries(depths).forEach(([id, depth]) => {
+    Object.entries(depths).forEach(([id, depth]: [string, number]) => {
       (depthGroups[depth] ??= []).push(id);
     });
 
     // Build nodes
-    const nodes: Node[] = tasks.map((task) => {
+    const nodes: Node[] = tasks.map((task: SubTask) => {
       const depth = depths[task.id] || 0;
       const group = depthGroups[depth] || [];
       const i = group.indexOf(task.id);
@@ -174,7 +174,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
           isBlocked: isTaskBlocked(task, tasks),
           onNodeClick: isWhatIfEnabled && onSimulateFailure ? onSimulateFailure : onTaskSelect,
           isWhatIfEnabled,
-          isInCascade: simulationResult?.cascade.includes(task.id) || false,
+          isInCascade: (simulationResult?.cascade || []).includes(task.id),
         },
       };
     });
@@ -183,7 +183,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
     const edges: Edge[] = [];
     for (const task of tasks) {
       for (const depId of task.dependencies ?? []) {
-        const dep = tasks.find((t) => t.id === depId);
+        const dep = tasks.find((t: SubTask) => t.id === depId);
         const complete = dep?.status === TaskStatus.COMPLETED;
         edges.push({
           id: `e-${depId}-${task.id}`,
@@ -235,7 +235,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
           color="#1e293b"
         />
         <MiniMap
-          nodeColor={(n) => {
+          nodeColor={(n: Node) => {
             const t = n.data?.task as SubTask;
             if (t?.status === TaskStatus.COMPLETED) return "#10b981";
             if (t?.status === TaskStatus.IN_PROGRESS) return "#3b82f6";

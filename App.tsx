@@ -17,6 +17,8 @@ import TaskCard from "./components/TaskCard";
 import DependencyGraph from "./components/DependencyGraph";
 import TaskBank from "./components/TaskBank";
 import { BankTask } from "./data/taskBank";
+import { A2UIRenderer } from "./components/a2ui/A2UIRenderer";
+import { AGUIEvent, A2UIMessage } from "./lib/adk/protocol";
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -39,11 +41,11 @@ const App: React.FC = () => {
     scrollToBottom();
   }, [messages, isThinking]);
 
-  const addMessage = (role: "user" | "assistant", content: string) => {
+  const addMessage = (role: "user" | "assistant", content: string, a2ui?: string) => {
     const id = Math.random().toString(36).substr(2, 9);
     setMessages((prev) => [
       ...prev,
-      { id, role, content, timestamp: Date.now() },
+      { id, role, content, timestamp: Date.now(), a2ui },
     ]);
     return id;
   };
@@ -136,29 +138,30 @@ const App: React.FC = () => {
             setCurrentPlan((prev) =>
               prev
                 ? {
-                    ...prev,
-                    tasks: prev.tasks.map((t) =>
-                      t.id === nextTask.id
-                        ? { ...t, result: (t.result || "") + chunk }
-                        : t,
-                    ),
-                  }
+                  ...prev,
+                  tasks: prev.tasks.map((t) =>
+                    t.id === nextTask.id
+                      ? { ...t, result: (t.result || "") + chunk }
+                      : t,
+                  ),
+                }
                 : null,
             );
           },
         );
 
         history += `\nTask ${nextTask.id} Result: ${result.text}\n`;
+        setMessages(prev => prev.map(m => m.id === msgId ? { ...m, content: result.text, a2ui: result.a2ui } : m));
+
         setCurrentPlan((prev) => {
           if (!prev) return null;
           const updated = prev.tasks.map((t) =>
             t.id === nextTask.id
               ? {
-                  ...t,
-                  status: TaskStatus.COMPLETED,
-                  result: result.text,
-                  citations: result.citations,
-                }
+                ...t,
+                status: TaskStatus.COMPLETED,
+                result: result.text,
+              }
               : t,
           );
           latestTasks = updated;
@@ -168,13 +171,13 @@ const App: React.FC = () => {
         setCurrentPlan((prev) =>
           prev
             ? {
-                ...prev,
-                tasks: prev.tasks.map((t) =>
-                  t.id === nextTask.id
-                    ? { ...t, status: TaskStatus.FAILED }
-                    : t,
-                ),
-              }
+              ...prev,
+              tasks: prev.tasks.map((t) =>
+                t.id === nextTask.id
+                  ? { ...t, status: TaskStatus.FAILED }
+                  : t,
+              ),
+            }
             : null,
         );
         addMessage(
@@ -188,6 +191,12 @@ const App: React.FC = () => {
     setActiveTaskId(null);
     const summary = await AtlasService.summarizeMission(plan, history);
     addMessage("assistant", `✓ Mission Concluded\n\n${summary}`);
+  };
+
+  const handleA2UIEvent = (event: AGUIEvent) => {
+    console.log("A2UI Event captured via AG-UI protocol:", event);
+    addMessage("user", `Executed action: ${event.action} on ${event.elementId}`);
+    // Here logic would normally go back to the agent for processing via ADK
   };
 
   const handleSend = async (customPrompt?: string) => {
@@ -244,9 +253,8 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen bg-slate-950 overflow-hidden text-slate-200">
       <aside
-        className={`${
-          isSidebarOpen ? "w-80" : "w-0"
-        } transition-all duration-300 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col relative z-20 overflow-hidden`}
+        className={`${isSidebarOpen ? "w-80" : "w-0"
+          } transition-all duration-300 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col relative z-20 overflow-hidden`}
       >
         <div className="p-4 border-b border-slate-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -347,21 +355,19 @@ const App: React.FC = () => {
           <div className="p-4 border-t border-slate-800 flex bg-slate-900/40 shrink-0">
             <button
               onClick={() => setSidebarView("list")}
-              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${
-                sidebarView === "list"
-                  ? "border-blue-500 text-blue-400"
-                  : "border-transparent text-slate-500"
-              }`}
+              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${sidebarView === "list"
+                ? "border-blue-500 text-blue-400"
+                : "border-transparent text-slate-500"
+                }`}
             >
               List View
             </button>
             <button
               onClick={() => setSidebarView("graph")}
-              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${
-                sidebarView === "graph"
-                  ? "border-blue-500 text-blue-400"
-                  : "border-transparent text-slate-500"
-              }`}
+              className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest border-b-2 ${sidebarView === "graph"
+                ? "border-blue-500 text-blue-400"
+                : "border-transparent text-slate-500"
+                }`}
             >
               Graph View
             </button>
@@ -408,11 +414,10 @@ const App: React.FC = () => {
                 <button
                   key={m}
                   onClick={() => setMode(m)}
-                  className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${
-                    mode === m
-                      ? "bg-blue-600 text-white"
-                      : "text-slate-500 hover:text-slate-300"
-                  }`}
+                  className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${mode === m
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-500 hover:text-slate-300"
+                    }`}
                 >
                   {m}
                 </button>
@@ -465,22 +470,19 @@ const App: React.FC = () => {
             messages.map((m) => (
               <div
                 key={m.id}
-                className={`flex ${
-                  m.role === "user" ? "justify-end" : "justify-start"
-                } animate-in fade-in slide-in-from-bottom-4 duration-500`}
+                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"
+                  } animate-in fade-in slide-in-from-bottom-4 duration-500`}
               >
                 <div
-                  className={`max-w-[85%] rounded-[2rem] p-6 ${
-                    m.role === "user"
-                      ? "bg-blue-600 text-white shadow-xl shadow-blue-600/10"
-                      : "bg-slate-900/80 border border-slate-800 text-slate-100 backdrop-blur-xl"
-                  }`}
+                  className={`max-w-[85%] rounded-[2rem] p-6 ${m.role === "user"
+                    ? "bg-blue-600 text-white shadow-xl shadow-blue-600/10"
+                    : "bg-slate-900/80 border border-slate-800 text-slate-100 backdrop-blur-xl"
+                    }`}
                 >
                   <div className="flex items-center gap-2 mb-3 text-[9px] font-black uppercase tracking-widest opacity-40">
                     <div
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        m.role === "user" ? "bg-white" : "bg-blue-600"
-                      }`}
+                      className={`w-1.5 h-1.5 rounded-full ${m.role === "user" ? "bg-white" : "bg-blue-600"
+                        }`}
                     ></div>
                     {m.role === "user"
                       ? "Operational Directive"
@@ -489,6 +491,14 @@ const App: React.FC = () => {
                   <div className="prose prose-invert max-w-none prose-sm whitespace-pre-wrap leading-relaxed font-semibold">
                     {m.content}
                   </div>
+                  {m.a2ui && (
+                    <div className="mt-4 pt-4 border-t border-slate-800">
+                      <A2UIRenderer
+                        elements={(JSON.parse(m.a2ui) as A2UIMessage).elements}
+                        onEvent={handleA2UIEvent}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             ))

@@ -183,15 +183,17 @@ Test files are located in the `tests/` directory and follow the naming pattern `
 ## 📂 Project Structure
 
 ```
-atlas-agent/
-├── src/
-│   ├── components/       # React components (TaskCard, etc.)
-│   ├── services/         # API services (geminiService.ts)
-│   ├── types/           # TypeScript type definitions
-│   └── utils/           # Utility functions
-├── tests/               # Test files
-├── .env                 # Environment variables (not in repo)
-├── .env.example         # Example environment file
+atlas-strategic-agent/
+├── components/          # React components (TaskCard, DependencyGraph)
+│   └── a2ui/            # A2UI Protocol native renderers
+├── data/                # Static data and Task Bank definitions
+├── lib/
+│   └── adk/             # Agent Development Kit (Protocol, Base Classes)
+├── services/            # API services (geminiService.ts)
+├── tests/               # Unit and component tests
+├── types.ts             # Global TypeScript type definitions
+├── constants.tsx        # System prompts and UI constants
+├── index.tsx            # Main React entry point
 └── README.md            # This file
 ```
 
@@ -199,7 +201,15 @@ atlas-agent/
 
 ## 📜 Version History
 
-### v1.2.0 (Current)
+### v1.3.0 (Current)
+
+- **A2UI & ADK Integration**:
+  - Implemented the Agent Development Kit for structured workflows.
+  - Native rendering of agent-generated UI components.
+  - Bidirectional interaction support via AG-UI protocol.
+  - Codebase cleanup and structural optimization.
+
+### v1.2.0
 
 - **Test Suite Enhancement:**
   - Fixed failing test suite due to configuration issues
@@ -271,3 +281,19 @@ Atlas will then create a comprehensive roadmap with phases, tasks, dependencies,
 ---
 
 **Atlas System Status:** ✓ Operational
+
+---
+
+## 🚀 Advanced Capabilities
+
+### Agent Development Kit (ADK)
+Atlas now includes a built-in Agent Development Kit (`lib/adk`) that allows developers to:
+- Define structured agentic workflows using the `BaseAgent` class.
+- Handle state and context transitions through the `UIOrchestrator`.
+- Generate native UI payloads declaratively via the `UIBuilder`.
+
+### A2UI & AG-UI Protocols
+We have implemented the **Agent-to-User Interface (A2UI)** and **Agent-to-User Interaction (AG-UI)** protocols:
+- **A2UI**: Standardizes how Atlas generates interactive native components (Buttons, Progress Bars, Cards) without executing arbitrary code.
+- **AG-UI**: Provides the bi-directional communication layer, allowing user interactions in the UI to be sent back to the agent as structured events.
+

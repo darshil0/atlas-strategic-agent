@@ -56,6 +56,7 @@ export interface Message {
   role: MessageRole;
   content: string;
   timestamp: number;
+  a2ui?: string;
 }
 
 export enum AgentMode {

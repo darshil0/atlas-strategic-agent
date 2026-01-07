@@ -2,6 +2,7 @@
 import { GoogleGenAI, SchemaType } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, TaskStatus, Priority } from "../types";
+import { A2UIMessage } from "../lib/adk/protocol";
 
 // Support both Vite's import.meta.env and the defined process.env from vite.config.ts
 const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
@@ -13,10 +14,26 @@ const genAI = new GoogleGenAI(apiKey || "");
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';
 
+  private static A2UI_INSTRUCTION = `
+Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.
+If a task requires user interaction (e.g., confirmation, data input, selection), wrap the A2UI JSON payload in <a2ui></a2ui> tags.
+Example:
+<a2ui>
+{
+  "version": "0.8",
+  "elements": [{
+    "id": "confirm_btn",
+    "type": "button",
+    "props": { "label": "Start Mission", "variant": "primary", "actionData": { "task": "start" } }
+  }]
+}
+</a2ui>
+`;
+
   static async generatePlan(userPrompt: string): Promise<Plan> {
     const model = genAI.getGenerativeModel({
       model: this.modelName,
-      systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+      systemInstruction: ATLAS_SYSTEM_INSTRUCTION + this.A2UI_INSTRUCTION,
     });
 
     const result = await model.generateContent({
@@ -66,13 +83,12 @@ export class AtlasService {
     subtask: string,
     context: string,
     onChunk?: (text: string) => void
-  ): Promise<string> {
+  ): Promise<{ text: string; a2ui?: string }> {
     const model = genAI.getGenerativeModel({
       model: this.modelName,
-      systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+      systemInstruction: ATLAS_SYSTEM_INSTRUCTION + this.A2UI_INSTRUCTION,
     });
 
-    // Note: tools might need specific model support or API versions
     const result = await model.generateContentStream({
       contents: [{ role: 'user', parts: [{ text: `Context: ${context}\n\nCurrent Task: ${subtask}\n\nPlease execute this subtask. Describe your actions and provide the result.` }] }],
     });
@@ -83,13 +99,19 @@ export class AtlasService {
       fullText += text;
       if (onChunk) onChunk(text);
     }
-    return fullText;
+
+    // Extract A2UI if present
+    const a2uiMatch = fullText.match(/<a2ui>([\s\S]*?)<\/a2ui>/);
+    const a2ui = a2uiMatch ? a2uiMatch[1].trim() : undefined;
+    const cleanText = fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, '').trim();
+
+    return { text: cleanText, a2ui };
   }
 
   static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
     const model = genAI.getGenerativeModel({
       model: this.modelName,
-      systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
+      systemInstruction: ATLAS_SYSTEM_INSTRUCTION
     });
 
     const result = await model.generateContent({

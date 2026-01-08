@@ -1,14 +1,14 @@
-# 🌌 Atlas Strategic Agent V3.1.0
+# 🌌 Atlas Strategic Agent V3.1.1 The Architect of Ambition*
 
-### *The Architect of Ambition*
-
-**Atlas V3.1.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
+Atlas is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
 
 ---
 
 ## 📖 Executive Summary
 
-Traditional project management is **reactive**, relying on human updates and manual risk assessment. **Atlas** is **proactive**. It utilizes a decoupled Agent Development Kit (ADK) to simulate the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini API**, Atlas transforms abstract "moonshot" goals into structured, multi-year roadmaps with visual dependency mapping.
+Traditional project management is **reactive**, relying on manual updates and retrospective risk assessment. **Atlas** is **proactive**.
+
+Utilizing a decoupled **Agent Development Kit (ADK)**, Atlas simulates the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini 1.5 Flash API**, Atlas transforms abstract "moonshot" goals into structured, multi-year roadmaps with high-fidelity visual dependency mapping.
 
 ---
 
@@ -24,7 +24,7 @@ Atlas operates through a triumvirate of specialized personas that debate and ref
 
 ### 📉 Strategic Visualization Engine
 
-* **Live Dependency Graph**: Interactive **XYFlow-based** visualization with high-fidelity glassmorphic nodes representing the critical path.
+* **Live Dependency Graph**: Interactive **XYFlow-based** visualization with glassmorphic nodes representing the critical path.
 * **GANTT Timeline**: A chronological roadmap view powered by **Framer Motion** for seamless temporal tracking.
 * **What-If Simulation**: A predictive engine that models mission failure cascades and calculates real-time risk scores.
 
@@ -52,6 +52,7 @@ graph TD
         UI --> Sim[Failure Simulator]
     end
     Orchestrator --> Services[External Grounding & Persistence]
+
 ```
 
 ---
@@ -60,12 +61,12 @@ graph TD
 
 | Component | Technology |
 | --- | --- |
-| **Core Intelligence** | Gemini 1.5 Flash (Optimized for strategic reasoning) |
+| **Core Intelligence** | Gemini 1.5 Flash (Optimized Reasoning) |
 | **Frontend Framework** | React 19 + Vite |
 | **Animation Engine** | Framer Motion |
 | **Visualization** | React Flow / XYFlow |
+| **Type Safety** | 100% Strict TypeScript (Zero-Any) |
 | **Styling** | Tailwind CSS + Lucide Icons |
-| **Type Safety** | 100% Strict TypeScript (Zero-Any Architecture) |
 
 ---
 
@@ -73,13 +74,18 @@ graph TD
 
 ### Prerequisites
 
-* **Node.js**: v19.0.0
+* **Node.js**: v19.0.0+
 * **API Access**: Google AI Studio API Key
 
 ### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/your-repo/atlas-strategic-agent.git
+
+# Install dependencies
 npm install
+
 ```
 
 ### Configuration
@@ -88,19 +94,21 @@ Create a `.env` file in the root directory:
 
 ```env
 VITE_GEMINI_API_KEY=your_api_key_here
+
 ```
 
 ### Execution
 
 ```bash
+# Start development server
 npm run dev
-```
 
-### Production Build
-
-```bash
+# Build for production
 npm run build
+
+# Preview production build
 npm run preview
+
 ```
 
 ---
@@ -109,7 +117,7 @@ npm run preview
 
 * [x] **Multi-Agent Synthesis Engine**: Decoupled ADK implementation.
 * [x] **Predictive Failure Simulation**: Real-time risk scoring and cascade modeling.
-* [x] **V3.1.0 Core Release**: Full Glassmorphic UI overhaul.
+* [x] **V3.1.1 Maintenance**: Resolved build system BOM issues and Type Safety.
 * [ ] **V3.2.0 Sync Integration**: Direct GitHub/Jira Issue synchronization.
 * [ ] **V4.0.0 Collaboration**: Real-time multi-user collaborative planning.
 

@@ -98,6 +98,8 @@ npm run lint
 npm run type-check
 ```
 
+> For Warp-specific agent rules and code-navigation guidance, see `WARP.md`.
+
 ## 🗺 Roadmap
 
 - [x] **Multi-Agent Synthesis Engine**: Decoupled ADK implementation

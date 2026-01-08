@@ -28,9 +28,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@adk/*": ["src/core/adk/*"],
-      "@viz/*": ["src/components/visualization/*"],
-      "@agents/*": ["src/core/agents/*"]
+      "@adk/*": ["src/lib/adk/*"]
     },
     "types": ["vite/client", "vitest/globals"]
   },

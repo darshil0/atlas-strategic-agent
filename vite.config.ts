@@ -18,9 +18,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
-        "@adk": path.resolve(__dirname, "./src/core/adk"),
-        "@viz": path.resolve(__dirname, "./src/components/visualization"),
-        "@agents": path.resolve(__dirname, "./src/core/agents"),
+        "@adk": path.resolve(__dirname, "./src/lib/adk"),
       },
     },
     // CSS handling for Tailwind + Framer Motion performance

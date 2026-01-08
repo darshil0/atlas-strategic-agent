@@ -331,7 +331,7 @@ const App: React.FC = () => {
             <h1 className="text-xl font-bold tracking-tight font-display bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
               ATLAS STRATEGIC{" "}
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full ml-2 align-middle border border-blue-500/20">
-                V3.0
+                V3.1.1
               </span>
             </h1>
             <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
@@ -525,7 +525,7 @@ const App: React.FC = () => {
                   Strategic <span className="text-blue-500">Orchestrator.</span>
                 </h2>
                 <p className="text-slate-400 text-lg font-medium leading-relaxed mb-10">
-                  Atlas V3.0 utilizes multi-agent collaborative synthesis to
+                  Atlas V3.1.1 utilizes multi-agent collaborative synthesis to
                   transform abstract goals into executable strategic roadmaps.
                 </p>
                 <div className="grid grid-cols-2 gap-4 w-full">
@@ -634,7 +634,7 @@ const App: React.FC = () => {
             </div>
             <div className="text-center mt-3">
               <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">
-                Atlas Strategic Intelligence Engine • Enterprise Grade • v3.0.0
+                Atlas Strategic Intelligence Engine • Enterprise Grade • v3.1.1
               </span>
             </div>
           </div>

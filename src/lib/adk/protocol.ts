@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-﻿/**
-=======
-/**
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
  * A2UI (Agent-to-User Interface) Protocol Specification v0.8 (Simplified)
  * Standardizing how AI agents communicate native UI components.
  */
@@ -20,12 +15,8 @@ export enum A2UIComponentType {
   SELECT = "select",
 }
 
-<<<<<<< HEAD
 export type A2UIProps = Record<string, any>;
-=======
 export type A2UIProps = Record<string, unknown>;
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
-
 export interface A2UIMessage {
   version: string;
   elements: A2UIElement[];
@@ -77,7 +68,3 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
     elements: validElements,
   };
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

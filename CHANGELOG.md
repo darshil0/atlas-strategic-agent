@@ -1,50 +1,48 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to the **Atlas Strategic Agent** will be documented in this file.
 
 
 ## [3.1.1] - 2026-01-07
 
-### ðŸ›  Maintenance & Stability
+### 🛠 Maintenance & Stability
 
 Focused update resolving critical build system failures and ensuring strict type compliance across the entire codebase.
 
 ### Fixed
 
-* **Build System**: Resolved package.json corruption (BOM issue) that prevented 
-pm run build from executing.
-* **Type Safety**: Fixed over 40 TypeScript errors, including incorrect imports (@google/genai -> @google/generative-ai), missing types in BaseAgent and A2UIRenderer, and unused variables.
-* **Linting Architecture**: Migrated to eslint.config.js for ESLint 9 compatibility and fixed all irregular whitespace and style violations.
-* **Dependencies**: Restored missing 
-ode_modules and added required ESLint plugins (	ypescript-eslint, globals).
+* **Build System**: Resolved `package.json` corruption (BOM issue) that prevented `npm run build` from executing.
+* **Type Safety**: Fixed over 40 TypeScript errors, including incorrect imports (`@google/genai` -> `@google/generative-ai`), missing types in `BaseAgent` and `A2UIRenderer`, and unused variables.
+* **Linting Architecture**: Migrated to `eslint.config.js` for ESLint 9 compatibility and fixed all irregular whitespace and style violations.
+* **Dependencies**: Restored missing `node_modules` and added required ESLint plugins (`typescript-eslint`, `globals`).
 
 ## [3.1.0] - 2026-01-07
 
-### ðŸ§¹ Codebase Optimization & Sanitization
+### 🧹 Codebase Optimization & Sanitization
 
 Refined the V3.0 release by eliminating technical debt and streamlining core logic for production readiness.
 
 ### Fixed
 
-* **Unreachable Logic**: Resolved a regression in A2UIRenderer where the BUTTON component was logically unreachable due to a misplaced return statement.
-* **TypeScript Compliance**: Added missing React event types to A2UIRenderer and restored minimal global shims to eliminate environment lints.
+* **Unreachable Logic**: Resolved a regression in `A2UIRenderer` where the `BUTTON` component was logically unreachable due to a misplaced return statement.
+* **TypeScript Compliance**: Added missing React event types to `A2UIRenderer` and restored minimal global shims to eliminate environment lints.
 
 ### Removed
 
-* **Dead Code**: Stripped out unused romMermaid parser from the export engine.
-* **Service Stubs**: Removed unutilized searchExternal and memoryStorage properties from AtlasService to simplify the strategic core.
-* **Orphaned Types**: Eliminated several unused interfaces (Milestone, AgentState) and enum members (AgentMode.GUIDED) from the global type system.
-* **Documentation Sync**: Synchronized README.md headers and introductory text with the V3.1 architecture.
+* **Dead Code**: Stripped out unused `fromMermaid` parser from the export engine.
+* **Service Stubs**: Removed unutilized `searchExternal` and `memoryStorage` properties from `AtlasService` to simplify the strategic core.
+* **Orphaned Types**: Eliminated several unused interfaces (`Milestone`, `AgentState`) and enum members (`AgentMode.GUIDED`) from the global type system.
+* **Documentation Sync**: Synchronized `README.md` headers and introductory text with the V3.1 architecture.
 
 ---
 
 ## [3.0.0] - 2026-01-02
 
-### âœ¨ Massive Architecture Rebirth
+### ✨ Massive Architecture Rebirth
 
 Atlas has been transformed from a task decomposition tool into a full-scale **Enterprise Strategic Agent**.
 
-### ðŸš€ Added
+### 🚀 Added
 
 * **Multi-Agent Orchestration**: Collaborative synthesis engine featuring **Strategist**, **Analyst**, and **Critic** personas with automated conflict resolution loops.
 * **Simulation Engine**: "What-If" failure analysis that predicts mission cascades and calculates real-time risk scores.
@@ -53,13 +51,13 @@ Atlas has been transformed from a task decomposition tool into a full-scale **En
 * **Persistence 2.0**: Mission state recovery allowing seamless resumption of long-term strategic projects.
 * **Intelligence Recall**: Memory storage for recording and recalling strategic patterns across missions.
 
-### ðŸŽ¨ UI/UX Enhancements
+### 🎨 UI/UX Enhancements
 
 * **Glassmorphic Interface**: Fully overhauled design system with premium frosted-glass aesthetics and secondary blur layers.
 * **Motion System**: Full integration of **Framer Motion** for layout animations, sidebar transitions, and interactive task expansions.
 * **Iconography 2.0**: Migrated all raw SVGs to **Lucide React** for consistent, professional visual language.
 
-### ðŸ›  Technical Refinement
+### 🛠 Technical Refinement
 
 * **Strict Type Synthesis**: 100% TypeScript compliance with "Zero-Any" architecture.
 * **ADK Decoupling**: Refactored the Agent Development Kit into modular Factories, Types, and Orchestration layers.

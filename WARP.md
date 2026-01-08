@@ -2,6 +2,17 @@
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
+## Project context (from README)
+
+Atlas Strategic Agent is an autonomous strategic orchestrator that bridges high-level executive intent and long-term enterprise roadmaps.
+
+From the main `README.md`:
+- **Multi-Agent Collaborative Synthesis (MACS)** — three personas (Strategist, Analyst, Critic) debate and refine every roadmap.
+- **Strategic Visualization Engine** — live dependency graph, GANTT-style timeline, and What-If failure simulation.
+- **Enterprise Design System** — glassmorphic interface with Framer Motion animations and Lucide iconography.
+
+Refer to `README.md` for the full executive summary, changelog, and roadmap; this file focuses on how Warp should interact with the codebase.
+
 ## Core commands & workflows
 
 ### Install & environment

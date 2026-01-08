@@ -1,21 +1,16 @@
-<<<<<<< HEAD
 ﻿import path from "path";
 import { defineConfig } from "vite";
-=======
 import path from "path";
 import { defineConfig, loadEnv } from "vite";
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   // Set the third parameter to '' to load all envs regardless of the `VITE_` prefix.
-<<<<<<< HEAD
+
   // const env = loadEnv(mode, process.cwd(), "");
-=======
   const env = loadEnv(mode, process.cwd(), "");
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
   return {
     server: {
@@ -62,8 +57,3 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

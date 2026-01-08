@@ -1,67 +1,73 @@
 # Changelog
 
-All notable changes to the **Atlas Strategic Agent** will be documented in this file.
+All notable changes to the **Atlas Strategic Agent** are documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
 
 ## [3.1.1] - 2026-01-07
 
 ### 🛠 Maintenance & Stability
 
-Focused update resolving critical build system failures and ensuring strict type compliance across the entire codebase.
+This patch focuses on stabilizing the build pipeline and enforcing strict type compliance following the V3 architecture overhaul.
 
 ### Fixed
 
-* **Build System**: Resolved `package.json` corruption (BOM issue) that prevented `npm run build` from executing.
-* **Type Safety**: Fixed over 40 TypeScript errors, including incorrect imports (`@google/genai` -> `@google/generative-ai`), missing types in `BaseAgent` and `A2UIRenderer`, and unused variables.
-* **Linting Architecture**: Migrated to `eslint.config.js` for ESLint 9 compatibility and fixed all irregular whitespace and style violations.
-* **Dependencies**: Restored missing `node_modules` and added required ESLint plugins (`typescript-eslint`, `globals`).
+* **Build System**: Resolved `package.json` encoding issues (BOM) that caused `npm run build` failures.
+* **TypeScript Integrity**:
+* Corrected library imports (e.g., `@google/generative-ai` migration).
+* Patched missing type definitions in `BaseAgent` and `A2UIRenderer`.
+* Eliminated 40+ compiler errors and unused variable warnings.
+
+
+* **Linting**: Migrated to the Flat Config system (`eslint.config.js`) for ESLint 9 compatibility.
+* **Dependencies**: Audited and restored missing `node_modules` and required ESLint plugins.
+
+---
 
 ## [3.1.0] - 2026-01-07
 
-### 🧹 Codebase Optimization & Sanitization
+### 🧹 Codebase Sanitization
 
-Refined the V3.0 release by eliminating technical debt and streamlining core logic for production readiness.
+Refinement of the V3.0 release to eliminate technical debt and streamline core logic for production environments.
 
 ### Fixed
 
-* **Unreachable Logic**: Resolved a regression in `A2UIRenderer` where the `BUTTON` component was logically unreachable due to a misplaced return statement.
-* **TypeScript Compliance**: Added missing React event types to `A2UIRenderer` and restored minimal global shims to eliminate environment lints.
+* **Logic Flow**: Fixed a regression in `A2UIRenderer` where the `BUTTON` component was rendered unreachable by a misplaced return statement.
+* **React Compliance**: Added missing event types to UI components and restored global shims to quiet environment-specific lints.
 
 ### Removed
 
-* **Dead Code**: Stripped out unused `fromMermaid` parser from the export engine.
-* **Service Stubs**: Removed unutilized `searchExternal` and `memoryStorage` properties from `AtlasService` to simplify the strategic core.
-* **Orphaned Types**: Eliminated several unused interfaces (`Milestone`, `AgentState`) and enum members (`AgentMode.GUIDED`) from the global type system.
-* **Documentation Sync**: Synchronized `README.md` headers and introductory text with the V3.1 architecture.
+* **Technical Debt**: Stripped unused `fromMermaid` parser and orphaned types (`Milestone`, `AgentState`).
+* **Service Bloat**: Removed unutilized stubs (`searchExternal`, `memoryStorage`) from the `AtlasService` core.
+* **Legacy Modes**: Eliminated the `AgentMode.GUIDED` enum member to favor the new orchestration model.
 
 ---
 
 ## [3.0.0] - 2026-01-02
 
-### ✨ Massive Architecture Rebirth
+### ✨ Enterprise Architecture Rebirth
 
-Atlas has been transformed from a task decomposition tool into a full-scale **Enterprise Strategic Agent**.
+Atlas has been promoted from a task decomposition tool to a full-scale **Enterprise Strategic Agent**, featuring a complete architectural rewrite.
 
 ### 🚀 Added
 
-* **Multi-Agent Orchestration**: Collaborative synthesis engine featuring **Strategist**, **Analyst**, and **Critic** personas with automated conflict resolution loops.
-* **Simulation Engine**: "What-If" failure analysis that predicts mission cascades and calculates real-time risk scores.
-* **Strategic Timeline**: Advanced GANTT-style roadmap visualization for chronological mission mapping.
-* **External Grounding**: Live Tool Bridge for context injection via URLs and real-world data retrieval.
-* **Persistence 2.0**: Mission state recovery allowing seamless resumption of long-term strategic projects.
-* **Intelligence Recall**: Memory storage for recording and recalling strategic patterns across missions.
+* **Multi-Agent Orchestration**: Introduced a collaborative engine featuring **Strategist**, **Analyst**, and **Critic** personas with automated conflict resolution.
+* **Simulation Engine**: New "What-If" analysis to predict mission cascades and generate real-time risk scores.
+* **Strategic Timeline**: GANTT-style roadmap visualization for complex chronological mapping.
+* **Persistence 2.0**: Full mission state recovery for long-term strategic projects.
+* **Intelligence Recall**: Memory storage layer for recording and retrieving strategic patterns across sessions.
 
 ### 🎨 UI/UX Enhancements
 
-* **Glassmorphic Interface**: Fully overhauled design system with premium frosted-glass aesthetics and secondary blur layers.
-* **Motion System**: Full integration of **Framer Motion** for layout animations, sidebar transitions, and interactive task expansions.
-* **Iconography 2.0**: Migrated all raw SVGs to **Lucide React** for consistent, professional visual language.
+* **Design System**: New **Glassmorphic** interface with frosted-glass aesthetics and secondary blur layers.
+* **Motion Design**: Full **Framer Motion** integration for fluid layout transitions and interactive expansions.
+* **Lucide Integration**: Migrated all iconography to **Lucide React** for visual consistency.
 
 ### 🛠 Technical Refinement
 
-* **Strict Type Synthesis**: 100% TypeScript compliance with "Zero-Any" architecture.
-* **ADK Decoupling**: Refactored the Agent Development Kit into modular Factories, Types, and Orchestration layers.
-* **Path Aliasing**: Optimized project structure with root-level mapping for cleaner imports.
+* **Zero-Any Architecture**: Achieved 100% strict TypeScript compliance.
+* **ADK Decoupling**: Modularized the Agent Development Kit into distinct Factory and Orchestration layers.
+* **Path Aliasing**: Implemented root-level mapping for cleaner, more maintainable imports.
 
 ---
 
@@ -69,9 +75,9 @@ Atlas has been transformed from a task decomposition tool into a full-scale **En
 
 ### Added
 
-* **Recursive Logic**: "Explode" functionality for deep, multi-level task decomposition.
-* **Interactive Graphing**: Dependency linking within the React Flow graph.
-* **Export Engine**: Automated mission documentation export for executive reporting.
+* **Recursive Decomposition**: Added "Explode" functionality for deep, multi-level task branching.
+* **Dependency Linking**: Interactive edge creation within the React Flow graph.
+* **Executive Export**: Automated reporting engine for mission documentation.
 
 ---
 
@@ -79,5 +85,5 @@ Atlas has been transformed from a task decomposition tool into a full-scale **En
 
 ### Added
 
-* **Initial Release**: Core graph-based strategy mapping using Gemini 1.5 Flash.
-* **MVP Features**: Basic task breakdown and visual node representation.
+* **Initial Release**: Core graph-based strategy mapping powered by Gemini 1.5 Flash.
+* **MVP Features**: Basic task breakdown, visual node representation, and simple graph exports.

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-﻿import React, {
-=======
 import React, {
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   useState,
   useRef,
   useEffect,
@@ -34,21 +30,14 @@ import {
   Zap,
   Settings,
   Database,
-<<<<<<< HEAD
-=======
   Share2,
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   ChevronRight,
   Send,
   Activity,
   ShieldCheck,
-<<<<<<< HEAD
-  CloudLightning,
-=======
   CloudZap,
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   Terminal,
-  FileJson
+  FileJson,
 } from "lucide-react";
 
 /**
@@ -68,8 +57,12 @@ const App: React.FC = () => {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [mode, setMode] = useState<AgentMode>(AgentMode.AUTONOMOUS);
   const [isWhatIfEnabled, setIsWhatIfEnabled] = useState(false);
-  const [simulationResult, setSimulationResult] = useState<{ cascade: string[], riskScore: number } | null>(null);
-  const [sidebarView, setSidebarView] = useState<"list" | "graph" | "timeline">("list");
+  const [simulationResult, setSimulationResult] = useState<{
+    cascade: string[];
+    riskScore: number;
+  } | null>(null);
+  const [sidebarView, setSidebarView] =
+    useState<"list" | "graph" | "timeline">("list");
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -130,11 +123,7 @@ const App: React.FC = () => {
   const executePlan = async (plan: Plan) => {
     setCurrentPlan(plan);
     let history = "";
-<<<<<<< HEAD
-    const latestTasks = [...plan.tasks];
-=======
     let latestTasks = [...plan.tasks];
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
     const getNextTask = () =>
       latestTasks.find(
@@ -183,11 +172,7 @@ const App: React.FC = () => {
         setCurrentPlan({ ...plan, tasks: [...latestTasks] });
         addMessage(
           "assistant",
-<<<<<<< HEAD
-          `âš  Operation Alert: Core failure on Task ${nextTask.id}. Manual retry or replan required.`,
-=======
           `⚠ Operation Alert: Core failure on Task ${nextTask.id}. Manual retry or replan required.`,
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
         );
         break;
       }
@@ -195,25 +180,24 @@ const App: React.FC = () => {
 
     setActiveTaskId(null);
     const summary = await AtlasService.summarizeMission(plan, history);
-<<<<<<< HEAD
-    addMessage("assistant", `âœ“ Mission Concluded\n\n${summary}`);
-=======
     addMessage("assistant", `✓ Mission Concluded\n\n${summary}`);
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   };
 
   const handleA2UIEvent = (event: AGUIEvent) => {
-    addMessage("user", `Executed action: ${event.action} on ${event.elementId}`);
+    addMessage(
+      "user",
+      `Executed action: ${event.action} on ${event.elementId}`,
+    );
     if (event.action.startsWith("GITHUB_")) {
-<<<<<<< HEAD
-      addMessage("assistant", `ðŸš€ [EXTERNAL] Syncing with GitHub... Action: ${event.action}. Status: Success.`);
+      addMessage(
+        "assistant",
+        `🚀 [EXTERNAL] Syncing with GitHub... Action: ${event.action}. Status: Success.`,
+      );
     } else if (event.action.startsWith("SLACK_")) {
-      addMessage("assistant", `ðŸ’¬ [EXTERNAL] Dispatching Slack notification... Status: Delivered.`);
-=======
-      addMessage("assistant", `🚀 [EXTERNAL] Syncing with GitHub... Action: ${event.action}. Status: Success.`);
-    } else if (event.action.startsWith("SLACK_")) {
-      addMessage("assistant", `💬 [EXTERNAL] Dispatching Slack notification... Status: Delivered.`);
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+      addMessage(
+        "assistant",
+        `💬 [EXTERNAL] Dispatching Slack notification... Status: Delivered.`,
+      );
     }
   };
 
@@ -224,33 +208,40 @@ const App: React.FC = () => {
         ...prev,
         tasks: prev.tasks.map((t: SubTask) =>
           t.id === target
-            ? { ...t, dependencies: [...new Set([...(t.dependencies || []), source])] }
+            ? {
+                ...t,
+                dependencies: [
+                  ...new Set([...(t.dependencies || []), source]),
+                ],
+              }
             : t,
         ),
       };
     });
-<<<<<<< HEAD
-    addMessage("assistant", `âœ“ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
-=======
-    addMessage("assistant", `✓ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+    addMessage(
+      "assistant",
+      `✓ **Strategic Link Established:** Task #${source} now precedes #${target}.`,
+    );
   };
 
   const handleFailureSimulation = async (taskId: string) => {
     if (!currentPlan) return;
     const result = await missionControl.simulateFailure(currentPlan, taskId);
     setSimulationResult(result);
-<<<<<<< HEAD
-    addMessage("assistant", `âš ï¸ STRATEGIC RISK ALERT: Failure in #${taskId} would cause a cascade effect across ${result.cascade.length} nodes, resulting in a ${result.riskScore.toFixed(1)}% mission compromise.`);
-=======
-    addMessage("assistant", `⚠️ STRATEGIC RISK ALERT: Failure in #${taskId} would cause a cascade effect across ${result.cascade.length} nodes, resulting in a ${result.riskScore.toFixed(1)}% mission compromise.`);
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+    addMessage(
+      "assistant",
+      `⚠️ STRATEGIC RISK ALERT: Failure in #${taskId} would cause a cascade effect across ${result.cascade.length} nodes, resulting in a ${result.riskScore.toFixed(
+        1,
+      )}% mission compromise.`,
+    );
   };
 
   const handleDecompose = (taskId: string) => {
     const task = currentPlan?.tasks.find((t: SubTask) => t.id === taskId);
     if (!task) return;
-    handleSend(`Explode task #${taskId}: ${task.description}. Break this down into 3-5 subtasks.`);
+    handleSend(
+      `Explode task #${taskId}: ${task.description}. Break this down into 3-5 subtasks.`,
+    );
   };
 
   const handleSend = async (customPrompt?: string) => {
@@ -260,37 +251,42 @@ const App: React.FC = () => {
     addMessage("user", text);
     setIsThinking(true);
     try {
-<<<<<<< HEAD
-      addMessage("assistant", "â†’ PHASE 1: Parsing strategic requirements via Neural Engine...");
+      addMessage(
+        "assistant",
+        "→ PHASE 1: Parsing strategic requirements via Neural Engine...",
+      );
       const plan = await AtlasService.generatePlan(text);
       if (plan && plan.tasks.length > 0) {
         if (mode === AgentMode.COLLABORATIVE) {
-          addMessage("assistant", "â†’ PHASE 2: Initiating Multi-Agent Strategic Collaborative Synthesis...");
-          const collaboration = await missionControl.processCollaborativeInput(text, { plan });
-          addMessage("assistant", collaboration.text, collaboration.a2ui ? JSON.stringify(collaboration.a2ui) : undefined);
+          addMessage(
+            "assistant",
+            "→ PHASE 2: Initiating Multi-Agent Strategic Collaborative Synthesis...",
+          );
+          const collaboration = await missionControl.processCollaborativeInput(
+            text,
+            { plan },
+          );
+          addMessage(
+            "assistant",
+            collaboration.text,
+            collaboration.a2ui
+              ? JSON.stringify(collaboration.a2ui)
+              : undefined,
+          );
         } else {
-          addMessage("assistant", `â†’ PHASE 2: Decomposed into ${plan.tasks.length} strategic nodes. Initiating project: "${plan.projectName}"...`);
-=======
-      addMessage("assistant", "→ PHASE 1: Parsing strategic requirements via Neural Engine...");
-      const plan = await AtlasService.generatePlan(text);
-      if (plan && plan.tasks.length > 0) {
-        if (mode === AgentMode.COLLABORATIVE) {
-          addMessage("assistant", "→ PHASE 2: Initiating Multi-Agent Strategic Collaborative Synthesis...");
-          const collaboration = await missionControl.processCollaborativeInput(text, { plan });
-          addMessage("assistant", collaboration.text, collaboration.a2ui ? JSON.stringify(collaboration.a2ui) : undefined);
-        } else {
-          addMessage("assistant", `→ PHASE 2: Decomposed into ${plan.tasks.length} strategic nodes. Initiating project: "${plan.projectName}"...`);
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+          addMessage(
+            "assistant",
+            `→ PHASE 2: Decomposed into ${plan.tasks.length} strategic nodes. Initiating project: "${plan.projectName}"...`,
+          );
         }
         setCurrentPlan(plan);
         if (mode === AgentMode.AUTONOMOUS) await executePlan(plan);
       }
     } catch {
-<<<<<<< HEAD
-      addMessage("assistant", "âš  Strategic error: Neural decomposition failed.");
-=======
-      addMessage("assistant", "⚠ Strategic error: Neural decomposition failed.");
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+      addMessage(
+        "assistant",
+        "⚠ Strategic error: Neural decomposition failed.",
+      );
     } finally {
       setIsThinking(false);
     }
@@ -298,7 +294,9 @@ const App: React.FC = () => {
 
   const hierarchicalTasks: SubTask[] = useMemo(() => {
     if (!currentPlan) return [];
-    return [...currentPlan.tasks].sort((a: SubTask, b: SubTask) => a.id.localeCompare(b.id));
+    return [...currentPlan.tasks].sort((a: SubTask, b: SubTask) =>
+      a.id.localeCompare(b.id),
+    );
   }, [currentPlan]);
 
   const handleAddBankTask = (task: BankTask) => {
@@ -311,7 +309,9 @@ const App: React.FC = () => {
       category: task.category,
       dependencies: [],
     };
-    setCurrentPlan((prev) => prev ? { ...prev, tasks: [...prev.tasks, newSubTask] } : prev);
+    setCurrentPlan((prev) =>
+      prev ? { ...prev, tasks: [...prev.tasks, newSubTask] } : prev,
+    );
   };
 
   return (
@@ -329,10 +329,14 @@ const App: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight font-display bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-              ATLAS STRATEGIC <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full ml-2 align-middle border border-blue-500/20">V3.0</span>
+              ATLAS STRATEGIC{" "}
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full ml-2 align-middle border border-blue-500/20">
+                V3.0
+              </span>
             </h1>
             <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
-              <ShieldCheck className="w-3 h-3 text-blue-600" /> Autonomous Strategic Agent
+              <ShieldCheck className="w-3 h-3 text-blue-600" /> Autonomous
+              Strategic Agent
             </p>
           </div>
         </div>
@@ -345,7 +349,13 @@ const App: React.FC = () => {
               className="bg-transparent text-[10px] font-black uppercase tracking-widest text-blue-400 outline-none cursor-pointer"
             >
               {[AgentMode.AUTONOMOUS, AgentMode.COLLABORATIVE].map((m) => (
-                <option key={m} value={m} className="bg-slate-950 text-slate-100">{m}</option>
+                <option
+                  key={m}
+                  value={m}
+                  className="bg-slate-950 text-slate-100"
+                >
+                  {m}
+                </option>
               ))}
             </select>
           </div>
@@ -354,13 +364,21 @@ const App: React.FC = () => {
               onClick={() => setIsWhatIfEnabled(!isWhatIfEnabled)}
               className={cn(
                 "px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5",
-                isWhatIfEnabled ? 'border-amber-500 bg-amber-500/10 text-amber-500' : 'border-slate-800 bg-slate-900/50 text-slate-400 grayscale hover:grayscale-0'
+                isWhatIfEnabled
+                  ? "border-amber-500 bg-amber-500/10 text-amber-500"
+                  : "border-slate-800 bg-slate-900/50 text-slate-400 grayscale hover:grayscale-0",
               )}
             >
-              <Activity className="w-3.5 h-3.5" /> {isWhatIfEnabled ? 'Exit What-If' : 'What-If Mode'}
+              <Activity className="w-3.5 h-3.5" />{" "}
+              {isWhatIfEnabled ? "Exit What-If" : "What-If Mode"}
             </button>
             <button
-              onClick={() => currentPlan && navigator.clipboard.writeText(PlanExporter.toMermaid(currentPlan))}
+              onClick={() =>
+                currentPlan &&
+                navigator.clipboard.writeText(
+                  PlanExporter.toMermaid(currentPlan),
+                )
+              }
               className="p-2 text-slate-400 hover:text-white bg-slate-900/50 border border-slate-800 rounded-lg transition-all"
               title="Export Mermaid"
             >
@@ -390,15 +408,23 @@ const App: React.FC = () => {
               </h2>
               <div className="flex gap-1.5 items-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Active Feed</span>
+                <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">
+                  Active Feed
+                </span>
               </div>
             </div>
             {currentPlan && (
               <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60 shadow-inner">
-                <h3 className="text-lg font-bold font-display text-white mb-1">{currentPlan.projectName}</h3>
+                <h3 className="text-lg font-bold font-display text-white mb-1">
+                  {currentPlan.projectName}
+                </h3>
                 <div className="flex gap-3">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500">{currentPlan.tasks.length} Nodes</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Enterprise Core V3</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500">
+                    {currentPlan.tasks.length} Nodes
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">
+                    Enterprise Core V3
+                  </span>
                 </div>
               </div>
             )}
@@ -408,9 +434,20 @@ const App: React.FC = () => {
             {currentPlan ? (
               <AnimatePresence mode="wait">
                 {sidebarView === "list" ? (
-                  <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3 pb-10">
+                  <motion.div
+                    key="list"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="space-y-3 pb-10"
+                  >
                     {hierarchicalTasks.map((task) => (
-                      <div key={task.id} ref={(el) => { taskRefs.current[task.id] = el; }}>
+                      <div
+                        key={task.id}
+                        ref={(el) => {
+                          taskRefs.current[task.id] = el;
+                        }}
+                      >
                         <TaskCard
                           task={task}
                           isActive={activeTaskId === task.id}
@@ -422,19 +459,33 @@ const App: React.FC = () => {
                     ))}
                   </motion.div>
                 ) : sidebarView === "graph" ? (
-                  <div key="graph" className="h-[550px]"><DependencyGraph tasks={currentPlan.tasks} activeTaskId={activeTaskId} onTaskSelect={handleTaskSelect} isTaskBlocked={isTaskBlocked} onConnect={handleConnect} isWhatIfEnabled={isWhatIfEnabled} simulationResult={simulationResult} onSimulateFailure={handleFailureSimulation} /></div>
+                  <div key="graph" className="h-[550px]">
+                    <DependencyGraph
+                      tasks={currentPlan.tasks}
+                      activeTaskId={activeTaskId}
+                      onTaskSelect={handleTaskSelect}
+                      isTaskBlocked={isTaskBlocked}
+                      onConnect={handleConnect}
+                      isWhatIfEnabled={isWhatIfEnabled}
+                      simulationResult={simulationResult}
+                      onSimulateFailure={handleFailureSimulation}
+                    />
+                  </div>
                 ) : (
-                  <div key="timeline"><TimelineView plan={currentPlan} activeTaskId={activeTaskId} /></div>
+                  <div key="timeline">
+                    <TimelineView
+                      plan={currentPlan}
+                      activeTaskId={activeTaskId}
+                    />
+                  </div>
                 )}
               </AnimatePresence>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-700">
-<<<<<<< HEAD
-                <CloudLightning className="w-12 h-12 mb-4 opacity-20" />
-=======
                 <CloudZap className="w-12 h-12 mb-4 opacity-20" />
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
-                <p className="text-[10px] font-black uppercase tracking-widest">Awaiting Command...</p>
+                <p className="text-[10px] font-black uppercase tracking-widest">
+                  Awaiting Command...
+                </p>
               </div>
             )}
           </div>
@@ -447,7 +498,9 @@ const App: React.FC = () => {
                   onClick={() => setSidebarView(v as any)}
                   className={cn(
                     "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest transition-all rounded-lg mx-1",
-                    sidebarView === v ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "text-slate-500 hover:text-slate-300"
+                    sidebarView === v
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                      : "text-slate-500 hover:text-slate-300",
                   )}
                 >
                   {v}
@@ -466,40 +519,64 @@ const App: React.FC = () => {
                   transition={{ duration: 4, repeat: Infinity }}
                   className="w-32 h-32 bg-blue-600/5 rounded-[4rem] border border-blue-500/10 flex items-center justify-center mb-10"
                 >
-<<<<<<< HEAD
-                  <CloudLightning className="w-16 h-16 text-blue-500/40" />
-=======
                   <CloudZap className="w-16 h-16 text-blue-500/40" />
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
                 </motion.div>
-                <h2 className="text-4xl font-bold font-display text-white mb-6">Strategic <span className="text-blue-500">Orchestrator.</span></h2>
+                <h2 className="text-4xl font-bold font-display text-white mb-6">
+                  Strategic <span className="text-blue-500">Orchestrator.</span>
+                </h2>
                 <p className="text-slate-400 text-lg font-medium leading-relaxed mb-10">
-                  Atlas V3.0 utilizes multi-agent collaborative synthesis to transform abstract goals into executable strategic roadmaps.
+                  Atlas V3.0 utilizes multi-agent collaborative synthesis to
+                  transform abstract goals into executable strategic roadmaps.
                 </p>
                 <div className="grid grid-cols-2 gap-4 w-full">
-                  {["GTM Strategy for Neural Web", "5-Year Sustainability Roadmap"].map((sh) => (
-                    <button key={sh} onClick={() => handleSend(sh)} className="p-4 text-left border border-slate-900 bg-slate-900/10 rounded-2xl hover:border-blue-500/40 transition-all text-sm font-bold text-slate-500 hover:text-white flex justify-between items-center group">
-                      {sh} <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
+                  {[
+                    "GTM Strategy for Neural Web",
+                    "5-Year Sustainability Roadmap",
+                  ].map((sh) => (
+                    <button
+                      key={sh}
+                      onClick={() => handleSend(sh)}
+                      className="p-4 text-left border border-slate-900 bg-slate-900/10 rounded-2xl hover:border-blue-500/40 transition-all text-sm font-bold text-slate-500 hover:text-white flex justify-between items-center group"
+                    >
+                      {sh}{" "}
+                      <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
                     </button>
                   ))}
                 </div>
               </div>
             ) : (
               messages.map((m) => (
-                <div key={m.id} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
-                  <div className={cn(
-                    "max-w-[85%] rounded-[2rem] p-6 shadow-2xl",
-                    m.role === "user" ? "bg-blue-600 text-white" : "bg-slate-900/60 border border-slate-800 text-slate-100 backdrop-blur-xl"
-                  )}>
+                <div
+                  key={m.id}
+                  className={cn(
+                    "flex",
+                    m.role === "user" ? "justify-end" : "justify-start",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "max-w-[85%] rounded-[2rem] p-6 shadow-2xl",
+                      m.role === "user"
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-900/60 border border-slate-800 text-slate-100 backdrop-blur-xl",
+                    )}
+                  >
                     <div className="flex items-center gap-2 mb-3 text-[9px] font-black uppercase tracking-widest opacity-40">
-                      {m.role === "user" ? "Operational Directive" : "Atlas Strategic Core"}
+                      {m.role === "user"
+                        ? "Operational Directive"
+                        : "Atlas Strategic Core"}
                     </div>
                     <div className="prose prose-invert max-w-none prose-sm whitespace-pre-wrap leading-relaxed">
                       {m.content}
                     </div>
                     {m.a2ui && (
                       <div className="mt-4 pt-4 border-t border-slate-800/50">
-                        <A2UIRenderer elements={(JSON.parse(m.a2ui) as A2UIMessage).elements} onEvent={handleA2UIEvent} />
+                        <A2UIRenderer
+                          elements={
+                            (JSON.parse(m.a2ui) as A2UIMessage).elements
+                          }
+                          onEvent={handleA2UIEvent}
+                        />
                       </div>
                     )}
                   </div>
@@ -509,9 +586,25 @@ const App: React.FC = () => {
             {isThinking && (
               <div className="flex justify-start items-center gap-3 bg-slate-900/20 p-4 rounded-2xl border border-slate-800/40 w-fit">
                 <div className="flex gap-1.5">
-                  {[0, 1, 2].map((i) => <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />)}
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      animate={{
+                        scale: [1, 1.5, 1],
+                        opacity: [0.3, 1, 0.3],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        delay: i * 0.2,
+                      }}
+                      className="w-1.5 h-1.5 bg-blue-500 rounded-full"
+                    />
+                  ))}
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Synthesizing Strategy...</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Synthesizing Strategy...
+                </span>
               </div>
             )}
             <div ref={chatEndRef} />
@@ -522,7 +615,12 @@ const App: React.FC = () => {
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
                 placeholder="Initialize strategic directive..."
                 className="flex-1 bg-transparent border-none focus:ring-0 text-sm font-semibold placeholder:text-slate-700 px-6 py-4 resize-none h-14"
               />
@@ -535,19 +633,25 @@ const App: React.FC = () => {
               </button>
             </div>
             <div className="text-center mt-3">
-<<<<<<< HEAD
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">Atlas Strategic Intelligence Engine â€¢ Enterprise Grade â€¢ v3.0.0</span>
-=======
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">Atlas Strategic Intelligence Engine • Enterprise Grade • v3.0.0</span>
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+              <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">
+                Atlas Strategic Intelligence Engine • Enterprise Grade • v3.0.0
+              </span>
             </div>
           </div>
         </div>
 
         <AnimatePresence>
           {isTaskBankOpen && (
-            <motion.div initial={{ x: 400 }} animate={{ x: 0 }} exit={{ x: 400 }} className="fixed right-0 top-0 bottom-0 z-[60] w-[400px]">
-              <TaskBank onClose={() => setIsTaskBankOpen(false)} onAddTask={handleAddBankTask} />
+            <motion.div
+              initial={{ x: 400 }}
+              animate={{ x: 0 }}
+              exit={{ x: 400 }}
+              className="fixed right-0 top-0 bottom-0 z-[60] w-[400px]"
+            >
+              <TaskBank
+                onClose={() => setIsTaskBankOpen(false)}
+                onAddTask={handleAddBankTask}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -557,8 +661,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

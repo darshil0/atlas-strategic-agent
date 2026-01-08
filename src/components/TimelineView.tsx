@@ -1,14 +1,11 @@
-<<<<<<< HEAD
 ﻿import React from "react";
 import { motion } from "framer-motion";
 import { Plan, SubTask, TaskStatus } from "../types";
 import { CheckCircle2, Clock, ArrowRight } from "lucide-react";
-=======
 import React from "react";
 import { motion } from "framer-motion";
 import { Plan, SubTask, TaskStatus } from "../types";
 import { CheckCircle2, Circle, Clock, ArrowRight } from "lucide-react";
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 
@@ -64,11 +61,9 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                             >
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-1.5">
-<<<<<<< HEAD
+
                                         <Clock className="w-3 h-3" /> Phase {index + 1} â€¢ {task.category || "General"}
-=======
                                         <Clock className="w-3 h-3" /> Phase {index + 1} • {task.category || "General"}
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
                                     </span>
                                     <div className={cn(
                                         "text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border",
@@ -105,7 +100,3 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
 };
 
 export default TimelineView;
-<<<<<<< HEAD
-
-=======
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

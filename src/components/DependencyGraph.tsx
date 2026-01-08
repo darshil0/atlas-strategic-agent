@@ -1,7 +1,4 @@
-﻿import { useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ReactFlow,
-import React, { useMemo, useEffect } from "react";
+﻿import React, { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactFlow, {
   type Node,
@@ -17,17 +14,11 @@ import ReactFlow, {
   Controls,
   type NodeProps,
   type NodeTypes,
-
 } from "@xyflow/react";
 import { SubTask, TaskStatus, Priority } from "../types";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import "@xyflow/react/dist/style.css";
-} from "reactflow";
-import { SubTask, TaskStatus, Priority } from "../types";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
-import "reactflow/dist/style.css";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

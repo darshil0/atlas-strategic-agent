@@ -1,3 +1,4 @@
+/**
  * A2UI (Agent-to-User Interface) Protocol Specification v0.8 (Simplified)
  * Standardizing how AI agents communicate native UI components.
  */
@@ -15,7 +16,6 @@ export enum A2UIComponentType {
   SELECT = "select",
 }
 
-export type A2UIProps = Record<string, any>;
 export type A2UIProps = Record<string, unknown>;
 export interface A2UIMessage {
   version: string;

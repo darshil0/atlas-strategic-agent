@@ -2,10 +2,6 @@
 import { motion } from "framer-motion";
 import { Plan, SubTask, TaskStatus } from "../types";
 import { CheckCircle2, Clock, ArrowRight } from "lucide-react";
-import React from "react";
-import { motion } from "framer-motion";
-import { Plan, SubTask, TaskStatus } from "../types";
-import { CheckCircle2, Circle, Clock, ArrowRight } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 
@@ -60,9 +56,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                                 )}
                             >
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-1.5">
-
-                                        <Clock className="w-3 h-3" /> Phase {index + 1} â€¢ {task.category || "General"}
+                                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-1.5">
                                         <Clock className="w-3 h-3" /> Phase {index + 1} • {task.category || "General"}
                                     </span>
                                     <div className={cn(

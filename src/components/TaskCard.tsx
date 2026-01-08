@@ -1,5 +1,4 @@
 ﻿import React, { useRef, useEffect, useState } from "react";
-import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
@@ -93,9 +92,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
           <div className="mt-1 shrink-0">
-
             {ICONS[isBlocked ? TaskStatus.BLOCKED : task.status]}
-            {ICONS[isBlocked ? "BLOCKED" : task.status]}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">

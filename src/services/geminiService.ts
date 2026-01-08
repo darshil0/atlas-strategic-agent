@@ -1,6 +1,5 @@
 
 ﻿import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { GoogleGenAI, SchemaType } from "@google/genai";
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, SubTask } from "../types";
 
@@ -13,7 +12,6 @@ const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
 
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
-const genAI = new GoogleGenAI(apiKey || "");
 
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';

@@ -48,7 +48,7 @@ graph TD
 | **Core Intelligence** | Gemini 1.5 Flash (Optimized Reasoning) |
 | **Frontend Framework** | React 19 + Vite |
 | **Animation Engine** | Framer Motion |
-| **Visualization** | React Flow / XYFlow |
+| **Visualization** | XYFlow (@xyflow/react) |
 | **Type Safety** | 100% Strict TypeScript (Zero-Any) |
 | **Styling** | Tailwind CSS + Lucide Icons |
 
@@ -63,7 +63,7 @@ graph TD
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/atlas-strategic-agent.git
+git clone https://github.com/darshil0/atlas-strategic-agent.git
 cd atlas-strategic-agent
 
 # Install dependencies
@@ -89,6 +89,13 @@ npm run build
 
 # Preview production build
 npm run preview
+
+# Run unit tests
+npm test
+
+# Lint and type-check
+npm run lint
+npm run type-check
 ```
 
 ## 🗺 Roadmap

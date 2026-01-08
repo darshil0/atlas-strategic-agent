@@ -1,8 +1,6 @@
 ﻿import { A2UIMessage } from "./protocol";
 import { BaseAgent, AgentPersona } from "./types";
-import { type Plan } from "../../types";
-import { A2UIMessage } from "./protocol";
-import { BaseAgent, AgentPersona, type Plan } from "./types";
+import type { Plan } from "../../types";
 import { AgentFactory } from "./factory";
 
 /**
@@ -40,7 +38,6 @@ export class MissionControl {
   ): Promise<{ text: string; a2ui?: A2UIMessage }> {
     const strategist = this.getAgent(AgentPersona.STRATEGIST);
     const analyst = this.getAgent(AgentPersona.ANALYST);
-    let proposal = await strategist.execute(goal, context as any);
     let proposal = await strategist.execute(goal, context);
 
     let attempts = 0;
@@ -53,7 +50,6 @@ export class MissionControl {
       const feedbackText = feedback.join(". ");
       proposal = await strategist.execute(
         `REVISE PLAN: ${goal}. Feedback: ${feedbackText}`,
-        context as any,
         context,
       );
     }
@@ -99,11 +95,10 @@ export class MissionControl {
     plan: unknown,
   ): Promise<{ score: number; feedback: string[] }> {
     const critic = this.getAgent(AgentPersona.CRITIC);
-    return (await critic.execute("Evaluate plan risks", plan as any)) as {
-    return (await critic.execute("Evaluate plan risks", plan)) as {
-      score: number;
-      feedback: string[];
-    };
+    return critic.execute<{ score: number; feedback: string[] }>(
+      "Evaluate plan risks",
+      plan,
+    );
   }
 }
 

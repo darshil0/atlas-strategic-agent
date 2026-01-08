@@ -1,5 +1,4 @@
 ﻿import { A2UIMessage, AGUIEvent } from "./protocol";
-import { A2UIMessage, AGUIEvent } from "./protocol";
 
 export enum AgentPersona {
   STRATEGIST = "Strategist",
@@ -16,17 +15,12 @@ export abstract class BaseAgent {
   abstract name: string;
   abstract description: string;
   abstract handleEvent(event: AGUIEvent): Promise<A2UIMessage>;
-  // Generic result type so concrete agents can specify their return shape if desired.
 
-  abstract execute(
-    prompt: string,
-    context?: AgentExecutionContext,
-  ): Promise<any>;
   abstract execute<R = unknown>(
     prompt: string,
     context?: AgentExecutionContext,
   ): Promise<R>;
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
+
   abstract getInitialUI(): A2UIMessage;
 }
 

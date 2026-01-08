@@ -17,6 +17,9 @@ This patch focuses on stabilizing the build pipeline and enforcing strict type c
   - Eliminated 40+ compiler errors and unused variable warnings.
 - **Linting**: Migrated to the Flat Config system (`eslint.config.js`) for ESLint 9 compatibility.
 - **Dependencies**: Audited and restored missing `node_modules` and required ESLint plugins.
+- **Merge Hygiene**: Removed stale merge-conflict artifacts and duplicate imports across ADK, visualization components, and services.
+- **Configuration**: Normalized `package.json` scripts and dependencies for the React 19 + Vite 6 + Vitest toolchain.
+- **Documentation**: Updated README installation URL and execution commands to match the current repository and scripts.
 
 ## [3.1.0] - 2026-01-07
 

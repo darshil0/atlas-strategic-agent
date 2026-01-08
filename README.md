@@ -37,7 +37,7 @@ Atlas operates through a triumvirate of specialized personas that debate and ref
 
 ## ðŸ›  System Architecture
 
-```mermaid
+`mermaid
 graph TD
     User((Executive Intent)) --> Orchestrator[Mission Control]
     subgraph Multi-Agent Core
@@ -52,8 +52,7 @@ graph TD
         UI --> Sim[Failure Simulator]
     end
     Orchestrator --> Services[External Grounding & Persistence]
-
-```
+`
 
 ---
 
@@ -70,7 +69,7 @@ graph TD
 
 ---
 
-## ðŸƒ Getting Started
+## ðŸƒ Getting Started
 
 ### Prerequisites
 
@@ -79,33 +78,30 @@ graph TD
 
 ### Installation
 
-```bash
+`ash
 npm install
-
-```
+`
 
 ### Configuration
 
-Create a `.env` file in the root directory:
+Create a .env file in the root directory:
 
-```env
+`env
 VITE_GEMINI_API_KEY=your_api_key_here
-
-```
+`
 
 ### Execution
 
-```bash
+`ash
 npm run dev
-``r
+`
 
 ### Production Build
 
 `ash
 npm run build
 npm run preview
-
-```
+`
 
 ---
 
@@ -120,4 +116,3 @@ npm run preview
 ---
 
 *Atlas Strategic Agent is a product of the Advanced Agentic Coding initiative.*
-

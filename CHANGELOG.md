@@ -26,15 +26,15 @@ Refined the V3.0 release by eliminating technical debt and streamlining core log
 
 ### Fixed
 
-* **Unreachable Logic**: Resolved a regression in `A2UIRenderer` where the `BUTTON` component was logically unreachable due to a misplaced return statement.
-* **TypeScript Compliance**: Added missing React event types to `A2UIRenderer` and restored minimal global shims to eliminate environment lints.
+* **Unreachable Logic**: Resolved a regression in A2UIRenderer where the BUTTON component was logically unreachable due to a misplaced return statement.
+* **TypeScript Compliance**: Added missing React event types to A2UIRenderer and restored minimal global shims to eliminate environment lints.
 
 ### Removed
 
-* **Dead Code**: Stripped out unused `fromMermaid` parser from the export engine.
-* **Service Stubs**: Removed unutilized `searchExternal` and `memoryStorage` properties from `AtlasService` to simplify the strategic core.
-* **Orphaned Types**: Eliminated several unused interfaces (`Milestone`, `AgentState`) and enum members (`AgentMode.GUIDED`) from the global type system.
-* **Documentation Sync**: Synchronized `README.md` headers and introductory text with the V3.1 architecture.
+* **Dead Code**: Stripped out unused romMermaid parser from the export engine.
+* **Service Stubs**: Removed unutilized searchExternal and memoryStorage properties from AtlasService to simplify the strategic core.
+* **Orphaned Types**: Eliminated several unused interfaces (Milestone, AgentState) and enum members (AgentMode.GUIDED) from the global type system.
+* **Documentation Sync**: Synchronized README.md headers and introductory text with the V3.1 architecture.
 
 ---
 
@@ -83,4 +83,3 @@ Atlas has been transformed from a task decomposition tool into a full-scale **En
 
 * **Initial Release**: Core graph-based strategy mapping using Gemini 1.5 Flash.
 * **MVP Features**: Basic task breakdown and visual node representation.
-

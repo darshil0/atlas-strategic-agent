@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿import React, { useRef, useEffect, useState } from "react";
+=======
+import React, { useRef, useEffect, useState } from "react";
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
@@ -92,7 +96,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
       <div onClick={onClick} className="p-3 cursor-pointer">
         <div className="flex items-start gap-3">
           <div className="mt-1 shrink-0">
+<<<<<<< HEAD
             {ICONS[isBlocked ? TaskStatus.BLOCKED : task.status]}
+=======
+            {ICONS[isBlocked ? "BLOCKED" : task.status]}
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
@@ -231,4 +239,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 };
 
 export default TaskCard;
+<<<<<<< HEAD
 
+=======
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+=======
+import { GoogleGenAI, SchemaType } from "@google/genai";
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
 import { Plan, SubTask } from "../types";
 
@@ -9,7 +13,11 @@ const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
   (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.GEMINI_API_KEY : '') ||
   (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.API_KEY : '');
 
+<<<<<<< HEAD
 const genAI = new GoogleGenerativeAI(apiKey || "");
+=======
+const genAI = new GoogleGenAI(apiKey || "");
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';
@@ -104,4 +112,7 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     return response.text();
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

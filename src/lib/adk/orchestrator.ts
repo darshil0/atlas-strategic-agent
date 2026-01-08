@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 ﻿import { A2UIMessage } from "./protocol";
 import { BaseAgent, AgentPersona } from "./types";
 import { type Plan } from "../../types";
+=======
+import { A2UIMessage } from "./protocol";
+import { BaseAgent, AgentPersona, type Plan } from "./types";
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import { AgentFactory } from "./factory";
 
 /**
@@ -39,7 +44,11 @@ export class MissionControl {
     const strategist = this.getAgent(AgentPersona.STRATEGIST);
     const analyst = this.getAgent(AgentPersona.ANALYST);
 
+<<<<<<< HEAD
     let proposal = await strategist.execute(goal, context as any);
+=======
+    let proposal = await strategist.execute(goal, context);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
     let attempts = 0;
     const maxAttempts = 2;
@@ -51,7 +60,11 @@ export class MissionControl {
       const feedbackText = feedback.join(". ");
       proposal = await strategist.execute(
         `REVISE PLAN: ${goal}. Feedback: ${feedbackText}`,
+<<<<<<< HEAD
         context as any,
+=======
+        context,
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
       );
     }
 
@@ -96,7 +109,11 @@ export class MissionControl {
     plan: unknown,
   ): Promise<{ score: number; feedback: string[] }> {
     const critic = this.getAgent(AgentPersona.CRITIC);
+<<<<<<< HEAD
     return (await critic.execute("Evaluate plan risks", plan as any)) as {
+=======
+    return (await critic.execute("Evaluate plan risks", plan)) as {
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
       score: number;
       feedback: string[];
     };
@@ -107,5 +124,8 @@ type SubTaskLike = {
   id: string;
   dependencies?: string[];
 };
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿import React from "react";
+=======
+import React from "react";
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 import { TaskStatus } from "./types";
 import {
   Circle,
@@ -9,9 +13,15 @@ import {
   Clock,
 } from "lucide-react";
 
+<<<<<<< HEAD
 type IconKey = TaskStatus;
 
 export const ICONS: Record<IconKey, React.ReactNode> = {
+=======
+type IconKey = TaskStatus | "BLOCKED";
+
+export const ICONS: Record<IconKey, JSX.Element> = {
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   [TaskStatus.PENDING]: (
     <Circle className="w-4 h-4 text-slate-400" />
   ),
@@ -24,7 +34,11 @@ export const ICONS: Record<IconKey, React.ReactNode> = {
   [TaskStatus.FAILED]: (
     <XCircle className="w-4 h-4 text-rose-400" />
   ),
+<<<<<<< HEAD
   [TaskStatus.BLOCKED]: (
+=======
+  BLOCKED: (
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
     <Lock className="w-4 h-4 text-slate-600" />
   ),
   [TaskStatus.WAITING]: (
@@ -49,4 +63,7 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
   "Always output structured JSON when generating a plan.",
   "Include Goal and Tasks (id, description, priority, category, status, dependencies).",
 ].join("\n");
+<<<<<<< HEAD
 
+=======
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

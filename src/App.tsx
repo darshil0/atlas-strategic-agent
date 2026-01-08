@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿import React, {
+=======
+import React, {
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   useState,
   useRef,
   useEffect,
@@ -30,11 +34,19 @@ import {
   Zap,
   Settings,
   Database,
+<<<<<<< HEAD
+=======
+  Share2,
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   ChevronRight,
   Send,
   Activity,
   ShieldCheck,
+<<<<<<< HEAD
   CloudLightning,
+=======
+  CloudZap,
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   Terminal,
   FileJson
 } from "lucide-react";
@@ -118,7 +130,11 @@ const App: React.FC = () => {
   const executePlan = async (plan: Plan) => {
     setCurrentPlan(plan);
     let history = "";
+<<<<<<< HEAD
     const latestTasks = [...plan.tasks];
+=======
+    let latestTasks = [...plan.tasks];
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
     const getNextTask = () =>
       latestTasks.find(
@@ -167,7 +183,11 @@ const App: React.FC = () => {
         setCurrentPlan({ ...plan, tasks: [...latestTasks] });
         addMessage(
           "assistant",
+<<<<<<< HEAD
           `âš  Operation Alert: Core failure on Task ${nextTask.id}. Manual retry or replan required.`,
+=======
+          `⚠ Operation Alert: Core failure on Task ${nextTask.id}. Manual retry or replan required.`,
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
         );
         break;
       }
@@ -175,15 +195,25 @@ const App: React.FC = () => {
 
     setActiveTaskId(null);
     const summary = await AtlasService.summarizeMission(plan, history);
+<<<<<<< HEAD
     addMessage("assistant", `âœ“ Mission Concluded\n\n${summary}`);
+=======
+    addMessage("assistant", `✓ Mission Concluded\n\n${summary}`);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   };
 
   const handleA2UIEvent = (event: AGUIEvent) => {
     addMessage("user", `Executed action: ${event.action} on ${event.elementId}`);
     if (event.action.startsWith("GITHUB_")) {
+<<<<<<< HEAD
       addMessage("assistant", `ðŸš€ [EXTERNAL] Syncing with GitHub... Action: ${event.action}. Status: Success.`);
     } else if (event.action.startsWith("SLACK_")) {
       addMessage("assistant", `ðŸ’¬ [EXTERNAL] Dispatching Slack notification... Status: Delivered.`);
+=======
+      addMessage("assistant", `🚀 [EXTERNAL] Syncing with GitHub... Action: ${event.action}. Status: Success.`);
+    } else if (event.action.startsWith("SLACK_")) {
+      addMessage("assistant", `💬 [EXTERNAL] Dispatching Slack notification... Status: Delivered.`);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
     }
   };
 
@@ -199,14 +229,22 @@ const App: React.FC = () => {
         ),
       };
     });
+<<<<<<< HEAD
     addMessage("assistant", `âœ“ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
+=======
+    addMessage("assistant", `✓ **Strategic Link Established:** Task #${source} now precedes #${target}.`);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   };
 
   const handleFailureSimulation = async (taskId: string) => {
     if (!currentPlan) return;
     const result = await missionControl.simulateFailure(currentPlan, taskId);
     setSimulationResult(result);
+<<<<<<< HEAD
     addMessage("assistant", `âš ï¸ STRATEGIC RISK ALERT: Failure in #${taskId} would cause a cascade effect across ${result.cascade.length} nodes, resulting in a ${result.riskScore.toFixed(1)}% mission compromise.`);
+=======
+    addMessage("assistant", `⚠️ STRATEGIC RISK ALERT: Failure in #${taskId} would cause a cascade effect across ${result.cascade.length} nodes, resulting in a ${result.riskScore.toFixed(1)}% mission compromise.`);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   };
 
   const handleDecompose = (taskId: string) => {
@@ -222,6 +260,7 @@ const App: React.FC = () => {
     addMessage("user", text);
     setIsThinking(true);
     try {
+<<<<<<< HEAD
       addMessage("assistant", "â†’ PHASE 1: Parsing strategic requirements via Neural Engine...");
       const plan = await AtlasService.generatePlan(text);
       if (plan && plan.tasks.length > 0) {
@@ -231,12 +270,27 @@ const App: React.FC = () => {
           addMessage("assistant", collaboration.text, collaboration.a2ui ? JSON.stringify(collaboration.a2ui) : undefined);
         } else {
           addMessage("assistant", `â†’ PHASE 2: Decomposed into ${plan.tasks.length} strategic nodes. Initiating project: "${plan.projectName}"...`);
+=======
+      addMessage("assistant", "→ PHASE 1: Parsing strategic requirements via Neural Engine...");
+      const plan = await AtlasService.generatePlan(text);
+      if (plan && plan.tasks.length > 0) {
+        if (mode === AgentMode.COLLABORATIVE) {
+          addMessage("assistant", "→ PHASE 2: Initiating Multi-Agent Strategic Collaborative Synthesis...");
+          const collaboration = await missionControl.processCollaborativeInput(text, { plan });
+          addMessage("assistant", collaboration.text, collaboration.a2ui ? JSON.stringify(collaboration.a2ui) : undefined);
+        } else {
+          addMessage("assistant", `→ PHASE 2: Decomposed into ${plan.tasks.length} strategic nodes. Initiating project: "${plan.projectName}"...`);
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
         }
         setCurrentPlan(plan);
         if (mode === AgentMode.AUTONOMOUS) await executePlan(plan);
       }
     } catch {
+<<<<<<< HEAD
       addMessage("assistant", "âš  Strategic error: Neural decomposition failed.");
+=======
+      addMessage("assistant", "⚠ Strategic error: Neural decomposition failed.");
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
     } finally {
       setIsThinking(false);
     }
@@ -375,7 +429,11 @@ const App: React.FC = () => {
               </AnimatePresence>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-700">
+<<<<<<< HEAD
                 <CloudLightning className="w-12 h-12 mb-4 opacity-20" />
+=======
+                <CloudZap className="w-12 h-12 mb-4 opacity-20" />
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
                 <p className="text-[10px] font-black uppercase tracking-widest">Awaiting Command...</p>
               </div>
             )}
@@ -408,7 +466,11 @@ const App: React.FC = () => {
                   transition={{ duration: 4, repeat: Infinity }}
                   className="w-32 h-32 bg-blue-600/5 rounded-[4rem] border border-blue-500/10 flex items-center justify-center mb-10"
                 >
+<<<<<<< HEAD
                   <CloudLightning className="w-16 h-16 text-blue-500/40" />
+=======
+                  <CloudZap className="w-16 h-16 text-blue-500/40" />
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
                 </motion.div>
                 <h2 className="text-4xl font-bold font-display text-white mb-6">Strategic <span className="text-blue-500">Orchestrator.</span></h2>
                 <p className="text-slate-400 text-lg font-medium leading-relaxed mb-10">
@@ -473,7 +535,11 @@ const App: React.FC = () => {
               </button>
             </div>
             <div className="text-center mt-3">
+<<<<<<< HEAD
               <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">Atlas Strategic Intelligence Engine â€¢ Enterprise Grade â€¢ v3.0.0</span>
+=======
+              <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 font-display">Atlas Strategic Intelligence Engine • Enterprise Grade • v3.0.0</span>
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
             </div>
           </div>
         </div>
@@ -491,5 +557,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

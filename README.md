@@ -1,20 +1,20 @@
-# 🌌 Atlas Strategic Agent V3.1.0
+﻿# ðŸŒŒ Atlas Strategic Agent V3.1.0
 
 ### *The Architect of Ambition*
 
-**Atlas V3.1.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
+**Atlas V3.1.0** is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasksâ€”it orchestrates intelligence.
 
 ---
 
-## 📖 Executive Summary
+## ðŸ“– Executive Summary
 
 Traditional project management is **reactive**, relying on human updates and manual risk assessment. **Atlas** is **proactive**. It utilizes a decoupled Agent Development Kit (ADK) to simulate the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini API**, Atlas transforms abstract "moonshot" goals into structured, multi-year roadmaps with visual dependency mapping.
 
 ---
 
-## 🚀 Key Innovation Pillars
+## ðŸš€ Key Innovation Pillars
 
-### 🧠 Multi-Agent Collaborative Synthesis (MACS)
+### ðŸ§  Multi-Agent Collaborative Synthesis (MACS)
 
 Atlas operates through a triumvirate of specialized personas that debate and refine every roadmap:
 
@@ -22,20 +22,20 @@ Atlas operates through a triumvirate of specialized personas that debate and ref
 * **The Analyst**: Feasibility expert focused on data grounding and verification.
 * **The Critic**: Risk assessor who identifies missing dependencies and failure points.
 
-### 📉 Strategic Visualization Engine
+### ðŸ“‰ Strategic Visualization Engine
 
 * **Live Dependency Graph**: Interactive **XYFlow-based** visualization with high-fidelity glassmorphic nodes representing the critical path.
 * **GANTT Timeline**: A chronological roadmap view powered by **Framer Motion** for seamless temporal tracking.
 * **What-If Simulation**: A predictive engine that models mission failure cascades and calculates real-time risk scores.
 
-### 🎨 Enterprise Design System
+### ðŸŽ¨ Enterprise Design System
 
 * **Glassmorphism**: Advanced frosted-glass aesthetics with nested blur layers for a focused, low-cognitive-load UI.
 * **Motion Orchestration**: Fluid layout transitions and professional vector iconography via **Lucide**.
 
 ---
 
-## 🛠 System Architecture
+## ðŸ›  System Architecture
 
 ```mermaid
 graph TD
@@ -57,7 +57,7 @@ graph TD
 
 ---
 
-## 💻 Technical Specification
+## ðŸ’» Technical Specification
 
 | Component | Technology |
 | --- | --- |
@@ -70,7 +70,7 @@ graph TD
 
 ---
 
-## 🏃 Getting Started
+## ðŸƒ Getting Started
 
 ### Prerequisites
 
@@ -97,12 +97,19 @@ VITE_GEMINI_API_KEY=your_api_key_here
 
 ```bash
 npm run dev
+``r
+
+### Production Build
+
+`ash
+npm run build
+npm run preview
 
 ```
 
 ---
 
-## 🗺 Roadmap
+## ðŸ—º Roadmap
 
 * [x] **Multi-Agent Synthesis Engine**: Decoupled ADK implementation.
 * [x] **Predictive Failure Simulation**: Real-time risk scoring and cascade modeling.
@@ -113,3 +120,4 @@ npm run dev
 ---
 
 *Atlas Strategic Agent is a product of the Advanced Agentic Coding initiative.*
+

@@ -1,12 +1,9 @@
-<<<<<<< HEAD
 ﻿import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ReactFlow,
-=======
 import React, { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactFlow, {
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
   type Node,
   type Edge,
   Handle,
@@ -20,19 +17,17 @@ import ReactFlow, {
   Controls,
   type NodeProps,
   type NodeTypes,
-<<<<<<< HEAD
+
 } from "@xyflow/react";
 import { SubTask, TaskStatus, Priority } from "../types";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import "@xyflow/react/dist/style.css";
-=======
 } from "reactflow";
 import { SubTask, TaskStatus, Priority } from "../types";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import "reactflow/dist/style.css";
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -277,9 +272,3 @@ const DependencyGraph = ({
 };
 
 export default DependencyGraph;
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> dce07adc1ba86e046a50710e54d455010c9e1d44

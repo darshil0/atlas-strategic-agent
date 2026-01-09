@@ -63,7 +63,7 @@ graph TD
 
 ---
 
-## 💻 Technical Specification
+## 💻 Technical Specifications
 
 | Component | Technology | Description |
 |-----------|-----------|-------------|

@@ -22,6 +22,7 @@ Major optimization of the frontend build pipeline and dependency configuration.
   - Updated `eslint.config.js` to optimized flat config structure.
   - Updated `package.json` lint scripts to use modern `eslint .`.
 - **Index Cleanup**: Removed all legacy styling blocks and CDN scripts from `index.html`.
+- **Documentation**: Complete overhaul of `README.md` including detailed architecture diagrams, updated tech specs, and project structure overview.
 
 ## [3.1.4] - 2026-01-09
 

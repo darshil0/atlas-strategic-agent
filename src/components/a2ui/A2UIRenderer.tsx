@@ -9,6 +9,9 @@ interface A2UIRendererProps {
   elements: A2UIElement[];
   onEvent: (event: AGUIEvent) => void;
 }
+type Props = Record<string, unknown>;
+type ListItem = { icon?: string; label?: string };
+type ChartData = { value: number; label: string };
 
 export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
   elements,
@@ -17,7 +20,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
   const renderElement = (element: A2UIElement) => {
     const { id, type, props } = element;
 
-    const handleAction = (action: string, data?: any) => {
+    const handleAction = (action: string, data?: Props) => {
       onEvent({
         elementId: id,
         action,
@@ -117,7 +120,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
       case A2UIComponentType.LIST:
         return (
           <ul key={id} className="space-y-2">
-            {(props.items as any[])?.map((item: any, idx: number) => (
+            {(props.items as ListItem[])?.map((item, idx: number) => (
               <li
                 key={`${id}_${idx}`}
                 className="flex items-center gap-3 p-2 rounded-lg bg-slate-900/30 border border-slate-800/50 hover:border-slate-700 transition-all cursor-pointer"
@@ -127,7 +130,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                   <span className="text-blue-500">{item.icon}</span>
                 )}
                 <span className="text-xs font-semibold text-slate-300">
-                  {item.label || item}
+                  {item.label || String(item)}
                 </span>
               </li>
             ))}
@@ -144,7 +147,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
               {(props.title as string) || "Data Analysis"}
             </h4>
             <div className="flex items-end gap-3 h-32">
-              {(props.data as any[])?.map((val: any, idx: number) => (
+              {(props.data as ChartData[])?.map((val, idx: number) => (
                 <div
                   key={idx}
                   className="flex-1 flex flex-col items-center gap-3 group"
@@ -215,11 +218,13 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                 handleAction("select_change", { value: e.target.value })
               }
             >
-              {(props.options as any[])?.map((opt: any) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
+              {(props.options as { value: string; label: string }[])?.map(
+                (opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ),
+              )}
             </select>
           </div>
         );

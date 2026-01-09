@@ -43,6 +43,7 @@ export class AnalystAgent extends BaseAgent {
   name = "Analyst";
   description = "Focuses on data grounding and feasibility analysis.";
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
       .add(A2UIComponentType.CHART, {
@@ -56,7 +57,9 @@ export class AnalystAgent extends BaseAgent {
   }
 
   async execute<R = unknown>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _prompt: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _context?: StrategyContext,
   ): Promise<R> {
     const result: AnalystResult = {
@@ -82,6 +85,7 @@ export class CriticAgent extends BaseAgent {
   name = "Critic";
   description = "Reviews plans for risks and identifies missing dependencies.";
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
       .add(A2UIComponentType.CARD, {
@@ -92,7 +96,9 @@ export class CriticAgent extends BaseAgent {
   }
 
   async execute<R = unknown>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _prompt: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _context?: StrategyContext,
   ): Promise<R> {
     const result: CriticResult = { score: 90, risks: [] };

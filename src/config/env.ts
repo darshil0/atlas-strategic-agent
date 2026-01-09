@@ -3,10 +3,11 @@
  * Centralizes environment variable access and validation.
  */
 
+
 const getEnvVar = (key: string): string | undefined => {
   // Vite / Browser
-  if (import.meta && import.meta.env && (import.meta.env as any)[key]) {
-    return (import.meta.env as any)[key];
+  if (import.meta && import.meta.env && import.meta.env[key]) {
+    return import.meta.env[key];
   }
 
   // Node.js / Vitest

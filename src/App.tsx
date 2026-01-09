@@ -486,10 +486,12 @@ const App: React.FC = () => {
 
           {currentPlan && (
             <div className="p-3 border-t border-slate-900 flex bg-slate-900/20 shrink-0">
-              {["list", "graph", "timeline"].map((v) => (
+              {["list", "graph", "timeline"].map((v: string) => (
                 <button
                   key={v}
-                  onClick={() => setSidebarView(v as any)}
+                  onClick={() =>
+                    setSidebarView(v as "list" | "graph" | "timeline")
+                  }
                   className={cn(
                     "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest transition-all rounded-lg mx-1",
                     sidebarView === v

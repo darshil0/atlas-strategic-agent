@@ -4,6 +4,22 @@ All notable changes to the **Atlas Strategic Agent** are documented in this file
 
 
 
+
+## [3.1.4] - 2026-01-09
+
+### 🛡 Robustness & Build Stability
+
+Critical patch addressing runtime safety and build configuration consistency.
+
+### Fixed
+
+- **Build Pipeline**: Resolved `ReactFlow` import errors (`default` vs `named`) that were breaking production builds.
+- **Type Safety**: Fixed `A2UIRenderer` and `Orchestrator` compilation errors by enforcing strict `AgentExecutionContext` typing and explicit casting.
+- **Runtime Integrity**:
+  - Implemented `safe-json` parsing wrapper to handle Markdown-polluted LLM responses (preventing application crashes).
+  - Added strict Environment Variable validation (`src/config/env.ts`) to ensure `VITE_GEMINI_API_KEY` presence on startup.
+- **Configuration**: Removed broken `vitest.config.ts` reference and unused imports from `vite.config.ts`.
+
 ## [3.1.3] - 2026-01-09
 
 ### 🧹 Organization & Cleanup

@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.2.0] - 2026-01-10
+## [3.2.0] - 2026-01-09
+
+### Added
+- **GitHub and Jira Integration**: Users can now export tasks to GitHub issues and Jira tickets directly from the Task Card.
+- **Settings Modal**: A new settings modal allows users to configure their GitHub and Jira API keys.
+- **Security Warning**: A security warning has been added to the settings modal and the README to inform users of the risks of storing API keys in local storage.
 
 ### Changed
 - **Upgraded Gemini Model**: Migrated from `gemini-1.5-flash` to `gemini-3-flash-preview` for enhanced performance and intelligence.
@@ -18,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.1.5] - 2026-01-09
+## [3.1.5] - 2025-01-09
 
 ### Changed
 - **MAJOR PERFORMANCE OVERHAUL**: Migrated from CDN-based Tailwind CSS to local build system
@@ -45,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.1.4] - 2026-01-08
+## [3.1.4] - 2025-01-08
 
 ### Fixed
 - **Critical**: Runtime error handling in `geminiService.ts`
@@ -65,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.1.3] - 2026-01-07
+## [3.1.3] - 2025-01-07
 
 ### Added
 - **Agent Development Kit (ADK)**: Complete multi-agent architecture
@@ -85,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.1.0] - 2026-01-06
+## [3.1.0] - 2025-01-06
 
 ### Added
 - Initial implementation of strategic planning interface
@@ -102,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.0.0] - 2026-01-05
+## [3.0.0] - 2025-01-05
 
 ### Added
 - Project foundation and initial architecture

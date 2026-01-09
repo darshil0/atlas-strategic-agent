@@ -1,113 +1,49 @@
 <!doctype html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>Atlas Strategic Agent | V3.1.1</title>
-    <meta name="description" content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis." />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Atlas Strategic Agent" />
-    <meta property="og:description" content="Autonomous strategic reasoning powered by Gemini 1.5 Flash." />
-    <meta property="og:image" content="/og-preview.png" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              atlas: {
-                blue: '#3b82f6',
-                indigo: '#6366f1',
-                slate: '#0f172a'
-              }
-            }
-          }
-        }
+  <title>Atlas Strategic Agent | V3.1.4</title>
+  <meta name="description"
+    content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Atlas Strategic Agent" />
+  <meta property="og:description" content="Autonomous strategic reasoning powered by Gemini 1.5 Flash." />
+  <meta property="og:image" content="/og-preview.png" />
+
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+
+
+</head>
+
+<body>
+  <div id="loader">
+    <div class="pulse-ring"></div>
+  </div>
+
+  <div id="root"></div>
+
+  <script type="module" src="/src/index.tsx"></script>
+
+  <script>
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
       }
-    </script>
+    });
+  </script>
+</body>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-
-    <style>
-      :root {
-        --atlas-bg: #020617;
-        --atlas-surface: rgba(15, 23, 42, 0.6);
-        --atlas-border: rgba(255, 255, 255, 0.05);
-        --atlas-accent: #3b82f6;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--atlas-bg);
-        /* Subtle deep space gradient */
-        background-image: 
-          radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
-          radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
-        color: #f8fafc;
-        margin: 0;
-        height: 100vh;
-        overflow: hidden;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      /* Premium Glassmorphism */
-      .glass {
-        background: var(--atlas-surface);
-        backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid var(--atlas-border);
-      }
-
-      /* Initial Boot Loader */
-      #loader {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--atlas-bg);
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
-
-      .pulse-ring {
-        width: 60px;
-        height: 60px;
-        border: 2px solid var(--atlas-accent);
-        border-radius: 50%;
-        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-
-      @keyframes pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: .3; transform: scale(1.1); }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="loader">
-      <div class="pulse-ring"></div>
-    </div>
-
-    <div id="root"></div>
-
-    <script type="module" src="/src/index.tsx"></script>
-
-    <script>
-      window.addEventListener('load', () => {
-        const loader = document.getElementById('loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 500);
-        }
-      });
-    </script>
-  </body>
 </html>

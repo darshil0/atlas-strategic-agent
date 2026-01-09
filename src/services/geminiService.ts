@@ -1,17 +1,12 @@
 
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { ATLAS_SYSTEM_INSTRUCTION } from "../config";
+import { ATLAS_SYSTEM_INSTRUCTION, ENV } from "../config";
 import { Plan, SubTask } from "../types";
 
 /**
  * Enterprise Service Layer for Gemini API Interactions
  */
-const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY ||
-  (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.GEMINI_API_KEY : '') ||
-  (typeof (globalThis as any).process !== 'undefined' ? (globalThis as any).process.env.API_KEY : '');
-
-
-const genAI = new GoogleGenerativeAI(apiKey || "");
+const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
 
 export class AtlasService {
   private static modelName = 'gemini-1.5-flash';
@@ -58,7 +53,7 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
 
     try {
       const response = await result.response;
-      return JSON.parse(response.text()) as Plan;
+      return this.parseResponse<Plan>(response.text());
     } catch {
       throw new Error("Atlas failed to generate a coherent plan.");
     }
@@ -104,5 +99,16 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     });
     const response = await result.response;
     return response.text();
+  }
+
+  private static parseResponse<T>(text: string): T {
+    try {
+      // Strip markdown code blocks if present
+      const cleanText = text.replace(/```json\n?|\n?```/g, "").trim();
+      return JSON.parse(cleanText) as T;
+    } catch (e) {
+      console.error("Atlas JSON Parse Error:", e);
+      throw new Error("Failed to parse strategic plan from intelligence core.");
+    }
   }
 }

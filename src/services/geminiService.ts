@@ -1,6 +1,6 @@
 
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { ATLAS_SYSTEM_INSTRUCTION } from "../constants";
+import { ATLAS_SYSTEM_INSTRUCTION } from "../config";
 import { Plan, SubTask } from "../types";
 
 /**

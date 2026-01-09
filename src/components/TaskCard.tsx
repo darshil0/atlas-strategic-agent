@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import { SubTask, TaskStatus, Priority, type Citation } from "../types";
-import { ICONS } from "../constants";
+import { ICONS } from "../config";
 import {
   Plus,
   ChevronDown,
@@ -86,7 +86,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         "rounded-2xl border transition-all duration-300 group overflow-hidden glass",
         getStatusColor(task.status),
         isActive &&
-          "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20",
+        "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20",
       )}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">

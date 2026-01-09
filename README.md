@@ -184,8 +184,13 @@ atlas-strategic-agent/
 - [x] **V3.1.5**: Performance Overhaul (Local CSS Build Integration)
 - [x] **V3.1.4**: Runtime Hardening (Safe JSON Parsing & Env Validation)
 - [x] **V3.1.3**: Multi-Agent Synthesis (Decoupled ADK Implementation)
-- [ ] **V3.2.0**: Direct GitHub/Jira Integration
+- [x] **V3.2.0**: Direct GitHub/Jira Integration
 - [ ] **V4.0.0**: Real-time Multi-User Collaboration (WebSockets)
+
+### Security Warning
+
+Storing API keys in your browser's local storage is not secure. Anyone with
+access to your browser could potentially steal them. Use with caution.
 
 See [CHANGELOG.md](./CHANGELOG.md) for detailed version history.
 

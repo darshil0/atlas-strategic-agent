@@ -10,6 +10,8 @@ import {
   ChevronUp,
   Link as LinkIcon,
   Clock,
+  Github,
+  Ticket,
 } from "lucide-react";
 
 /**
@@ -25,6 +27,8 @@ interface TaskCardProps {
   isBlocked: boolean;
   onClick?: () => void;
   onDecompose?: (id: string) => void;
+  onExport?: (id: string, type: "github" | "jira") => void;
+  exported?: { github?: string; jira?: string };
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
@@ -33,6 +37,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   isBlocked,
   onClick,
   onDecompose,
+  onExport,
+  exported,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -202,8 +208,30 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 </p>
               </div>
             )}
+            <div className="flex gap-2">
+              <button
+                onClick={() => onExport?.(task.id, "github")}
+                disabled={!!exported?.github}
+                className="flex-1 text-center items-center gap-2 bg-slate-800/50 text-slate-400 hover:bg-slate-800/80 text-[10px] p-2 rounded-lg font-bold disabled:opacity-50"
+              >
+                <Github className="w-4 h-4 text-white mx-auto" />
+                <span className="mt-1 text-white mx-auto">
+                  {exported?.github ? "Exported" : "GitHub"}
+                </span>
+              </button>
+              <button
+                onClick={() => onExport?.(task.id, "jira")}
+                disabled={!!exported?.jira}
+                className="flex-1 text-center items-center gap-2 bg-slate-800/50 text-slate-400 hover:bg-slate-800/80 text-[10px] p-2 rounded-lg font-bold disabled:opacity-50"
+              >
+                <Ticket className="w-4 h-4 text-white mx-auto" />
+                <span className="mt-1 text-white mx-auto">
+                  {exported?.jira ? "Exported" : "Jira"}
+                </span>
+              </button>
+            </div>
             {task.citations && task.citations.length > 0 && (
-              <div className="pt-2 border-t border-slate-800/50">
+              <div className="pt-2 border-t border-slate-800/50 mt-3">
                 <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-1 font-display">
                   Grounding Citations
                 </span>

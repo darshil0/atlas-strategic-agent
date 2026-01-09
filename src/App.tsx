@@ -11,10 +11,12 @@ import { clsx, type ClassValue } from "clsx";
 import { Message, Plan, TaskStatus, AgentMode, SubTask } from "./types";
 import { AtlasService } from "./services/geminiService";
 import { PersistenceService } from "./services/persistenceService";
+import { githubService, jiraService } from "./services";
 import TaskCard from "./components/TaskCard";
 import DependencyGraph from "./components/DependencyGraph";
 import TaskBank from "./components/TaskBank";
 import { BankTask } from "./data/taskBank";
+import SettingsModal from "./components/SettingsModal";
 import { A2UIRenderer } from "./components/a2ui/A2UIRenderer";
 import { AGUIEvent, A2UIMessage } from "./lib/adk/protocol";
 import { PlanExporter } from "./lib/adk/exporter";
@@ -58,6 +60,10 @@ const App: React.FC = () => {
     "list",
   );
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [exportedTasks, setExportedTasks] = useState<
+    Record<string, { github?: string; jira?: string }>
+  >({});
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const taskRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -240,6 +246,37 @@ const App: React.FC = () => {
     );
   };
 
+  const handleExport = async (taskId: string, type: "github" | "jira") => {
+    const task = currentPlan?.tasks.find((t: SubTask) => t.id === taskId);
+    if (!task) return;
+
+    addMessage(
+      "assistant",
+      `🚀 Exporting task #${taskId} to ${type}. Please wait...`,
+    );
+
+    try {
+      if (type === "github") {
+        await githubService.createIssue(task);
+      } else {
+        await jiraService.createTicket(task);
+      }
+      setExportedTasks((prev) => ({
+        ...prev,
+        [taskId]: { ...prev[taskId], [type]: "success" },
+      }));
+      addMessage(
+        "assistant",
+        `✅ Task #${taskId} successfully exported to ${type}.`,
+      );
+    } catch (error) {
+      addMessage(
+        "assistant",
+        `❌ Failed to export task #${taskId} to ${type}.`,
+      );
+    }
+  };
+
   const handleSend = async (customPrompt?: string) => {
     const text = (customPrompt || input).trim();
     if (!text || isThinking) return;
@@ -336,7 +373,12 @@ const App: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/40 rounded-xl border border-slate-800">
-            <Settings className="w-3.5 h-3.5 text-slate-500" />
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <Settings className="w-3.5 h-3.5 text-slate-500" />
+            </button>
             <select
               value={mode}
               onChange={(e) => setMode(e.target.value as AgentMode)}
@@ -448,6 +490,8 @@ const App: React.FC = () => {
                           isBlocked={isTaskBlocked(task, currentPlan.tasks)}
                           onClick={() => handleTaskSelect(task.id)}
                           onDecompose={handleDecompose}
+                          onExport={handleExport}
+                          exported={exportedTasks[task.id]}
                         />
                       </div>
                     ))}
@@ -649,6 +693,12 @@ const App: React.FC = () => {
                 onAddTask={handleAddBankTask}
               />
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {isSettingsOpen && (
+            <SettingsModal onClose={() => setIsSettingsOpen(false)} />
           )}
         </AnimatePresence>
       </main>

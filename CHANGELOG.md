@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.2.0] - 2025-01-10
+## [3.2.0] - 2026-01-09
+
+### Added
+- **GitHub and Jira Integration**: Users can now export tasks to GitHub issues and Jira tickets directly from the Task Card.
+- **Settings Modal**: A new settings modal allows users to configure their GitHub and Jira API keys.
+- **Security Warning**: A security warning has been added to the settings modal and the README to inform users of the risks of storing API keys in local storage.
 
 ### Changed
 - **Upgraded Gemini Model**: Migrated from `gemini-1.5-flash` to `gemini-3-flash-preview` for enhanced performance and intelligence.

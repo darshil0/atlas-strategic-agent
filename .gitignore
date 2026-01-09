@@ -20,9 +20,6 @@ dist/
 dist-ssr/
 build/
 *.tsbuildinfo
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # --- Logs ---
 logs

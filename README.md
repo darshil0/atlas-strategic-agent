@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V3.1.2
+# 🌌 Atlas Strategic Agent V3.1.3
 
 Atlas is an elite **Autonomous Strategic Agent** designed to bridge the gap between high-level executive intent and actionable enterprise roadmaps. Powered by a multi-agent collaborative core and a premium glassmorphic interface, it doesn't just decompose tasks—it orchestrates intelligence.
 

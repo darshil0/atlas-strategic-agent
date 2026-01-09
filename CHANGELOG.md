@@ -2,7 +2,21 @@
 
 All notable changes to the **Atlas Strategic Agent** are documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1.1] - 2026-01-07
+
+## [3.1.2] - 2026-01-09
+
+### 🛡 Stability & Type Safety
+
+Further hardening of the codebase to ensure robust type safety and runtime stability across the agent ecosystem.
+
+### Fixed
+
+- **Generics Compliance**: Updated `Strategist`, `Analyst`, and `Critic` agents to strictly adhere to `BaseAgent` generic contracts.
+- **Runtime Safety**: Implemented explicit type guards in `A2UIRenderer` to prevent unsafe casting of unknown props.
+- **Dependency Alignment**: Harmonized Gemini SDK usage to the stable `@google/generative-ai` package.
+- **Asset Integrity**: Resolved missing `CloudZap` icon import by migrating to `CloudLightning`.
+- **Code Quality**: Addressed all remaining ESLint warnings including `prefer-const` and unused variable patterns.
+
 
 ### 🛠 Maintenance & Stability
 

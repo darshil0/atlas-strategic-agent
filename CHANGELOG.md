@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.2.0] - 2025-01-10
+
+### Changed
+- **Upgraded Gemini Model**: Migrated from `gemini-1.5-flash` to `gemini-3-flash-preview` for enhanced performance and intelligence.
+- **Updated Dependencies**: Upgraded all `npm` dependencies to their latest versions, ensuring the project is using the most current and secure libraries.
+
+### Fixed
+- **Linting and Formatting**: Resolved all linting issues and formatted the entire codebase to maintain consistency and readability.
+
+---
+
 ## [3.1.5] - 2025-01-09
 
 ### Changed
@@ -104,8 +115,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Project Metadata
 
-**Current Version**: 3.1.5
-**Last Updated**: January 09, 2025
+**Current Version**: 3.2.0
+**Last Updated**: January 10, 2025
 **Maintainer**: Atlas Development Team
 **License**: Advanced Agentic Coding Initiative
 

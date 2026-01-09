@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V3.1.5
+# 🌌 Atlas Strategic Agent V3.2.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -13,7 +13,7 @@
 
 Traditional project management is **reactive**. **Atlas** is **proactive**.
 
-Utilizing a decoupled **Agent Development Kit (ADK)** and the **A2UI Protocol**, Atlas simulates the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini 1.5 Flash API**, it transforms abstract "moonshot" goals into structured, multi-year roadmaps with high-fidelity visual dependency mapping and real-time risk simulation.
+Utilizing a decoupled **Agent Development Kit (ADK)** and the **A2UI Protocol**, Atlas simulates the entire lifecycle of a goal before the first task is assigned. By leveraging the **Google Gemini 3 Flash API**, it transforms abstract "moonshot" goals into structured, multi-year roadmaps with high-fidelity visual dependency mapping and real-time risk simulation.
 
 ---
 
@@ -58,7 +58,7 @@ graph TD
     UI --> Timeline[Roadmap View]
     UI --> Sim[Failure Simulator]
     
-    Orchestrator --> Gemini[Gemini 1.5 Flash]
+    Orchestrator --> Gemini[Gemini 3 Flash]
 ```
 
 ---
@@ -67,7 +67,7 @@ graph TD
 
 | Component | Technology | Description |
 |-----------|-----------|-------------|
-| **Core Intelligence** | Gemini 1.5 Flash | Optimized reasoning engine via `src/services/geminiService.ts` |
+| **Core Intelligence** | Gemini 3 Flash | Optimized reasoning engine via `src/services/geminiService.ts` |
 | **Frontend Framework** | React 19 + Vite | Next-gen reactivity and build speed |
 | **Styling** | Tailwind CSS 3.4 | Locally bundled, minified glassmorphism engine |
 | **Visualization** | XYFlow | Interactive node-based graph rendering |

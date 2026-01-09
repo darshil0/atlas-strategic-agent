@@ -8,7 +8,7 @@ import { Plan, SubTask } from "../types";
 const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
 
 export class AtlasService {
-  private static modelName = "gemini-1.5-flash";
+  private static modelName = "gemini-3-flash-preview";
 
   private static A2UI_INSTRUCTION = `
 Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.

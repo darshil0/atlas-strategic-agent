@@ -59,7 +59,10 @@ export class AnalystAgent extends BaseAgent {
     _prompt: string,
     _context?: StrategyContext,
   ): Promise<R> {
-    const result: AnalystResult = { feasibility: 0.9, notes: "Verified grounding context." };
+    const result: AnalystResult = {
+      feasibility: 0.9,
+      notes: "Verified grounding context.",
+    };
     return result as unknown as R;
   }
 

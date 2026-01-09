@@ -1,4 +1,3 @@
-
 import { Priority } from "../types";
 
 export interface BankTask {

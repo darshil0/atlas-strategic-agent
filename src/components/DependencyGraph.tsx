@@ -38,7 +38,14 @@ type TaskNodeData = {
 type TaskNodeType = Node<TaskNodeData, "taskNode">;
 
 const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
-  const { task, isActive, isBlocked, onNodeClick, isWhatIfEnabled, isInCascade } = data;
+  const {
+    task,
+    isActive,
+    isBlocked,
+    onNodeClick,
+    isWhatIfEnabled,
+    isInCascade,
+  } = data;
 
   const getStatusStyles = () => {
     if (isWhatIfEnabled) {
@@ -81,7 +88,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         getStatusStyles(),
         isActive
           ? "ring-2 ring-blue-500 ring-offset-4 ring-offset-slate-950 scale-110 z-50 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
-          : "hover:border-slate-500"
+          : "hover:border-slate-500",
       )}
     >
       <div className={cn("w-1.5 shrink-0", getPriorityAccent())} />
@@ -89,13 +96,19 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         <Handle type="target" position={Position.Top} className="!opacity-0" />
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center opacity-40 font-mono text-[7px] tracking-[0.2em] uppercase">
-            <span className="bg-slate-950/50 px-1.5 py-0.5 rounded border border-white/5">#{task.id}</span>
-            <span className="truncate max-w-[80px]">{task.category || "STRATEGIC"}</span>
+            <span className="bg-slate-950/50 px-1.5 py-0.5 rounded border border-white/5">
+              #{task.id}
+            </span>
+            <span className="truncate max-w-[80px]">
+              {task.category || "STRATEGIC"}
+            </span>
           </div>
           <p
             className={cn(
               "font-bold leading-snug line-clamp-2 min-h-[2.8em] tracking-tight",
-              task.status === TaskStatus.COMPLETED ? "text-slate-600" : "text-slate-100"
+              task.status === TaskStatus.COMPLETED
+                ? "text-slate-600"
+                : "text-slate-100",
             )}
           >
             {task.description}
@@ -105,7 +118,9 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
               <span
                 className={cn(
                   "w-1 h-1 rounded-full",
-                  task.status === TaskStatus.IN_PROGRESS ? "animate-pulse bg-blue-400" : "bg-slate-600"
+                  task.status === TaskStatus.IN_PROGRESS
+                    ? "animate-pulse bg-blue-400"
+                    : "bg-slate-600",
                 )}
               />
               <span className="text-[7px] uppercase font-black tracking-widest text-slate-500">
@@ -114,7 +129,11 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
             </div>
           </div>
         </div>
-        <Handle type="source" position={Position.Bottom} className="!opacity-0" />
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          className="!opacity-0"
+        />
       </div>
     </motion.div>
   );
@@ -156,7 +175,9 @@ const DependencyGraph = ({
       }
 
       visited.add(id);
-      const depDepths = task.dependencies.map((depId) => getDepth(depId, new Set(visited)));
+      const depDepths = task.dependencies.map((depId) =>
+        getDepth(depId, new Set(visited)),
+      );
       const depth = Math.max(...depDepths, 0) + 1;
       depths[id] = depth;
       return depth;
@@ -205,7 +226,10 @@ const DependencyGraph = ({
           target: task.id,
           animated: complete,
           type: "smoothstep",
-          markerEnd: { type: MarkerType.ArrowClosed, color: complete ? "#3b82f6" : "#1e293b" },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: complete ? "#3b82f6" : "#1e293b",
+          },
           style: {
             stroke: complete ? "#3b82f6" : "#1e293b",
             strokeWidth: 2,
@@ -216,7 +240,15 @@ const DependencyGraph = ({
     });
 
     return { initialNodes: nodes, initialEdges: edges };
-  }, [tasks, activeTaskId, onTaskSelect, isTaskBlocked, isWhatIfEnabled, simulationResult, onSimulateFailure]);
+  }, [
+    tasks,
+    activeTaskId,
+    onTaskSelect,
+    isTaskBlocked,
+    isWhatIfEnabled,
+    simulationResult,
+    onSimulateFailure,
+  ]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

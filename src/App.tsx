@@ -8,13 +8,7 @@ import React, {
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import {
-  Message,
-  Plan,
-  TaskStatus,
-  AgentMode,
-  SubTask,
-} from "./types";
+import { Message, Plan, TaskStatus, AgentMode, SubTask } from "./types";
 import { AtlasService } from "./services/geminiService";
 import { PersistenceService } from "./services/persistenceService";
 import TaskCard from "./components/TaskCard";
@@ -60,8 +54,9 @@ const App: React.FC = () => {
     cascade: string[];
     riskScore: number;
   } | null>(null);
-  const [sidebarView, setSidebarView] =
-    useState<"list" | "graph" | "timeline">("list");
+  const [sidebarView, setSidebarView] = useState<"list" | "graph" | "timeline">(
+    "list",
+  );
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -89,7 +84,11 @@ const App: React.FC = () => {
     PersistenceService.savePlan(currentPlan);
   }, [currentPlan]);
 
-  const addMessage = (role: Message["role"], content: string, a2ui?: string) => {
+  const addMessage = (
+    role: Message["role"],
+    content: string,
+    a2ui?: string,
+  ) => {
     const id = Math.random().toString(36).substr(2, 9);
     setMessages((prev: Message[]) => [
       ...prev,
@@ -208,11 +207,9 @@ const App: React.FC = () => {
         tasks: prev.tasks.map((t: SubTask) =>
           t.id === target
             ? {
-              ...t,
-              dependencies: [
-                ...new Set([...(t.dependencies || []), source]),
-              ],
-            }
+                ...t,
+                dependencies: [...new Set([...(t.dependencies || []), source])],
+              }
             : t,
         ),
       };
@@ -268,9 +265,7 @@ const App: React.FC = () => {
           addMessage(
             "assistant",
             collaboration.text,
-            collaboration.a2ui
-              ? JSON.stringify(collaboration.a2ui)
-              : undefined,
+            collaboration.a2ui ? JSON.stringify(collaboration.a2ui) : undefined,
           );
         } else {
           addMessage(

@@ -1,4 +1,3 @@
-
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { ATLAS_SYSTEM_INSTRUCTION, ENV } from "../config";
 import { Plan, SubTask } from "../types";
@@ -9,7 +8,7 @@ import { Plan, SubTask } from "../types";
 const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
 
 export class AtlasService {
-  private static modelName = 'gemini-1.5-flash';
+  private static modelName = "gemini-1.5-flash";
 
   private static A2UI_INSTRUCTION = `
 Additionally, you are capable of generating native UI components using the A2UI (Agent-to-User Interface) protocol.
@@ -23,7 +22,16 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     });
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: `Request: ${userPrompt}\nDecompose into JSON plan. Categorize by Q/Year. Identify dependencies.` }] }],
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Request: ${userPrompt}\nDecompose into JSON plan. Categorize by Q/Year. Identify dependencies.`,
+            },
+          ],
+        },
+      ],
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -40,15 +48,18 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
                   status: { type: SchemaType.STRING },
                   priority: { type: SchemaType.STRING },
                   category: { type: SchemaType.STRING },
-                  dependencies: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                  dependencies: {
+                    type: SchemaType.ARRAY,
+                    items: { type: SchemaType.STRING },
+                  },
                 },
-                required: ["id", "description", "status"]
-              }
-            }
+                required: ["id", "description", "status"],
+              },
+            },
           },
-          required: ["goal", "tasks"]
-        }
-      }
+          required: ["goal", "tasks"],
+        },
+      },
     });
 
     try {
@@ -63,7 +74,7 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     subtask: SubTask,
     plan: Plan,
     history: string,
-    onChunk?: (text: string) => void
+    onChunk?: (text: string) => void,
   ): Promise<{ text: string; a2ui?: string }> {
     const model = genAI.getGenerativeModel({
       model: this.modelName,
@@ -71,7 +82,16 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
     });
 
     const result = await model.generateContentStream({
-      contents: [{ role: 'user', parts: [{ text: `Goal: ${plan.goal}\nHistory: ${history}\nTask: ${subtask.description}` }] }],
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Goal: ${plan.goal}\nHistory: ${history}\nTask: ${subtask.description}`,
+            },
+          ],
+        },
+      ],
     });
 
     let fullText = "";
@@ -83,19 +103,31 @@ Wrap the A2UI JSON payload in <a2ui></a2ui> tags if user interaction is needed.
 
     const a2uiMatch = fullText.match(/<a2ui>([\s\S]*?)<\/a2ui>/);
     return {
-      text: fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, '').trim(),
-      a2ui: a2uiMatch?.[1]?.trim()
+      text: fullText.replace(/<a2ui>[\s\S]*?<\/a2ui>/g, "").trim(),
+      a2ui: a2uiMatch?.[1]?.trim(),
     };
   }
 
-  static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
+  static async summarizeMission(
+    plan: Plan,
+    executionHistory: string,
+  ): Promise<string> {
     const model = genAI.getGenerativeModel({
       model: this.modelName,
-      systemInstruction: ATLAS_SYSTEM_INSTRUCTION
+      systemInstruction: ATLAS_SYSTEM_INSTRUCTION,
     });
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: `Summarize:\nGoal: ${plan.goal}\nHistory: ${executionHistory}` }] }],
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Summarize:\nGoal: ${plan.goal}\nHistory: ${executionHistory}`,
+            },
+          ],
+        },
+      ],
     });
     const response = await result.response;
     return response.text();

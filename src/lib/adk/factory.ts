@@ -1,9 +1,5 @@
 import { BaseAgent, AgentPersona } from "./types";
-import {
-  StrategistAgent,
-  AnalystAgent,
-  CriticAgent,
-} from "./agents";
+import { StrategistAgent, AnalystAgent, CriticAgent } from "./agents";
 
 /**
  * AgentFactory: Responsibility is to instantiate agents based on personas.

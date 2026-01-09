@@ -48,10 +48,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
     }).sort((a: BankTask, b: BankTask) => a.id.localeCompare(b.id));
   }, [search, selectedTheme]);
 
-  const themes = useMemo(
-    () => Object.keys(THEME_COLORS),
-    [],
-  );
+  const themes = useMemo(() => Object.keys(THEME_COLORS), []);
 
   return (
     <div className="flex flex-col h-full bg-slate-900/90 backdrop-blur-3xl border-l border-slate-800 shadow-3xl">

@@ -86,7 +86,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         "rounded-2xl border transition-all duration-300 group overflow-hidden glass",
         getStatusColor(task.status),
         isActive &&
-        "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20",
+          "scale-[1.02] z-10 border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/20",
       )}
     >
       <div onClick={onClick} className="p-3 cursor-pointer">
@@ -216,8 +216,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                       rel="noreferrer"
                       className="text-[10px] text-blue-400 hover:underline truncate max-w-[150px] inline-flex items-center gap-1"
                     >
-                      <LinkIcon className="w-2.5 h-2.5" />{" "}
-                      {c.title || c.uri}
+                      <LinkIcon className="w-2.5 h-2.5" /> {c.title || c.uri}
                     </a>
                   ))}
                 </div>

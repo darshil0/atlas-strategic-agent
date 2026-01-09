@@ -181,11 +181,12 @@ atlas-strategic-agent/
 
 ## 🗺 Roadmap
 
+- [ ] **V4.0.0**: Real-time Multi-User Collaboration (WebSockets)
+- [x] **V3.2.0**: Direct GitHub/Jira Integration
 - [x] **V3.1.5**: Performance Overhaul (Local CSS Build Integration)
 - [x] **V3.1.4**: Runtime Hardening (Safe JSON Parsing & Env Validation)
 - [x] **V3.1.3**: Multi-Agent Synthesis (Decoupled ADK Implementation)
-- [x] **V3.2.0**: Direct GitHub/Jira Integration
-- [ ] **V4.0.0**: Real-time Multi-User Collaboration (WebSockets)
+
 
 ### Security Warning
 

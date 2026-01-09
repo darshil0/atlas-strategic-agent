@@ -118,15 +118,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## Project Metadata
-
-**Current Version**: 3.2.0
-**Last Updated**: January 10, 2025
-**Maintainer**: Atlas Development Team
-**License**: Advanced Agentic Coding Initiative
-
----
-
 ## Upcoming Features
 
 V4.0.0 (Roadmap)

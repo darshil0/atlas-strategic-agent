@@ -55,11 +55,15 @@ export class MissionControl {
     }
 
     const ui = strategist.getInitialUI();
-    const analysis = await analyst.execute("Verify grounding", proposal as AgentExecutionContext);
+    const analysis = await analyst.execute(
+      "Verify grounding",
+      proposal as AgentExecutionContext,
+    );
 
     return {
-      text: `Synthesis concluded. Refined via ${attempts} iterations. Analysis: ${(analysis as { notes?: string }).notes ?? "No analysis notes."
-        }`,
+      text: `Synthesis concluded. Refined via ${attempts} iterations. Analysis: ${
+        (analysis as { notes?: string }).notes ?? "No analysis notes."
+      }`,
       a2ui: ui,
     };
   }

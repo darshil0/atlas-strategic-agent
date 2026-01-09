@@ -30,12 +30,11 @@ import {
   Zap,
   Settings,
   Database,
-  Share2,
   ChevronRight,
   Send,
   Activity,
   ShieldCheck,
-  CloudZap,
+  CloudLightning,
   Terminal,
   FileJson,
 } from "lucide-react";
@@ -123,7 +122,7 @@ const App: React.FC = () => {
   const executePlan = async (plan: Plan) => {
     setCurrentPlan(plan);
     let history = "";
-    let latestTasks = [...plan.tasks];
+    const latestTasks = [...plan.tasks];
 
     const getNextTask = () =>
       latestTasks.find(
@@ -209,11 +208,11 @@ const App: React.FC = () => {
         tasks: prev.tasks.map((t: SubTask) =>
           t.id === target
             ? {
-                ...t,
-                dependencies: [
-                  ...new Set([...(t.dependencies || []), source]),
-                ],
-              }
+              ...t,
+              dependencies: [
+                ...new Set([...(t.dependencies || []), source]),
+              ],
+            }
             : t,
         ),
       };
@@ -482,7 +481,7 @@ const App: React.FC = () => {
               </AnimatePresence>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-700">
-                <CloudZap className="w-12 h-12 mb-4 opacity-20" />
+                <CloudLightning className="w-12 h-12 mb-4 opacity-20" />
                 <p className="text-[10px] font-black uppercase tracking-widest">
                   Awaiting Command...
                 </p>
@@ -519,7 +518,7 @@ const App: React.FC = () => {
                   transition={{ duration: 4, repeat: Infinity }}
                   className="w-32 h-32 bg-blue-600/5 rounded-[4rem] border border-blue-500/10 flex items-center justify-center mb-10"
                 >
-                  <CloudZap className="w-16 h-16 text-blue-500/40" />
+                  <CloudLightning className="w-16 h-16 text-blue-500/40" />
                 </motion.div>
                 <h2 className="text-4xl font-bold font-display text-white mb-6">
                   Strategic <span className="text-blue-500">Orchestrator.</span>

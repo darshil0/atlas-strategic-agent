@@ -1,4 +1,4 @@
-import { UIBuilder } from "./index";
+import { UIBuilder } from "./uiBuilder";
 import { BaseAgent } from "./types";
 import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
 

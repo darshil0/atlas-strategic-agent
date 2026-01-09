@@ -22,8 +22,8 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
         switch (type) {
             case A2UIComponentType.TEXT:
                 return (
-                    <p key={id} className={props.className || 'text-slate-300' + " text-sm"}>
-                        {props.text}
+                    <p key={id} className={(props.className as string) || 'text-slate-300' + " text-sm"}>
+                        {props.text as string}
                     </p>
                 );
 
@@ -37,14 +37,14 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                             : 'glass glass-hover text-slate-300'
                             } ${props.className || ''}`}
                     >
-                        {props.label}
+                        {props.label as string}
                     </button>
                 );
 
             case A2UIComponentType.CARD:
                 return (
-                    <div key={id} className={`p-5 rounded-2xl glass ${props.className || ''}`}>
-                        {props.title && <h3 className="font-display text-sm font-black text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-2">{props.title}</h3>}
+                    <div key={id} className={`p-5 rounded-2xl glass ${(props.className as string) || ''}`}>
+                        {props.title && <h3 className="font-display text-sm font-black text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-2">{props.title as string}</h3>}
                         {element.children && (
                             <div className="space-y-4">
                                 {element.children.map(child => renderElement(child))}
@@ -57,13 +57,13 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                 return (
                     <div key={id} className="w-full space-y-1">
                         <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                            <span>{props.label}</span>
-                            <span>{props.value}%</span>
+                            <span>{props.label as string}</span>
+                            <span>{props.value as number}%</span>
                         </div>
                         <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                             <div
                                 className="h-full bg-blue-500 transition-all duration-500"
-                                style={{ width: `${props.value}%` }}
+                                style={{ width: `${props.value as number}%` }}
                             ></div>
                         </div>
                     </div>
@@ -72,10 +72,10 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
             case A2UIComponentType.INPUT:
                 return (
                     <div key={id} className="space-y-1.5 w-full">
-                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label}</label>}
+                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label as string}</label>}
                         <input
-                            type={props.inputType || 'text'}
-                            placeholder={props.placeholder}
+                            type={(props.inputType as string) || 'text'}
+                            placeholder={props.placeholder as string}
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 transition-colors"
                             onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleAction('input_blur', { value: e.target.value })}
                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,17 +129,17 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({ elements, onEvent })
                                 </svg>
                             )}
                         </div>
-                        <span className={`text-sm ${props.checked ? 'text-slate-300' : 'text-slate-500 group-hover:text-slate-400'}`}>{props.label}</span>
+                        <span className={`text-sm ${props.checked ? 'text-slate-300' : 'text-slate-500 group-hover:text-slate-400'}`}>{props.label as string}</span>
                     </div>
                 );
 
             case A2UIComponentType.SELECT:
                 return (
                     <div key={id} className="space-y-1.5 w-full">
-                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label}</label>}
+                        {props.label && <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{props.label as string}</label>}
                         <select
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-600 appearance-none"
-                            value={props.value}
+                            value={props.value as string | number | readonly string[] | undefined}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleAction('select_change', { value: e.target.value })}
                         >
                             {props.options?.map((opt: any) => (

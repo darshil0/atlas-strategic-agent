@@ -19,11 +19,12 @@ export class StrategistAgent extends BaseAgent {
       .build();
   }
 
-  async execute(
+  async execute<R = unknown>(
     _prompt: string,
     context?: StrategyContext,
-  ): Promise<StrategyContext> {
-    return context ?? { plan: "Draft Strategy" };
+  ): Promise<R> {
+    const result = context ?? { plan: "Draft Strategy" };
+    return result as unknown as R;
   }
 
   getInitialUI(): A2UIMessage {
@@ -54,11 +55,12 @@ export class AnalystAgent extends BaseAgent {
       .build();
   }
 
-  async execute(
+  async execute<R = unknown>(
     _prompt: string,
     _context?: StrategyContext,
-  ): Promise<AnalystResult> {
-    return { feasibility: 0.9, notes: "Verified grounding context." };
+  ): Promise<R> {
+    const result: AnalystResult = { feasibility: 0.9, notes: "Verified grounding context." };
+    return result as unknown as R;
   }
 
   getInitialUI(): A2UIMessage {
@@ -86,11 +88,12 @@ export class CriticAgent extends BaseAgent {
       .build();
   }
 
-  async execute(
+  async execute<R = unknown>(
     _prompt: string,
     _context?: StrategyContext,
-  ): Promise<CriticResult> {
-    return { score: 90, risks: [] };
+  ): Promise<R> {
+    const result: CriticResult = { score: 90, risks: [] };
+    return result as unknown as R;
   }
 
   getInitialUI(): A2UIMessage {

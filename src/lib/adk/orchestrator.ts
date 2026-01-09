@@ -1,5 +1,5 @@
 ﻿import { A2UIMessage } from "./protocol";
-import { BaseAgent, AgentPersona } from "./types";
+import { BaseAgent, AgentPersona, AgentExecutionContext } from "./types";
 import type { Plan } from "../../types";
 import { AgentFactory } from "./factory";
 
@@ -34,7 +34,7 @@ export class MissionControl {
 
   async processCollaborativeInput(
     goal: string,
-    context?: unknown,
+    context?: AgentExecutionContext,
   ): Promise<{ text: string; a2ui?: A2UIMessage }> {
     const strategist = this.getAgent(AgentPersona.STRATEGIST);
     const analyst = this.getAgent(AgentPersona.ANALYST);
@@ -55,12 +55,11 @@ export class MissionControl {
     }
 
     const ui = strategist.getInitialUI();
-    const analysis = await analyst.execute("Verify grounding", proposal);
+    const analysis = await analyst.execute("Verify grounding", proposal as AgentExecutionContext);
 
     return {
-      text: `Synthesis concluded. Refined via ${attempts} iterations. Analysis: ${
-        (analysis as { notes?: string }).notes ?? "No analysis notes."
-      }`,
+      text: `Synthesis concluded. Refined via ${attempts} iterations. Analysis: ${(analysis as { notes?: string }).notes ?? "No analysis notes."
+        }`,
       a2ui: ui,
     };
   }
@@ -97,7 +96,7 @@ export class MissionControl {
     const critic = this.getAgent(AgentPersona.CRITIC);
     return critic.execute<{ score: number; feedback: string[] }>(
       "Evaluate plan risks",
-      plan,
+      plan as AgentExecutionContext,
     );
   }
 }

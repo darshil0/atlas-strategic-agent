@@ -5,6 +5,24 @@ All notable changes to the **Atlas Strategic Agent** are documented in this file
 
 
 
+
+## [3.1.5] - 2026-01-09
+
+### ⚡ Performance & Configuration
+
+Major optimization of the frontend build pipeline and dependency configuration.
+
+### Added
+- **Local CSS Build System**: Implemented a fully bundled Tailwind CSS pipeline using `postcss` and `vite`, replacing the runtime CDN script.
+  - Created `tailwind.config.ts`, `postcss.config.js`, and `src/index.css`.
+  - Moved global glassmorphism styles and animations to `src/index.css`.
+
+### Changed
+- **Config Modernization**:
+  - Updated `eslint.config.js` to optimized flat config structure.
+  - Updated `package.json` lint scripts to use modern `eslint .`.
+- **Index Cleanup**: Removed all legacy styling blocks and CDN scripts from `index.html`.
+
 ## [3.1.4] - 2026-01-09
 
 ### 🛡 Robustness & Build Stability

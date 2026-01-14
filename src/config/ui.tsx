@@ -7,17 +7,32 @@ import {
   XCircle,
   Lock,
   Clock,
+  AlertCircle,
 } from "lucide-react";
 
-type IconKey = TaskStatus;
+/**
+ * Task Status Icons for TaskCard and DependencyGraph components
+ * Pre-rendered React components with consistent sizing and theme colors
+ */
+const createIcon = (icon: React.ReactElement, color: string): React.ReactElement => (
+  React.cloneElement(icon, { className: `w-5 h-5 ${color}` })
+);
 
-export const ICONS: Record<IconKey, React.ReactNode> = {
-  [TaskStatus.PENDING]: <Circle className="w-4 h-4 text-slate-400" />,
-  [TaskStatus.IN_PROGRESS]: (
-    <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
+export const ICONS: Record<TaskStatus, React.ReactNode> = {
+  [TaskStatus.PENDING]: createIcon(<Circle />, "text-slate-400"),
+  [TaskStatus.IN_PROGRESS]: createIcon(
+    <Loader2 />,
+    "text-blue-400 animate-spin"
   ),
-  [TaskStatus.COMPLETED]: <CheckCircle2 className="w-4 h-4 text-emerald-400" />,
-  [TaskStatus.FAILED]: <XCircle className="w-4 h-4 text-rose-400" />,
-  [TaskStatus.BLOCKED]: <Lock className="w-4 h-4 text-slate-600" />,
-  [TaskStatus.WAITING]: <Clock className="w-4 h-4 text-amber-400" />,
+  [TaskStatus.COMPLETED]: createIcon(<CheckCircle2 />, "text-emerald-400"),
+  [TaskStatus.FAILED]: createIcon(<XCircle />, "text-rose-400"),
+  [TaskStatus.BLOCKED]: createIcon(<Lock />, "text-slate-600"),
+  [TaskStatus.WAITING]: createIcon(<Clock />, "text-amber-400"),
+} as const;
+
+/**
+ * Dynamic icon accessor with fallback
+ */
+export const getTaskIcon = (status: TaskStatus): React.ReactNode => {
+  return ICONS[status] || <AlertCircle className="w-5 h-5 text-slate-500" />;
 };

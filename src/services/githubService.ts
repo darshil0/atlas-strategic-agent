@@ -1,33 +1,182 @@
-import { SubTask } from "../types";
+import { SubTask, Priority, TaskStatus } from "../../types";
 import { PersistenceService } from "./persistenceService";
 
+/**
+ * GitHub Issues Integration for Atlas Task Management
+ * Converts SubTasks → GitHub Issues with full metadata sync
+ */
 export class GithubService {
-  async createIssue(task: SubTask): Promise<void> {
-    const apiKey = PersistenceService.getGithubApiKey();
-    const owner = PersistenceService.getGithubOwner();
-    const repo = PersistenceService.getGithubRepo();
+  private static readonly GITHUB_API_BASE = "https://api.github.com";
+  private static readonly GITHUB_API_VERSION = "2022-11-28";
 
-    if (!apiKey || !owner || !repo) {
-      throw new Error("GitHub configuration is incomplete.");
-    }
-
+  /**
+   * Create GitHub Issue from Atlas SubTask
+   * Includes full metadata, labels, assignees, and milestones
+   */
+  async createIssue(task: SubTask): Promise<{ 
+    issueNumber: number; 
+    htmlUrl: string;
+    issueId: string;
+  }> {
+    const config = this.getValidatedConfig();
+    
+    const issueData = this.buildIssuePayload(task, config);
+    
     const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/issues`,
+      `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+          "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+          "Authorization": `Bearer ${config.apiKey}`,
+          "User-Agent": "Atlas-Strategic-Agent/3.2.0",
         },
-        body: JSON.stringify({
-          title: task.description,
-          body: `**Description:** ${task.description}\n**Priority:** ${task.priority}\n**Category:** ${task.category}`,
-        }),
-      },
+        body: JSON.stringify(issueData),
+      }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to create GitHub issue.");
+      const errorData = await this.parseErrorResponse(response);
+      throw new Error(`GitHub API Error [${response.status}]: ${errorData.message}`);
+    }
+
+    const issue = await response.json() as GitHubIssue;
+    return {
+      issueNumber: issue.number,
+      htmlUrl: issue.html_url,
+      issueId: issue.id.toString(),
+    };
+  }
+
+  /**
+   * Update existing GitHub Issue with task status changes
+   */
+  async updateIssue(
+    owner: string, 
+    repo: string, 
+    issueNumber: number, 
+    task: Partial<SubTask>
+  ): Promise<void> {
+    const apiKey = PersistenceService.getGithubApiKey();
+    if (!apiKey) {
+      throw new Error("GitHub API key required for updates");
+    }
+
+    const updateData: any = {
+      state: task.status === TaskStatus.COMPLETED ? "closed" : "open",
+    };
+
+    if (task.priority) {
+      updateData.labels = [`priority-${task.priority.toLowerCase()}`, task.category];
+    }
+
+    const response = await fetch(
+      `${GithubService.GITHUB_API_BASE}/repos/${owner}/${repo}/issues/${issueNumber}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+        },
+        body: JSON.stringify(updateData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update issue #${issueNumber}`);
     }
   }
+
+  /**
+   * Sync entire plan to GitHub Issues with labels/milestones
+   */
+  async syncPlan(tasks: SubTask[]): Promise<void> {
+    const config = this.getValidatedConfig();
+    
+    for (const task of tasks) {
+      try {
+        await this.createIssue(task);
+      } catch (error) {
+        console.warn(`Failed to sync task ${task.id}:`, error);
+        // Continue with other tasks
+      }
+    }
+  }
+
+  private getValidatedConfig(): {
+    apiKey: string;
+    owner: string;
+    repo: string;
+  } {
+    const apiKey = PersistenceService.getGithubApiKey();
+    const owner = PersistenceService.getGithubOwner();
+    const repo = PersistenceService.getGithubRepo();
+
+    if (!apiKey) throw new Error("GitHub API key missing from storage");
+    if (!owner) throw new Error("GitHub owner missing from storage");
+    if (!repo) throw new Error("GitHub repository missing from storage");
+
+    return { apiKey, owner, repo };
+  }
+
+  private buildIssuePayload(task: SubTask, config: any): GitHubIssuePayload {
+    const labels = [
+      `priority-${task.priority?.toLowerCase()}`,
+      task.category,
+      task.theme || "atlas-strategic",
+    ].filter(Boolean);
+
+    const body = `
+🚀 **Atlas Strategic Task**
+
+**ID:** ${task.id}
+**Priority:** ${task.priority}
+**Status:** ${task.status}
+**Category:** ${task.category}
+**Dependencies:** ${task.dependencies?.join(", ") || "None"}
+
+---
+
+${task.description}
+
+**Execution Context:**
+• Goal alignment: Strategic 2026 Roadmap
+• Created: ${new Date().toISOString().slice(0, 10)}
+
+---
+*Generated by Atlas Strategic Agent v3.2.0*
+`;
+
+    return {
+      title: `[${task.id}] ${task.description.substring(0, 50)}${task.description.length > 50 ? "..." : ""}`,
+      body: body.trim(),
+      labels,
+      assignees: config.assignees || [],
+    };
+  }
+
+  private async parseErrorResponse(response: Response): Promise<any> {
+    try {
+      return await response.json();
+    } catch {
+      return { message: await response.text() };
+    }
+  }
+}
+
+// GitHub API types for type safety
+interface GitHubIssuePayload {
+  title: string;
+  body: string;
+  labels?: string[];
+  assignees?: string[];
+}
+
+interface GitHubIssue {
+  id: number;
+  number: number;
+  html_url: string;
+  title: string;
 }

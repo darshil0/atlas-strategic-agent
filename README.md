@@ -1,6 +1,6 @@
 # 🌌 Atlas Strategic Agent
 ### *Executive Vision → Executable Enterprise Roadmaps*
-**Atlas** is an AI-native orchestration platform that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization.
+**Atlas** is a multimodel agent that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization.
 
 ---
 

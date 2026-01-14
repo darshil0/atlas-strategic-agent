@@ -113,7 +113,7 @@ Jira: domain.atlassian.net + API Token + email
 
 **Environment Variables**:
 - `VITE_GEMINI_API_KEY` - Google Gemini API key (required)
-- `ENV.DEBUG_MODE` - Enable structured logging (optional)
+- `VITE_DEBUG_MODE` - Enable structured logging (optional, boolean)
 
 ---
 
@@ -294,6 +294,8 @@ Built with:
 ![GitHub forks](https://img.shields.io/github/forks/darshil0/atlas-strategic-agent?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/darshil0/atlas-strategic-agent)
 ![GitHub license](https://img.shields.io/github/license/darshil0/atlas-strategic-agent)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
+![React](https://img.shields.io/badge/React-19-61dafb)
 
 ---
 

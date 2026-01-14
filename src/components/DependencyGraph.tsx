@@ -1,4 +1,4 @@
-﻿import { useMemo, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ReactFlow,
@@ -50,13 +50,15 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
 
   const getStatusStyles = () => {
     if (isWhatIfEnabled) {
-      if (isInCascade)
+      if (isInCascade) {
         return "border-rose-500 bg-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.4)] ring-1 ring-rose-500";
+      }
       return "border-slate-800 bg-slate-900/40 opacity-30 grayscale cursor-not-allowed";
     }
 
-    if (isBlocked && task.status === TaskStatus.PENDING)
+    if (isBlocked && task.status === TaskStatus.PENDING) {
       return "border-slate-800 bg-slate-950/60 opacity-50 grayscale cursor-not-allowed";
+    }
 
     switch (task.status) {
       case TaskStatus.COMPLETED:
@@ -83,7 +85,11 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
 
   return (
     <motion.div
-      onClick={() => !isWhatIfEnabled && onNodeClick(task.id)}
+      onClick={() => {
+        if (!isWhatIfEnabled) {
+          onNodeClick(task.id);
+        }
+      }}
       className={cn(
         "flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 backdrop-blur-3xl select-none relative",
         getStatusStyles(),
@@ -192,8 +198,8 @@ const DependencyGraph = ({
     });
 
     const nodes: Node<TaskNodeData, "taskNode">[] = tasks.map((task) => {
-      const depth = depths[task.id] || 0;
-      const group = depthGroups[depth] || [];
+      const depth = depths[task.id] ?? 0;
+      const group = depthGroups[depth] ?? [];
       const i = group.indexOf(task.id);
       const offset = (i - (group.length - 1) / 2) * 260;
 
@@ -210,7 +216,7 @@ const DependencyGraph = ({
               ? onSimulateFailure
               : onTaskSelect,
           isWhatIfEnabled,
-          isInCascade: (simulationResult?.cascade || []).includes(task.id),
+          isInCascade: (simulationResult?.cascade ?? []).includes(task.id),
         },
       };
     });
@@ -271,6 +277,12 @@ const DependencyGraph = ({
         fitViewOptions={{ padding: 0.3 }}
         minZoom={0.05}
         maxZoom={2}
+        // If you intend to allow user connections, wire through onConnect:
+        // onConnect={(connection) => {
+        //   if (onConnect && connection.source && connection.target) {
+        //     onConnect(connection.source, connection.target);
+        //   }
+        // }}
       >
         <Background
           variant={BackgroundVariant.Lines}

@@ -1,20 +1,22 @@
-**Atlas** transforms executive vision into executable enterprise roadmaps through **multi-agent collaborative intelligence** and a premium glassmorphic interface.
+# Atlas Strategic Agent
 
-***
+**Atlas** transforms executive vision into executable enterprise roadmaps through multi-agent collaborative intelligence and a premium glassmorphic interface.
 
-## 🎯 **Executive Summary**
+---
+
+## 🎯 Executive Summary
 
 **Traditional PM = Reactive** → **Atlas = Proactive Strategic Intelligence**
 
-Atlas bridges high-level goals → actionable roadmaps using:
+Atlas bridges high-level goals to actionable roadmaps using:
 - **Multi-Agent Core** (Strategist + Analyst + Critic)  
 - **A2UI Protocol** (Native agent UI generation)
-- **Gemini 3 Flash** (Structured JSON reasoning)
+- **Gemini Flash** (Structured JSON reasoning)
 - **Live Dependency Graph** + **What-If Simulation**
 
-***
+---
 
-## 🧠 **Architecture Overview**
+## 🧠 Architecture Overview
 
 ```
 Executive Intent → MissionControl → Multi-Agent Synthesis → Strategic Roadmap
@@ -31,9 +33,9 @@ Analyst   → Feasibility scoring + data validation
 Critic    → Risk analysis + optimization suggestions
 ```
 
-***
+---
 
-## 🚀 **Quick Start**
+## 🚀 Quick Start
 
 ```bash
 # Clone & Install
@@ -56,9 +58,9 @@ npm run dev
 "4-day workweek rollout"
 ```
 
-***
+---
 
-## ✨ **Key Features**
+## ✨ Key Features
 
 | Feature | Status | Description |
 |---------|--------|-------------|
@@ -71,21 +73,19 @@ npm run dev
 | **Export** | ✅ Mermaid/JSON | Copy-paste ready diagrams |
 | **TaskBank** | ✅ 90 Tasks | Pre-loaded 2026 strategic objectives |
 
-***
+---
 
-## 🛠 **Tech Stack**
+## 🛠 Tech Stack
 
-```
-Frontend: React 19 + Vite + TailwindCSS 3.4 + Framer Motion
-Backend: Google Gemini 3 Flash (JSON Schema)
-ADK: Custom Agent Development Kit (A2UI Protocol)
-Persistence: Secure localStorage + API key encoding
-Integrations: GitHub Issues API v3 + Jira Cloud REST v3
-```
+**Frontend**: React 19 + Vite + TailwindCSS 3.4 + Framer Motion  
+**Backend**: Google Gemini Flash (JSON Schema)  
+**ADK**: Custom Agent Development Kit (A2UI Protocol)  
+**Persistence**: Secure localStorage + API key encoding  
+**Integrations**: GitHub Issues API v3 + Jira Cloud REST v3
 
-***
+---
 
-## 📱 **User Experience**
+## 📱 User Experience
 
 1. **Input Goal** → "Establish Singapore APAC HQ Q2 2026"
 2. **Multi-Agent Synthesis** → Strategist/Analyst/Critic collaborate
@@ -93,9 +93,9 @@ Integrations: GitHub Issues API v3 + Jira Cloud REST v3
 4. **Risk Simulation** → What-if failure analysis
 5. **Export** → GitHub Issues / Jira Tickets / Mermaid diagram
 
-***
+---
 
-## 🔧 **Configuration**
+## 🔧 Configuration
 
 **.env** (required):
 ```env
@@ -105,12 +105,12 @@ VITE_GEMINI_API_KEY=AIzaSy...your_key_here
 **GitHub/Jira** (optional, via Settings):
 ```
 GitHub: owner/repo + Personal Access Token
-Jira:  domain.atlassian.net + API Token + email
+Jira: domain.atlassian.net + API Token + email
 ```
 
-***
+---
 
-## 🧪 **Development**
+## 🧪 Development
 
 ```bash
 npm run dev      # Development server
@@ -121,9 +121,9 @@ npm run lint     # ESLint + Prettier
 npm run type     # Strict TypeScript
 ```
 
-***
+---
 
-## 📂 **Production Deployment**
+## 📂 Production Deployment
 
 ```bash
 # Vercel (Recommended)
@@ -138,60 +138,58 @@ netlify deploy --prod --dir=dist
 npm run build && npx serve dist
 ```
 
-***
+---
 
-## 🎨 **Design System**
+## 🎨 Design System
 
 **Glassmorphism 2.0**:
-```
-- backdrop-blur-[3xl] + slate-950/20
-- Gradient borders (blue-500/20 → slate-800/50)  
+- `backdrop-blur-3xl` + `slate-950/20`
+- Gradient borders (`blue-500/20` → `slate-800/50`)  
 - Micro-animations (Framer Motion layout transitions)
 - Tailwind local CSS build (zero runtime overhead)
-```
 
-***
+---
 
-## 🔒 **Security Notes**
+## 🔒 Security Notes
 
 ⚠️ **Browser API Keys**: localStorage encoded (btoa) but visible to dev tools
-```
-✅ API keys auto-obfuscated
-✅ .env → Vite client-side only (VITE_* prefix)
-⚠️  Production: Use backend proxy endpoints
-```
 
-***
+- ✅ API keys auto-obfuscated
+- ✅ .env → Vite client-side only (VITE_* prefix)
+- ⚠️ Production: Use backend proxy endpoints
 
-## 📈 **Roadmap V3.2.x**
+---
 
-```
-✅ V3.2.0 - GitHub/Jira Integration + Bulk Sync
-✅ V3.1.5 - Performance (Local CSS + Virtualized Graph)
-✅ V3.1.4 - A2UI Streaming + JSON Schema Enforcement  
-✅ V3.1.3 - Multi-Agent ADK Decoupling
+## 📈 Roadmap
 
-⏳ V4.0.0 - WebSocket Multi-User + Live Collaboration
-```
+- ✅ **v3.2.0** - GitHub/Jira Integration + Bulk Sync
+- ✅ **v3.1.5** - Performance (Local CSS + Virtualized Graph)
+- ✅ **v3.1.4** - A2UI Streaming + JSON Schema Enforcement  
+- ✅ **v3.1.3** - Multi-Agent ADK Decoupling
+- ⏳ **v4.0.0** - WebSocket Multi-User + Live Collaboration
 
-***
+---
 
-## 🤝 **License**
+## 🤝 Contributing
 
-```
-Advanced Agentic Coding Initiative
-MIT License (see LICENSE)
-Commercial use permitted with attribution
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-***
+---
 
-**Atlas Strategic Agent V3.2.0** - *Orchestrating enterprise intelligence at scale.* 
+## 📄 License
 
-***
+MIT License - see [LICENSE](LICENSE) file for details.
 
-⭐ **Star on GitHub** → [darshil0/atlas-strategic-agent](https://github.com/darshil0/atlas-strategic-agent)  
-🐛 **Issues** → GitHub Issues  
-📖 **Source** → Inline architecture diagrams + TypeScript docs
+Advanced Agentic Coding Initiative. Commercial use permitted with attribution.
+
+---
+
+## 🔗 Links
+
+- **GitHub Repository**: [darshil0/atlas-strategic-agent](https://github.com/darshil0/atlas-strategic-agent)  
+- **Issues**: [GitHub Issues](https://github.com/darshil0/atlas-strategic-agent/issues)  
+- **Documentation**: Inline architecture diagrams + TypeScript docs
+
+---
 
 *Transforming executive vision into executable reality.*

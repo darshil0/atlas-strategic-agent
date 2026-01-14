@@ -1,9 +1,10 @@
+/**
+ * AgentFactory: Creates specialized agents by persona
+ * Exhaustive pattern matching with TypeScript never type safety
+ */
 import { BaseAgent, AgentPersona } from "./types";
 import { StrategistAgent, AnalystAgent, CriticAgent } from "./agents";
 
-/**
- * AgentFactory: Responsibility is to instantiate agents based on personas.
- */
 export class AgentFactory {
   static create(persona: AgentPersona): BaseAgent {
     switch (persona) {
@@ -14,10 +15,9 @@ export class AgentFactory {
       case AgentPersona.CRITIC:
         return new CriticAgent();
       default: {
-        // Exhaustiveness check: if a new enum member is added and not handled above,
-        // TypeScript will flag this line.
+        // PERFECT: Exhaustiveness check catches new enum values
         const _exhaustiveCheck: never = persona;
-        throw new Error(`Unknown persona: ${_exhaustiveCheck}`);
+        throw new Error(`Unknown agent persona: ${_exhaustiveCheck}`);
       }
     }
   }

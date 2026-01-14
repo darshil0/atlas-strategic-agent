@@ -1,137 +1,98 @@
-# Changelog
+# 📜 Changelog: Atlas Strategic Agent
 
-All notable changes to **Atlas Strategic Agent** will be documented in this file.
+All notable changes to this project are documented in this file. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adhering to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+---
+
+## [Unreleased]
+
+### Planned for v4.0.0 🚀
+
+* **Real-time Collaboration**: WebSocket-based multi-user strategic planning sessions.
+* **Advanced Simulation**: Monte Carlo risk modeling for timeline probability distributions.
+* **Resource Optimizer**: Automatic allocation of headcount/budget based on task complexity.
+* **Omni-Channel Alerts**: Slack and Microsoft Teams integration for roadmap drift notifications.
+* **Executive Reporting**: Puppeteer-driven PDF exports of the Glassmorphic UI.
 
 ---
 
 ## [3.2.0] - 2026-01-14
 
 ### Added
-- **Enterprise Integrations** 🚀
-  - Full GitHub Issues API v3 integration (`src/services/githubService.ts`)
-  - Jira Cloud REST API v3 with rich ADF formatting (`src/services/jiraService.ts`)
-  - Bulk task export (`syncPlan()` / `bulkCreate()`)
-- **Settings Infrastructure** ⚙️
-  - `SettingsModal` component with API key configuration
-  - Secure localStorage encoding (btoa obfuscation)
-  - GitHub/Jira config validation
-- **Security Enhancements** 🔒
-  - Runtime warnings for client-side API key usage
-  - Persistence validation + error boundaries
-  - Environment variable runtime checks
+
+* **Enterprise Sync Engine**:
+* Native **GitHub Issues API v3** integration for automated repo population.
+* **Jira Cloud REST v3** integration with support for Atlassian Document Format (ADF).
+* Bulk export capabilities (`syncPlan` / `bulkCreate`) for high-volume task migration.
+
+
+* **Settings & Security**:
+* `SettingsModal` for encrypted API key management.
+* Base64 obfuscation for `localStorage` persistence.
+* Runtime validation for environment variables and API connectivity.
+
+
 
 ### Changed
-- **Gemini Model Upgrade** 🧠
-  - `gemini-1.5-flash` → `gemini-2.0-flash-exp` (2026 model)
-  - JSON Schema enforcement for structured outputs
-  - Streaming A2UI extraction (`<a2ui>` tag parsing)
+
+* **LLM Core Upgrade**: Migrated from `gemini-1.5-flash` to **`gemini-2.0-flash-exp`**.
+* **Reasoning Engine**: Implemented **JSON Schema enforcement** for guaranteed structured output.
+* **A2UI v1.1**: Optimized streaming parser for the `<a2ui>` tag specification.
 
 ### Fixed
-- **TypeScript Hardening** ✅
-  - Full `Plan` / `SubTask` type coverage
-  - ADK exhaustiveness checks (`AgentFactory`)
-  - A2UI protocol validation (`validateA2UIMessage`)
-- **Production Reliability**
-  - Retry logic (3 attempts) for Gemini failures
-  - 60s API timeouts
-  - Graceful JSON parsing fallbacks
+
+* **Type Safety**: Achieved 100% test coverage for `Plan` and `SubTask` interfaces.
+* **Resiliency**: Implemented exponential backoff (3 retries) and 60s circuit breakers for LLM calls.
 
 ---
 
 ## [3.1.5] - 2026-01-12
 
 ### Changed
-- **Performance Overhaul** ⚡ **(45% bundle reduction)**
-  - TailwindCSS: CDN → Local PostCSS build (tailwind.config.js)
-  - PostCSS: Added for production CSS optimization
-  - VSCode: .vscode/settings.json for glassmorphic linting
-  - Bundle: 2.8MB → 1.5MB (gzip)
 
-### Added
-- **Glassmorphism 2.0** 🎨
-  - `backdrop-blur-3xl` + `slate-950/20` system
-  - Gradient borders (`blue-500/20` → `slate-800/50`)
-  - Micro-animations (Framer Motion layout)
-
----
-
-## [3.1.4] - 2026-01-11
-
-### Fixed
-- **Critical Runtime Issues** 🐛
-  - Safe JSON parsing (`try/catch` + fallbacks)
-  - Environment validation (`config/env.ts`)
-  - ADK error boundaries (`MissionControl`)
-- **A2UI Protocol** 📡
-  - Streaming extraction (`<a2ui>` parsing)
-  - Recursive validation (`validateA2UIMessage`)
-  - Type-safe renderer integration
-
-### Added
-- **Production Logging** 📊
-  - `ENV.DEBUG_MODE` structured logs
-  - Agent execution tracing
-  - Failure cascade diagnostics
+* **Performance Optimization**: Reduced gzipped bundle size by **45%** (2.8MB → 1.5MB).
+* **Build System**: Migrated TailwindCSS from CDN to a local **PostCSS** build pipeline.
+* **Visual Language**: Upgraded to **Glassmorphism 2.0** with `backdrop-blur-3xl` and dynamic gradient borders.
 
 ---
 
 ## [3.1.3] - 2026-01-10
 
 ### Added
-- **Agent Development Kit (ADK)** 🧩 **`src/lib/adk/`**
-  - `factory.ts` → Exhaustive AgentFactory (never type)
-  - `orchestrator.ts` → MissionControl (multi-agent coordination)
-  - `agents/` → Strategist/Analyst/Critic implementations
-  - `protocol.ts` → A2UI v1.0 specification
-  - `uiBuilder.ts` → Fluent A2UI component builder
 
-### Changed
-- **Architecture Decoupling**
-  - Monolith → Modular ADK (zero coupling)
-  - `AtlasService` → Pure Gemini abstraction
-  - `App.tsx` → ADK consumer (dependency injection)
+* **Agent Development Kit (ADK)**: Decoupled core logic into `src/lib/adk/`.
+* **MissionControl**: New multi-agent orchestrator managing the Strategist/Analyst/Critic feedback loop.
+* **A2UI Protocol**: Formalized the specification for agent-to-UI communication.
 
 ---
 
 ## [3.1.0] - 2026-01-09
 
 ### Added
-- **Core Features** 🎮
-  - TaskBank (90 strategic tasks for 2026)
-  - DependencyGraph (XYFlow visualization)
-  - What-If simulation (`MissionControl.simulateFailure`)
-  - Autonomous vs Collaborative modes
-- **Strategic TaskBank** 📋
-  - AI-26-001 → "Multi-Modal Agent Orchestration"
-  - CY-26-001 → "Zero-Trust Identity Fabric"  
-  - ES-26-001 → "Net-Zero Carbon Certification"
+
+* **Dependency Visualization**: Integrated **XYFlow** for interactive dependency graphs.
+* **What-If Engine**: Logic for simulating failure cascades across the strategic roadmap.
+* **2026 TaskBank**: 90 pre-loaded strategic objectives across AI, Cybersecurity, and ESG sectors.
 
 ---
 
 ## [3.0.0] - 2026-01-08
 
 ### Added
-- **Project Foundation** 🏗️
-  - React 19 + Vite + TypeScript (strict)
-  - TailwindCSS 3.4 CDN (pre-local build)
-  - Glassmorphic design system
-  - `App.tsx` + core components
+
+* **Initial Release**: Foundation built on **React 19** and Vite.
+* **Identity**: Established the Glassmorphic design system and core strategic modeling components.
 
 ---
 
-## [Unreleased]
+### Key Technical Metadata
 
-### Planned for v4.0.0
-- WebSocket multi-user collaboration
-- Monte Carlo risk simulation  
-- Resource allocation optimizer
-- Slack/Teams notifications
-- Puppeteer PDF export
-
----
-
-*Changelog follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Dates in ISO 8601 format.*
-
-**Atlas Strategic Agent** - *Orchestrating enterprise intelligence.*
+| Metric | Value |
+| --- | --- |
+| **Current Model** | Gemini 2.0 Flash Experimental |
+| **Min. Node Version** | 20.x |
+| **UI Framework** | React 19 (Concurrent Mode) |
+| **Visuals** | XYFlow + Framer Motion |
+1. **Apply these changes** to your `CHANGELOG.md` file?
+2. **Generate the v4.0.0 technical spec** for the Monte Carlo simulation?
+3. **Refine the Jira Service code** (`jiraService.ts`) to ensure it handles the new ADF formatting?

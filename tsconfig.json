@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
+
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
+
     "noEmit": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+
     "forceConsistentCasingInFileNames": true,
-    /* Strictness & Quality - The "Zero-Any" Guardrails */
+
+    /* Strictness & Quality */
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -27,26 +27,15 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@adk/*": [
-        "src/lib/adk/*"
-      ]
+      "@/*": ["src/*"],
+      "@adk/*": ["src/lib/adk/*"]
     },
-    "types": [
-      "vite/client",
-      "vitest/globals"
-    ]
+
+    "types": ["vite/client", "vitest/globals"]
   },
-  "include": [
-    "src/**/*",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

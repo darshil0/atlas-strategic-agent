@@ -4,7 +4,7 @@ All notable changes to **Atlas Strategic Agent** will be documented in this file
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adhering to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-***
+---
 
 ## [3.2.0] - 2026-01-14
 
@@ -24,7 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
 
 ### Changed
 - **Gemini Model Upgrade** 🧠
-  - `gemini-3-flash-preview` → `gemini-2.0-flash-exp` (2026 model)
+  - `gemini-1.5-flash` → `gemini-2.0-flash-exp` (2026 model)
   - JSON Schema enforcement for structured outputs
   - Streaming A2UI extraction (`<a2ui>` tag parsing)
 
@@ -38,26 +38,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
   - 60s API timeouts
   - Graceful JSON parsing fallbacks
 
-***
+---
 
 ## [3.1.5] - 2026-01-12
 
 ### Changed
 - **Performance Overhaul** ⚡ **(45% bundle reduction)**
-  ```
-  TailwindCSS: CDN → Local PostCSS build (tailwind.config.js)
-  PostCSS: Added for production CSS optimization
-  VSCode: .vscode/settings.json for glassmorphic linting
-  Bundle: 2.8MB → 1.5MB (gzip)
-  ```
+  - TailwindCSS: CDN → Local PostCSS build (tailwind.config.js)
+  - PostCSS: Added for production CSS optimization
+  - VSCode: .vscode/settings.json for glassmorphic linting
+  - Bundle: 2.8MB → 1.5MB (gzip)
 
 ### Added
 - **Glassmorphism 2.0** 🎨
-  - `backdrop-blur-[3xl]` + `slate-950/20` system
-  - Gradient borders (`blue-500/20 → slate-800/50`)
+  - `backdrop-blur-3xl` + `slate-950/20` system
+  - Gradient borders (`blue-500/20` → `slate-800/50`)
   - Micro-animations (Framer Motion layout)
 
-***
+---
 
 ## [3.1.4] - 2026-01-11
 
@@ -77,19 +75,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
   - Agent execution tracing
   - Failure cascade diagnostics
 
-***
+---
 
 ## [3.1.3] - 2026-01-10
 
 ### Added
 - **Agent Development Kit (ADK)** 🧩 **`src/lib/adk/`**
-  ```
-  ├── factory.ts         → Exhaustive AgentFactory (never type)
-  ├── orchestrator.ts    → MissionControl (multi-agent coordination)
-  ├── agents/            → Strategist/Analyst/Critic implementations
-  ├── protocol.ts        → A2UI v1.0 specification
-  └── uiBuilder.ts       → Fluent A2UI component builder
-  ```
+  - `factory.ts` → Exhaustive AgentFactory (never type)
+  - `orchestrator.ts` → MissionControl (multi-agent coordination)
+  - `agents/` → Strategist/Analyst/Critic implementations
+  - `protocol.ts` → A2UI v1.0 specification
+  - `uiBuilder.ts` → Fluent A2UI component builder
 
 ### Changed
 - **Architecture Decoupling**
@@ -97,24 +93,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
   - `AtlasService` → Pure Gemini abstraction
   - `App.tsx` → ADK consumer (dependency injection)
 
-***
+---
 
 ## [3.1.0] - 2026-01-09
 
 ### Added
 - **Core Features** 🎮
-  - TaskBank (90× 2026 strategic tasks)
+  - TaskBank (90 strategic tasks for 2026)
   - DependencyGraph (XYFlow visualization)
   - What-If simulation (`MissionControl.simulateFailure`)
   - Autonomous vs Collaborative modes
 - **Strategic TaskBank** 📋
-  ```
-  AI-26-001 → "Multi-Modal Agent Orchestration"
-  CY-26-001 → "Zero-Trust Identity Fabric"  
-  ES-26-001 → "Net-Zero Carbon Certification"
-  ```
+  - AI-26-001 → "Multi-Modal Agent Orchestration"
+  - CY-26-001 → "Zero-Trust Identity Fabric"  
+  - ES-26-001 → "Net-Zero Carbon Certification"
 
-***
+---
 
 ## [3.0.0] - 2026-01-08
 
@@ -125,20 +119,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
   - Glassmorphic design system
   - `App.tsx` + core components
 
-***
+---
 
 ## [Unreleased]
 
-### Planned [4.0.0]
-```
-[ ] WebSocket multi-user collaboration
-[ ] Monte Carlo risk simulation  
-[ ] Resource allocation optimizer
-[ ] Slack/Teams notifications
-[ ] Puppeteer PDF export
-```
+### Planned for v4.0.0
+- WebSocket multi-user collaboration
+- Monte Carlo risk simulation  
+- Resource allocation optimizer
+- Slack/Teams notifications
+- Puppeteer PDF export
 
-***
+---
 
 *Changelog follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Dates in ISO 8601 format.*
 

@@ -82,17 +82,3 @@ All notable changes to this project are documented in this file. This project ad
 
 * **Initial Release**: Foundation built on **React 19** and Vite.
 * **Identity**: Established the Glassmorphic design system and core strategic modeling components.
-
----
-
-### Key Technical Metadata
-
-| Metric | Value |
-| --- | --- |
-| **Current Model** | Gemini 2.0 Flash Experimental |
-| **Min. Node Version** | 20.x |
-| **UI Framework** | React 19 (Concurrent Mode) |
-| **Visuals** | XYFlow + Framer Motion |
-1. **Apply these changes** to your `CHANGELOG.md` file?
-2. **Generate the v4.0.0 technical spec** for the Monte Carlo simulation?
-3. **Refine the Jira Service code** (`jiraService.ts`) to ensure it handles the new ADF formatting?

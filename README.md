@@ -1,302 +1,91 @@
-# Atlas Strategic Agent
+# 🌌 Atlas Strategic Agent
 
-**Atlas** transforms executive vision into executable enterprise roadmaps through multi-agent collaborative intelligence and a premium glassmorphic interface.
+### *Executive Vision → Executable Enterprise Roadmaps*
 
----
-
-## 🎯 Executive Summary
-
-**Traditional PM = Reactive** → **Atlas = Proactive Strategic Intelligence**
-
-Atlas bridges high-level goals to actionable roadmaps using:
-- **Multi-Agent Core** (Strategist + Analyst + Critic)  
-- **A2UI Protocol** (Native agent UI generation)
-- **Google Gemini 2.0 Flash** (Structured JSON reasoning)
-- **Live Dependency Graph** + **What-If Simulation**
+**Atlas** is an AI-native orchestration platform that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization.
 
 ---
 
-## 🧠 Architecture Overview
+## 🏗️ The Multi-Agent Engine
 
-```
-Executive Intent → MissionControl → Multi-Agent Synthesis → Strategic Roadmap
-                           ↓
-                 A2UI Protocol → Glassmorphic React Interface
-                           ↓
-           GitHub/Jira Export + Mermaid Visualization
-```
+Atlas doesn't just generate text; it facilitates a **collaborative synthesis** between specialized AI agents:
 
-**Agent Trio**:
-```
-Strategist → Goal decomposition + roadmap generation
-Analyst   → Feasibility scoring + data validation  
-Critic    → Risk analysis + optimization suggestions
-```
+* **🎙️ The Strategist:** Decomposes "North Star" goals into high-level workstreams.
+* **🔬 The Analyst:** Performs feasibility scoring and data validation.
+* **⚖️ The Critic:** Stress-tests the roadmap for risks and suggests "What-If" optimizations.
 
 ---
 
-## 🚀 Quick Start
+## ✨ Key Capabilities
+
+| Feature | Description | Tech |
+| --- | --- | --- |
+| **A2UI Protocol** | Real-time streaming of UI components directly from LLM reasoning. | React 19 + Framer Motion |
+| **What-If Simulation** | Model failure cascades to see how a single delay impacts the Q2 2026 deadline. | XYFlow + Custom Logic |
+| **Enterprise Sync** | Bulk-export generated tasks directly to GitHub Issues or Jira Cloud (ADF). | REST API v3 |
+| **Glassmorphic UI** | Premium, high-performance interface designed for executive presentations. | Tailwind + Lucide |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* Node.js 20+
+* A Google Gemini API Key
+
+### Installation
 
 ```bash
-# Clone & Install
-git clone https://github.com/darshil0/atlas-strategic-agent
+# 1. Clone the repository
+git clone https://github.com/darshil0/atlas-strategic-agent.git
 cd atlas-strategic-agent
-npm ci
 
-# Configure (create .env)
-echo "VITE_GEMINI_API_KEY=your_gemini_key_here" > .env
+# 2. Install dependencies
+npm install
 
-# Development
+# 3. Environment Setup
+echo "VITE_GEMINI_API_KEY=your_api_key_here" > .env
+
+# 4. Launch Development Server
 npm run dev
-```
 
-**Example Goals**:
-```
-"Launch APAC HQ Q2 2026"
-"Net-zero certification FY2026" 
-"6G infrastructure migration"
-"4-day workweek rollout"
 ```
 
 ---
 
-## ✨ Key Features
+## 🛠 Project Architecture
 
-| Feature | Status | Description |
-|---------|--------|-------------|
-| **Multi-Agent** | ✅ Live | Strategist/Analyst/Critic collaboration |
-| **Live Graph** | ✅ Interactive | XYFlow dependency visualization |
-| **What-If** | ✅ Real-time | Failure cascade simulation |
-| **A2UI** | ✅ Streaming | Native agent UI from LLM |
-| **GitHub** | ✅ Production | Issue creation + bulk sync |
-| **Jira** | ✅ Production | Rich ADF tickets + workflows |
-| **Export** | ✅ Mermaid/JSON | Copy-paste ready diagrams |
-| **TaskBank** | ✅ 90 Tasks | Pre-loaded 2026 strategic objectives |
+```mermaid
+graph TD
+    A[Executive Input] --> B[Mission Control Orchestrator]
+    B --> C{Agent Synthesis}
+    C --> C1[Strategist]
+    C --> C2[Analyst]
+    C --> C3[Critic]
+    C1 & C2 & C3 --> D[A2UI Protocol]
+    D --> E[Glassmorphic React UI]
+    E --> F[Export: GitHub/Jira/Mermaid]
 
----
-
-## 🛠 Tech Stack
-
-**Frontend**: React 19 + Vite + TypeScript (strict) + TailwindCSS 3.4 + Framer Motion  
-**AI/LLM**: Google Gemini 2.0 Flash Experimental (JSON Schema)  
-**ADK**: Custom Agent Development Kit (A2UI Protocol)  
-**Visualization**: XYFlow (dependency graphs) + Mermaid (diagrams)  
-**Persistence**: Secure localStorage + API key encoding  
-**Integrations**: GitHub Issues API v3 + Jira Cloud REST v3  
-**Testing**: Vitest + React Testing Library  
-**Build**: PostCSS + Local TailwindCSS compilation
-
----
-
-## 📱 User Experience
-
-1. **Input Goal** → "Establish Singapore APAC HQ Q2 2026"
-2. **Multi-Agent Synthesis** → Strategist/Analyst/Critic collaborate in real-time
-3. **Visual Roadmap** → Interactive dependency graph + timeline views  
-4. **Risk Simulation** → What-if failure analysis with cascade impact
-5. **Export** → GitHub Issues / Jira Tickets / Mermaid diagrams
-
----
-
-## 🔧 Configuration
-
-**.env** (required):
-```env
-VITE_GEMINI_API_KEY=AIzaSy...your_key_here
 ```
 
-**GitHub/Jira** (optional, via Settings UI):
-```
-GitHub: owner/repo + Personal Access Token (repo scope)
-Jira: domain.atlassian.net + API Token + email
-```
+### Directory Structure Highlights
 
-**Environment Variables**:
-- `VITE_GEMINI_API_KEY` - Google Gemini API key (required)
-- `VITE_DEBUG_MODE` - Enable structured logging (optional, boolean)
+* `src/lib/adk/`: The **Agent Development Kit**—contains the core logic for agent factories and the A2UI protocol.
+* `src/services/`: Direct integrations for Gemini, GitHub, and Jira.
+* `src/components/`: Atomic UI components following the **Glassmorphism 2.0** design system.
 
 ---
 
-## 🧪 Development
+## 🔒 Security & Performance
 
-```bash
-npm run dev      # Development server (http://localhost:5173)
-npm run build    # Production build  
-npm run preview  # Production preview
-npm test         # Vitest + React Testing Library
-npm run lint     # ESLint + Prettier
-npm run type     # Strict TypeScript checking
-```
-
-**Project Structure**:
-```
-src/
-├── lib/adk/              # Agent Development Kit
-│   ├── factory.ts        # Agent factory with exhaustive typing
-│   ├── orchestrator.ts   # MissionControl multi-agent coordinator
-│   ├── agents/           # Strategist/Analyst/Critic implementations
-│   ├── protocol.ts       # A2UI v1.0 specification
-│   └── uiBuilder.ts      # Fluent A2UI component builder
-├── services/
-│   ├── atlasService.ts   # Gemini API abstraction
-│   ├── githubService.ts  # GitHub Issues integration
-│   └── jiraService.ts    # Jira Cloud REST API integration
-├── components/           # React UI components
-└── config/
-    └── env.ts           # Environment validation
-```
-
----
-
-## 📂 Production Deployment
-
-### Vercel (Recommended)
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-### Netlify
-```bash
-npm run build
-netlify deploy --prod --dir=dist
-```
-
-### Static Hosting
-```bash
-npm run build && npx serve dist
-```
-
-**Environment Variables**: Configure `VITE_GEMINI_API_KEY` in your hosting platform's environment settings.
-
----
-
-## 🎨 Design System
-
-**Glassmorphism 2.0**:
-- `backdrop-blur-3xl` + `slate-950/20` layering
-- Gradient borders (`blue-500/20` → `slate-800/50`)  
-- Micro-animations (Framer Motion layout transitions)
-- Tailwind local CSS build (zero runtime overhead)
-- Premium typography (Inter font family)
-
-**Performance Optimizations**:
-- 45% bundle reduction (2.8MB → 1.5MB gzipped)
-- Local PostCSS compilation
-- Virtualized graph rendering
-- Lazy component loading
-
----
-
-## 🔒 Security Notes
-
-⚠️ **Browser API Keys**: localStorage encoded (btoa) but visible to dev tools
-
-- ✅ API keys auto-obfuscated
-- ✅ .env → Vite client-side only (VITE_* prefix)
-- ⚠️ Production: Use backend proxy endpoints for API key management
-- ✅ Runtime validation + error boundaries
-- ✅ Secure HTTPS-only deployment recommended
-
-**Best Practices**:
-- Never commit `.env` files to version control
-- Use backend proxy for production API calls
-- Rotate API keys regularly
-- Implement rate limiting on backend
-
----
-
-## 📈 Roadmap
-
-**Completed**:
-- ✅ **v3.2.0** - GitHub/Jira Integration + Bulk Sync
-- ✅ **v3.1.5** - Performance (Local CSS + Virtualized Graph)
-- ✅ **v3.1.4** - A2UI Streaming + JSON Schema Enforcement  
-- ✅ **v3.1.3** - Multi-Agent ADK Decoupling
-- ✅ **v3.1.0** - Core Features (TaskBank, DependencyGraph, What-If)
-- ✅ **v3.0.0** - Project Foundation (React 19 + Glassmorphic UI)
-
-**Upcoming v4.0.0**:
-- ⏳ WebSocket multi-user collaboration
-- ⏳ Monte Carlo risk simulation
-- ⏳ Resource allocation optimizer
-- ⏳ Slack/Teams notifications
-- ⏳ Puppeteer PDF export
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please ensure:
-- TypeScript strict mode compliance
-- ESLint/Prettier formatting
-- Test coverage for new features
-- Documentation updates
-
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-Advanced Agentic Coding Initiative. Commercial use permitted with attribution.
+* **Key Management:** API keys are obfuscated and stored in `localStorage`. For production, it is recommended to use an Edge Function proxy.
+* **Bundle Optimization:** Leverages Vite's tree-shaking and local Tailwind compilation to keep the gzipped bundle under **1.5MB**.
+* **React 19:** Uses the latest concurrent rendering features for a stutter-free "What-If" simulation experience.
 
 ---
 
 ## 👨‍💻 Author
 
-**Darshil Shah**  
-QA Engineering Leader & AI Architect
-
-- **GitHub**: [@darshil0](https://github.com/darshil0)
-- **LinkedIn**: [linkedin.com/in/darshil-qa-lead](https://linkedin.com/in/darshil-qa-lead)
-- **X/Twitter**: [@soulsurfer300](https://x.com/soulsurfer300)
-- **Email**: darshils99@gmail.com
-- **Location**: Dallas/Irving, TX
-
-*Transforming healthcare quality through AI-driven engineering*
-
----
-
-## 🔗 Links & Resources
-
-- **Live Demo**: [Coming Soon]
-- **GitHub Repository**: [darshil0/atlas-strategic-agent](https://github.com/darshil0/atlas-strategic-agent)  
-- **Issues**: [GitHub Issues](https://github.com/darshil0/atlas-strategic-agent/issues)  
-- **Documentation**: Inline architecture diagrams + TypeScript docs
-- **API Documentation**: [Google Gemini Docs](https://ai.google.dev/gemini-api/docs)
-
----
-
-## 🙏 Acknowledgments
-
-Built with:
-- [React](https://react.dev/) - UI framework
-- [Vite](https://vitejs.dev/) - Build tool
-- [TailwindCSS](https://tailwindcss.com/) - Styling
-- [Framer Motion](https://www.framer.com/motion/) - Animations
-- [Google Gemini](https://ai.google.dev/) - AI capabilities
-- [XYFlow](https://reactflow.dev/) - Graph visualization
-
----
-
-## 📊 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/darshil0/atlas-strategic-agent?style=social)
-![GitHub forks](https://img.shields.io/github/forks/darshil0/atlas-strategic-agent?style=social)
-![GitHub issues](https://img.shields.io/github/issues/darshil0/atlas-strategic-agent)
-![GitHub license](https://img.shields.io/github/license/darshil0/atlas-strategic-agent)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
-![React](https://img.shields.io/badge/React-19-61dafb)
-
----
-
-*Transforming executive vision into executable reality.*
+**Darshil Shah** – *QA Engineering Leader & AI Architect*
+[LinkedIn](https://linkedin.com/in/darshil-qa-lead) | [GitHub](https://github.com/darshil0) | [X](https://x.com/soulsurfer300)

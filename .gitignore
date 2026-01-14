@@ -30,7 +30,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # --- Testing ---
-/coverage
+coverage/
 .nyc_output
 
 # --- IDEs / Editors ---
@@ -45,4 +45,4 @@ pnpm-debug.log*
 
 # --- Project Specific ---
 # If your simulation engine generates local artifacts
-/simulations/results/*.json
+simulations/results/*.json

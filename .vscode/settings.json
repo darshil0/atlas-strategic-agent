@@ -1,6 +1,6 @@
 {
   "css.lint.unknownProperties": "ignore",
-  "scss.lint.unknownProperties": "ignore",
+  "scss.lint.unknownProperties": "ignore", 
   "less.lint.unknownProperties": "ignore",
   "files.associations": {
     "*.css": "tailwindcss"
@@ -9,7 +9,7 @@
     "strings": true
   },
   "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cva\\\\(([^)]*)\\)", "[\"'`]([^\\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ]
 }

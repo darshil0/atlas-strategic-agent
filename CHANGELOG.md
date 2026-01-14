@@ -143,5 +143,3 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), adherin
 *Changelog follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Dates in ISO 8601 format.*
 
 **Atlas Strategic Agent** - *Orchestrating enterprise intelligence.*
-
-[1](https://keepachangelog.com/en/1.0.0/)

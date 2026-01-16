@@ -80,12 +80,12 @@ src/
 
 ## 🗺 Roadmap
 
+- [ ] **V4.0.0 Collaboration**: Real-time multi-user planning (WebSockets)
 - [x] **V3.2.0 Sync**: Direct GitHub/Jira connector
 - [x] **V3.1.6**: Codebase Hygiene (Dead Code Removal & Version Sync)
 - [x] **V3.1.5**: Performance Overhaul (Local CSS Integration)
 - [x] **V3.1.4**: Runtime Hardening (Safe JSON Parsing & Env Validation)
 - [x] **Multi-Agent Synthesis**: Decoupled ADK implementation
-- [ ] **V4.0.0 Collaboration**: Real-time multi-user planning (WebSockets)
 
 ## 📄 License
 

@@ -1,4 +1,10 @@
-# 🌌 Atlas Strategic Agent
+# 🌌 Atlas Strategic Agent V3.2.0
+
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![Tailwind](https://img.shields.io/badge/Tailwind-Optimized-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Vite](https://img.shields.io/badge/Vite-Turbopack-646CFF?style=for-the-badge&logo=vite)
+
 ### *Executive Vision → Executable Enterprise Roadmaps*
 **Atlas** is a multi-model agent that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization.
 
@@ -46,6 +52,44 @@ echo "VITE_GEMINI_API_KEY=your_api_key_here" > .env
 npm run dev
 ```
 
+### Testing Strategy
+
+Atlas includes a robust smoke test suite to verify ADK integrity.
+
+```bash
+# Run test suite
+npm test
+
+# Run linting (Strict Type Checking)
+npm run lint
+```
+
+## 📂 Project Structure
+
+```text
+src/
+├── components/       # React UI Components (TaskCard, DependencyGraph)
+├── config/           # Centralized Configuration (Env, System Prompts)
+├── lib/
+│   └── adk/          # Agent Development Kit (Agents, Factory, Protocol)
+├── services/         # External Services (Gemini, Persistence)
+├── types/            # TypeScript Definitions
+├── index.css         # Global Styles & Tailwind Directives
+└── App.tsx           # Main Application Entry
+```
+
+## 🗺 Roadmap
+
+- [x] **V3.1.6**: Codebase Hygiene (Dead Code Removal & Version Sync)
+- [x] **V3.1.5**: Performance Overhaul (Local CSS Integration)
+- [x] **V3.1.4**: Runtime Hardening (Safe JSON Parsing & Env Validation)
+- [x] **Multi-Agent Synthesis**: Decoupled ADK implementation
+- [x] **V3.2.0 Sync**: Direct GitHub/Jira connector
+- [ ] **V4.0.0 Collaboration**: Real-time multi-user planning (WebSockets)
+
+## 📄 License
+
+This project is part of the **Advanced Agentic Coding** initiative.
 ---
 
 ## 🛠 Project Architecture

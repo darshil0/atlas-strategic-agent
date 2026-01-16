@@ -37,6 +37,22 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.1.6] - 2026-01-16
+
+### 🧹 Codebase Hygiene
+
+Routine maintenance release focused on removing dead code and ensuring version consistency across the project.
+
+### Removed
+
+- **Dead Code**: Deleted empty `src/constants.tsx` file that served no purpose.
+
+### Fixed
+
+- **Version Sync**: Corrected `index.html` title from V3.1.4 to V3.1.5 to match `package.json`.
+
+---
+
 ## [3.1.5] - 2026-01-12
 
 ### Changed

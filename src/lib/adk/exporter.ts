@@ -1,4 +1,4 @@
-import { Plan, SubTask, TaskStatus, Priority } from "../../types";
+import { Plan, TaskStatus, Priority } from "../../types";
 
 /**
  * Escapes special characters for safe Mermaid label rendering
@@ -41,7 +41,7 @@ export const PlanExporter = {
     const styles: Record<TaskStatus | Priority, Partial<MermaidStyle>> = {
       [TaskStatus.PENDING]: {
         fill: "#0f172a",
-        stroke: "#475569", 
+        stroke: "#475569",
         strokeWidth: "2px",
         color: "#94a3b8",
       },
@@ -55,7 +55,7 @@ export const PlanExporter = {
       [TaskStatus.COMPLETED]: {
         fill: "#064e3b",
         stroke: "#10b981",
-        strokeWidth: "2px", 
+        strokeWidth: "2px",
         color: "#ffffff",
       },
       [TaskStatus.FAILED]: {
@@ -96,32 +96,32 @@ export const PlanExporter = {
     plan.tasks.forEach((task) => {
       const escapedDesc = escapeMermaidLabel(task.description);
       const displayId = task.id.slice(-4); // Short ID for display
-      
+
       // Node with status + priority styling
       mermaid += `  ${task.id}[#${displayId}\\n${escapedDesc}]`;
 
       // Apply status styling (primary)
       mermaid += `:::${task.status.toLowerCase()}`;
-      
+
       // Apply priority border styling (secondary)
       if (task.priority) {
         mermaid += `:::${task.priority.toLowerCase()}`;
       }
-      
+
       mermaid += "\n";
 
       // Generate dependency edges
       if (task.dependencies?.length) {
         task.dependencies.forEach((depId) => {
           mermaid += `  ${depId} --> ${task.id}`;
-          
+
           // Color-code edges by status
-          const edgeStyle = task.status === TaskStatus.COMPLETED 
+          const edgeStyle = task.status === TaskStatus.COMPLETED
             ? ":::edge-completed"
-            : task.status === TaskStatus.IN_PROGRESS 
-              ? ":::edge-progress" 
+            : task.status === TaskStatus.IN_PROGRESS
+              ? ":::edge-progress"
               : "";
-          
+
           if (edgeStyle) mermaid += edgeStyle;
           mermaid += "\n";
         });
@@ -151,8 +151,8 @@ export const PlanExporter = {
 
     const headers = "| ID | Priority | Status | Category | Dependencies |";
     const separator = "|----|----------|--------|----------|--------------|";
-    
-    const rows = plan.tasks.map(task => 
+
+    const rows = plan.tasks.map(task =>
       `| #${task.id.slice(-4)} | ${task.priority} | ${task.status} | ${task.category} | ${task.dependencies?.join(", ") || "-"} |`
     );
 

@@ -113,7 +113,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         "rounded-2xl border transition-all duration-300 group overflow-hidden glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
         getStatusColor(task.status),
         isActive &&
-          "scale-[1.02] z-20 border-blue-500/60 shadow-[0_0_40px_rgba(59,130,246,0.25)] ring-2 ring-blue-500/30",
+        "scale-[1.02] z-20 border-blue-500/60 shadow-[0_0_40px_rgba(59,130,246,0.25)] ring-2 ring-blue-500/30",
         isBlocked && "opacity-70 cursor-not-allowed"
       )}
     >
@@ -121,7 +121,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       <div className="p-4">
         <div className="flex items-start gap-3">
           <div className="mt-1 shrink-0 opacity-80">
-            {ICONS[isBlocked ? "BLOCKED" : task.status] || ICONS[task.status]}
+            {ICONS[isBlocked ? TaskStatus.BLOCKED : task.status] || ICONS[task.status]}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start mb-2">
@@ -136,7 +136,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               >
                 {task.description}
               </h3>
-              <span 
+              <span
                 className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700 ml-2 shrink-0"
                 aria-label={`Task ID: ${task.id}`}
               >
@@ -162,7 +162,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
             </div>
 
             <div className="flex items-center justify-between gap-4">
-              <span 
+              <span
                 className="text-[10px] text-slate-500 uppercase tracking-widest font-black bg-slate-900/30 px-2 py-0.5 rounded"
                 aria-label={`Category: ${task.category || 'Strategic'}`}
               >
@@ -193,8 +193,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
                     }}
                     className={cn(
                       "text-[10px] font-black uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
-                      isExpanded 
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30 hover:bg-blue-500/30" 
+                      isExpanded
+                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30 hover:bg-blue-500/30"
                         : "bg-slate-900/50 text-slate-400 hover:bg-slate-800 hover:text-blue-300 border-slate-800/50",
                     )}
                     aria-expanded={isExpanded}

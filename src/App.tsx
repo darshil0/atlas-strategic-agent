@@ -170,7 +170,7 @@ const App: React.FC = () => {
         history += `\nTask ${nextTask.id} output: ${response.text}`;
         nextTask.status = TaskStatus.COMPLETED;
         setCurrentPlan({ ...plan, tasks: [...latestTasks] });
-        addMessage("assistant", response.text, response.a2ui);
+        addMessage("assistant", response.text, response.a2ui ? JSON.stringify(response.a2ui) : undefined);
       } catch {
         nextTask.status = TaskStatus.FAILED;
         setCurrentPlan({ ...plan, tasks: [...latestTasks] });
@@ -213,9 +213,9 @@ const App: React.FC = () => {
         tasks: prev.tasks.map((t: SubTask) =>
           t.id === target
             ? {
-                ...t,
-                dependencies: [...new Set([...(t.dependencies || []), source])],
-              }
+              ...t,
+              dependencies: [...new Set([...(t.dependencies || []), source])],
+            }
             : t,
         ),
       };
@@ -698,7 +698,7 @@ const App: React.FC = () => {
 
         <AnimatePresence>
           {isSettingsOpen && (
-            <SettingsModal onClose={() => setIsSettingsOpen(false)} />
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
           )}
         </AnimatePresence>
       </main>

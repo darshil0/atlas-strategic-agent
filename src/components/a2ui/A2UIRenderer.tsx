@@ -46,12 +46,11 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
         return (
           <button
             key={id}
-            onClick={() => handleAction("click", props.actionData)}
-            className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 ${
-              props.variant === "primary"
+            onClick={() => handleAction("click", props.actionData as Props)}
+            className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 ${props.variant === "primary"
                 ? "bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/20"
                 : "glass glass-hover text-slate-300"
-            } ${props.className || ""}`}
+              } ${props.className || ""}`}
           >
             {props.label as string}
           </button>

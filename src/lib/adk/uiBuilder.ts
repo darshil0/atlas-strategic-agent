@@ -26,7 +26,7 @@ export class UIBuilder {
   }
 
   // === COMMON PATTERNS ===
-  
+
   /** Quick text addition */
   text(content: string, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.TEXT, { text: content, ...props });
@@ -88,7 +88,7 @@ export class UIBuilder {
   }
 
   // === COMPOSITION HELPERS ===
-  
+
   /** Add header with title and status */
   header(title: string, subtitle?: string): this {
     return this
@@ -116,15 +116,15 @@ export class UIBuilder {
 
   /** Success message */
   success(message: string): this {
-    return this.text(message, { 
-      className: "text-emerald-400 font-bold bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30" 
+    return this.text(message, {
+      className: "text-emerald-400 font-bold bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30"
     });
   }
 
   /** Error message */
   error(message: string): this {
-    return this.text(message, { 
-      className: "text-rose-400 font-bold bg-rose-500/10 p-4 rounded-xl border border-rose-500/30" 
+    return this.text(message, {
+      className: "text-rose-400 font-bold bg-rose-500/10 p-4 rounded-xl border border-rose-500/30"
     });
   }
 
@@ -135,9 +135,10 @@ export class UIBuilder {
   }
 
   /** Build final message with immutability */
-  build(version: string = "1.0"): A2UIMessage {
+  build(version: "1.0" = "1.0"): A2UIMessage {
     return {
       version,
+      timestamp: Date.now(),
       elements: [...this.elements], // Immutable copy
     };
   }

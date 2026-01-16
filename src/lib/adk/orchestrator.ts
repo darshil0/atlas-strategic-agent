@@ -1,5 +1,5 @@
 import { A2UIMessage } from "./protocol";
-import { BaseAgent, AgentPersona, AgentExecutionContext, AgentRuntimeContext } from "./types";
+import { BaseAgent, AgentPersona, AgentExecutionContext } from "./types";
 import type { Plan, SubTask } from "../../types";
 import { AgentFactory } from "./factory";
 import { ENV } from "../../config";
@@ -54,13 +54,13 @@ export class MissionControl {
     // Phase 2: Iterative refinement via Critic feedback
     while (iterations < this.maxIterations) {
       const criticResult = await this.evaluatePlan(proposal);
-      
+
       if (criticResult.score >= this.scoreThreshold || iterations >= this.maxIterations - 1) {
         break;
       }
 
       iterations++;
-      
+
       if (ENV.DEBUG_MODE) {
         console.log(`[MissionControl] Iteration ${iterations}: Score ${criticResult.score}`);
       }
@@ -77,9 +77,9 @@ export class MissionControl {
 
     // Phase 3: Analyst validation
     const analyst = this.getAgent(AgentPersona.ANALYST);
-    const analysis = await analyst.execute("Final feasibility check", { 
-      ...context, 
-      plan: proposal 
+    const analysis = await analyst.execute("Final feasibility check", {
+      ...context,
+      plan: proposal
     }) as { feasibility?: number; notes?: string[] };
 
     // Phase 4: Return coordinated result
@@ -156,7 +156,7 @@ export class MissionControl {
     goal: string,
     iterations: number,
     analysis: { feasibility?: number; notes?: string[] },
-    plan: unknown
+    _plan: unknown
   ): string {
     const feasibility = (analysis as any).feasibility ?? 85;
     const notes = ((analysis as any).notes as string[])?.slice(0, 2) ?? ["Analysis complete"];

@@ -14,7 +14,7 @@ import {
  * Task Status Icons for TaskCard and DependencyGraph components
  * Pre-rendered React components with consistent sizing and theme colors
  */
-const createIcon = (icon: React.ReactElement, color: string): React.ReactElement => (
+const createIcon = (icon: React.ReactElement<{ className?: string }>, color: string): React.ReactElement => (
   React.cloneElement(icon, { className: `w-5 h-5 ${color}` })
 );
 

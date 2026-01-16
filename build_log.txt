@@ -1,0 +1,53 @@
+
+> atlas-strategic-agent@3.2.0 build
+> tsc && vite build
+
+src/App.tsx(701,14): error TS2741: Property 'isOpen' is missing in type '{ onClose: () => void; }' but required in type 'SettingsModalProps'.
+src/components/a2ui/A2UIRenderer.tsx(49,50): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Props | undefined'.
+src/components/SettingsModal.tsx(86,24): error TS2551: Property 'saveJiraApiKey' does not exist on type 'typeof PersistenceService'. Did you mean 'getJiraApiKey'?
+src/components/TaskCard.tsx(124,20): error TS2551: Property 'BLOCKED' does not exist on type 'Record<TaskStatus, ReactNode>'. Did you mean 'blocked'?
+src/components/TimelineView.tsx(24,11): error TS6133: 'isActive' is declared but its value is never read.
+src/components/TimelineView.tsx(25,61): error TS18048: 'task.dependencies.length' is possibly 'undefined'.
+src/config/ui.tsx(18,30): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'className' does not exist in type 'Partial<unknown> & Attributes'.
+src/lib/adk/agents.ts(136,5): error TS6133: 'prompt' is declared but its value is never read.
+src/lib/adk/agents.ts(137,5): error TS6133: 'context' is declared but its value is never read.
+src/lib/adk/agents.ts(185,21): error TS6133: 'event' is declared but its value is never read.
+src/lib/adk/agents.ts(204,5): error TS6133: 'prompt' is declared but its value is never read.
+src/lib/adk/agents.ts(205,5): error TS6133: 'context' is declared but its value is never read.
+src/lib/adk/exporter.ts(1,16): error TS6133: 'SubTask' is declared but its value is never read.
+src/lib/adk/orchestrator.ts(2,58): error TS6133: 'AgentRuntimeContext' is declared but its value is never read.
+src/lib/adk/orchestrator.ts(159,5): error TS6133: 'plan' is declared but its value is never read.
+src/lib/adk/protocol.ts(98,21): error TS2304: Cannot find name 'AgentPersona'.
+src/lib/adk/protocol.ts(145,25): error TS2677: A type predicate's type must be assignable to its parameter's type.
+  Type 'A2UIElement' is not assignable to type '{ id: string; type: A2UIComponentType; props: { [x: string]: unknown; id?: string; className?: string; ariaLabel?: string; disabled?: boolean; children?: A2UIElement[]; }; children: A2UIElement[]; }'.
+    Types of property 'children' are incompatible.
+      Type 'A2UIElement[] | undefined' is not assignable to type 'A2UIElement[]'.
+        Type 'undefined' is not assignable to type 'A2UIElement[]'.
+src/lib/adk/uiBuilder.ts(140,7): error TS2322: Type 'string' is not assignable to type '"1.0"'.
+src/services/geminiService.ts(2,47): error TS2307: Cannot find module '../../config' or its corresponding type declarations.
+src/services/geminiService.ts(3,53): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/services/geminiService.ts(4,37): error TS2307: Cannot find module '../../lib/adk/protocol' or its corresponding type declarations.
+src/services/geminiService.ts(5,1): error TS6133: 'ConfigENV' is declared but its value is never read.
+src/services/geminiService.ts(5,34): error TS2307: Cannot find module '../../config/env' or its corresponding type declarations.
+src/services/geminiService.ts(45,11): error TS2322: Type '{ type: SchemaType; properties: { goal: { type: SchemaType; }; tasks: { type: SchemaType; items: { type: SchemaType; properties: { id: { type: SchemaType; }; ... 4 more ...; dependencies: { ...; }; }; required: string[]; }; }; }; required: string[]; }' is not assignable to type 'SchemaType'.
+src/services/geminiService.ts(79,52): error TS2345: Argument of type '{ contents: { role: string; parts: { text: string; }[]; }[]; generationConfig: { responseMimeType: string; responseSchema: SchemaType; }; }' is not assignable to parameter of type 'string | GenerateContentRequest | (string | Part)[]'.
+  The types of 'generationConfig.responseSchema' are incompatible between these types.
+    Type 'SchemaType' has no properties in common with type 'ResponseSchema'.
+src/services/geminiService.ts(121,37): error TS2304: Cannot find name 'A2UIMessage'.
+src/services/geminiService.ts(127,31): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/geminiService.ts(154,15): error TS2304: Cannot find name 'A2UIMessage'.
+src/services/geminiService.ts(177,36): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/geminiService.ts(179,48): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/geminiService.ts(211,43): error TS2304: Cannot find name 'A2UIMessage'.
+src/services/githubService.ts(1,19): error TS6133: 'Priority' is declared but its value is never read.
+src/services/githubService.ts(1,47): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/services/githubService.ts(96,11): error TS6133: 'config' is declared but its value is never read.
+src/services/jiraService.ts(1,47): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/services/persistenceService.ts(1,25): error TS6133: 'Priority' is declared but its value is never read.
+src/services/persistenceService.ts(1,35): error TS6133: 'TaskStatus' is declared but its value is never read.
+src/services/persistenceService.ts(1,53): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/services/persistenceService.ts(52,12): error TS2339: Property 'clearPlan' does not exist on type 'typeof PersistenceService'.
+src/services/persistenceService.ts(162,71): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/test/setup.ts(3,26): error TS6133: 'afterEach' is declared but its value is never read.

@@ -1,4 +1,4 @@
-import { SubTask, Priority, TaskStatus } from "../../types";
+import { SubTask, Priority, TaskStatus } from "../types";
 import { PersistenceService } from "./persistenceService";
 
 interface JiraConfig {
@@ -67,7 +67,7 @@ export class JiraService {
    */
   async updateTicket(issueKey: string, updates: Partial<SubTask>): Promise<void> {
     const config = this.getValidatedConfig();
-    
+
     // 1. Update Fields
     const fieldUpdate = {
       fields: {
@@ -122,7 +122,7 @@ export class JiraService {
         labels: [
           "atlas-strategic",
           task.category?.replace(/\s+/g, "-"),
-          `theme-${task.theme || "general"}`
+          `theme-general`
         ].filter(Boolean),
         description: {
           type: "doc",

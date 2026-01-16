@@ -1,4 +1,4 @@
-import { SubTask, Priority, TaskStatus } from "../../types";
+import { SubTask, TaskStatus } from "../types";
 import { PersistenceService } from "./persistenceService";
 
 /**
@@ -13,15 +13,15 @@ export class GithubService {
    * Create GitHub Issue from Atlas SubTask
    * Includes full metadata, labels, assignees, and milestones
    */
-  async createIssue(task: SubTask): Promise<{ 
-    issueNumber: number; 
+  async createIssue(task: SubTask): Promise<{
+    issueNumber: number;
     htmlUrl: string;
     issueId: string;
   }> {
     const config = this.getValidatedConfig();
-    
+
     const issueData = this.buildIssuePayload(task, config);
-    
+
     const response = await fetch(
       `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues`,
       {
@@ -53,9 +53,9 @@ export class GithubService {
    * Update existing GitHub Issue with task status changes
    */
   async updateIssue(
-    owner: string, 
-    repo: string, 
-    issueNumber: number, 
+    owner: string,
+    repo: string,
+    issueNumber: number,
     task: Partial<SubTask>
   ): Promise<void> {
     const apiKey = PersistenceService.getGithubApiKey();
@@ -93,8 +93,8 @@ export class GithubService {
    * Sync entire plan to GitHub Issues with labels/milestones
    */
   async syncPlan(tasks: SubTask[]): Promise<void> {
-    const config = this.getValidatedConfig();
-    
+    this.getValidatedConfig();
+
     for (const task of tasks) {
       try {
         await this.createIssue(task);
@@ -125,8 +125,8 @@ export class GithubService {
     const labels = [
       `priority-${task.priority?.toLowerCase()}`,
       task.category,
-      task.theme || "atlas-strategic",
-    ].filter(Boolean);
+      "atlas-strategic",
+    ].filter((l): l is string => !!l);
 
     const body = `
 🚀 **Atlas Strategic Task**

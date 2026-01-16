@@ -1,3 +1,5 @@
+import { AgentPersona } from "./types";
+
 /**
  * A2UI (Agent-to-User Interface) Protocol Specification v1.0
  * Type-safe contract between Atlas agents and React renderer.
@@ -6,7 +8,7 @@
 
 export enum A2UIComponentType {
   CONTAINER = "container",
-  TEXT = "text", 
+  TEXT = "text",
   BUTTON = "button",
   INPUT = "input",
   CARD = "card",
@@ -110,7 +112,7 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   }
 
   const msg = data as Partial<A2UIMessage>;
-  
+
   // Version check
   if (msg.version !== "1.0") {
     console.warn(`[A2UI] Version mismatch: expected "1.0", got "${msg.version}"`);
@@ -123,9 +125,9 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   }
 
   const validElements: A2UIElement[] = msg.elements
-    .filter((el): el is A2UIElement => {
+    .filter((el) => {
       if (!el || typeof el !== "object" || Array.isArray(el)) return false;
-      
+
       const element = el as Partial<A2UIElement>;
       return (
         typeof element.id === "string" &&
@@ -142,7 +144,7 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
       props: { ...el.props }, // Defensive copy
       children: el.children || [],
     }))
-    .filter((el): el is A2UIElement => el.children?.every(isValidElement));
+    .filter((el) => el.children?.every(isValidElement));
 
   if (validElements.length === 0) {
     return null;
@@ -160,7 +162,7 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
  */
 function isValidElement(el: unknown): el is A2UIElement {
   if (!el || typeof el !== "object" || Array.isArray(el)) return false;
-  
+
   const element = el as Partial<A2UIElement>;
   if (
     typeof element.id !== "string" ||

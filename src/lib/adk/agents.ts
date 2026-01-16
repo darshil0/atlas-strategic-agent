@@ -35,7 +35,7 @@ export class StrategistAgent extends BaseAgent {
             text: `Strategist analyzing task ${event.elementId}`,
           })
           .build();
-      
+
       case "decompose":
         return new UIBuilder()
           .add(A2UIComponentType.TEXT, {
@@ -68,7 +68,7 @@ export class StrategistAgent extends BaseAgent {
           dependencies: [],
         },
         {
-          id: "STRAT-002", 
+          id: "STRAT-002",
           description: "Dependency mapping and risk assessment",
           status: TaskStatus.PENDING,
           priority: Priority.MEDIUM,
@@ -133,8 +133,8 @@ export class AnalystAgent extends BaseAgent {
   }
 
   async execute<R = AnalystResult>(
-    prompt: string,
-    context: StrategyContext = {}
+    _prompt: string,
+    _context: StrategyContext = {}
   ): Promise<R> {
     const analysis: AnalystResult = {
       feasibility: 87,
@@ -182,7 +182,7 @@ export class CriticAgent extends BaseAgent {
   name = "Critic";
   description = "Identifies plan gaps, circular dependencies, and optimization opportunities.";
 
-  async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
+  async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
       .add(A2UIComponentType.CARD, {
         title: "Critic Review",
@@ -201,8 +201,8 @@ export class CriticAgent extends BaseAgent {
   }
 
   async execute<R = CriticResult>(
-    prompt: string,
-    context: StrategyContext = {}
+    _prompt: string,
+    _context: StrategyContext = {}
   ): Promise<R> {
     const review: CriticResult = {
       score: 88,
@@ -214,7 +214,7 @@ export class CriticAgent extends BaseAgent {
         },
         {
           type: "dependency",
-          severity: "high", 
+          severity: "high",
           description: "CY-26-005 blocked by unlisted vendor contract",
         },
       ],

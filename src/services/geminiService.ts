@@ -1,8 +1,7 @@
-import { GoogleGenerativeAI, SchemaType, GenerativeModel } from "@google/generative-ai";
-import { ATLAS_SYSTEM_INSTRUCTION, ENV } from "../../config";
-import { Plan, SubTask, TaskStatus, Priority } from "../../types";
-import { validateA2UIMessage } from "../../lib/adk/protocol";
-import { ENV as ConfigENV } from "../../config/env";
+import { GoogleGenerativeAI, SchemaType, GenerativeModel, ResponseSchema } from "@google/generative-ai";
+import { ATLAS_SYSTEM_INSTRUCTION, ENV } from "../config";
+import { Plan, SubTask, TaskStatus, Priority } from "../types";
+import { validateA2UIMessage, A2UIMessage } from "../lib/adk/protocol";
 
 /**
  * Enterprise Gemini Service Layer for Atlas Strategic Agent
@@ -20,7 +19,7 @@ export class AtlasService {
   private static readonly timeoutMs = 60_000; // 60s timeout
 
   private static getModel(withA2UI = false): GenerativeModel {
-    const systemInstruction = withA2UI 
+    const systemInstruction = withA2UI
       ? ATLAS_SYSTEM_INSTRUCTION + "\n\nGenerate A2UI JSON in response when UI needed."
       : ATLAS_SYSTEM_INSTRUCTION;
 
@@ -42,7 +41,7 @@ export class AtlasService {
   static async generatePlan(userPrompt: string): Promise<Plan> {
     const model = this.getModel(false);
 
-    const schema: SchemaType = {
+    const schema: ResponseSchema = {
       type: SchemaType.OBJECT,
       properties: {
         goal: { type: SchemaType.STRING },
@@ -53,7 +52,7 @@ export class AtlasService {
             properties: {
               id: { type: SchemaType.STRING },
               description: { type: SchemaType.STRING },
-              status: { 
+              status: {
                 type: SchemaType.STRING,
                 enum: Object.values(TaskStatus)
               },
@@ -91,13 +90,13 @@ export class AtlasService {
 
         const response = await Promise.race([
           result.response,
-          new Promise<never>((_, reject) => 
+          new Promise<never>((_, reject) =>
             setTimeout(() => reject(new Error("Timeout")), this.timeoutMs)
           )
         ]);
 
         const plan = this.parseResponse<Plan>(response.text());
-        
+
         // Validate minimum plan quality
         if (plan.tasks.length >= 5 && plan.goal.trim()) {
           return plan;
@@ -140,7 +139,7 @@ History: ${history.slice(-1000)}`;
     for await (const chunk of result.stream) {
       const text = chunk.text();
       fullText += text;
-      
+
       // Extract A2UI payloads in real-time
       const a2uiMatch = text.match(/<a2ui>[\s\S]*?<\/a2ui>/g);
       if (a2uiMatch) {
@@ -176,7 +175,7 @@ History: ${history.slice(-1000)}`;
     const metrics = {
       completed: plan.tasks.filter(t => t.status === TaskStatus.COMPLETED).length,
       total: plan.tasks.length,
-      highPriorityRemaining: plan.tasks.filter(t => 
+      highPriorityRemaining: plan.tasks.filter(t =>
         t.priority === Priority.HIGH && t.status !== TaskStatus.COMPLETED
       ).length,
     };

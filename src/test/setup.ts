@@ -1,6 +1,6 @@
 // vitest/setup.ts
 import "@testing-library/jest-dom/vitest";
-import { vi, beforeEach, afterEach, beforeAll, afterAll } from "vitest";
+import { vi, beforeEach, beforeAll, afterAll } from "vitest";
 
 // Mock localStorage for consistent testing
 const localStorageMock = {
@@ -17,10 +17,10 @@ Object.defineProperty(window, 'localStorage', {
 
 // Mock IntersectionObserver
 class IntersectionObserverMock {
-  constructor() {}
-  observe() {}
-  disconnect() {}
-  unobserve() {}
+  constructor() { }
+  observe() { }
+  disconnect() { }
+  unobserve() { }
 }
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 
@@ -28,9 +28,9 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 const originalConsole = console;
 beforeAll(() => {
   // @ts-ignore
-  vi.spyOn(console, 'warn').mockImplementation(() => {});
+  vi.spyOn(console, 'warn').mockImplementation(() => { });
   // @ts-ignore
-  vi.spyOn(console, 'error').mockImplementation(() => {});
+  vi.spyOn(console, 'error').mockImplementation(() => { });
 });
 
 afterAll(() => {
@@ -46,7 +46,7 @@ beforeEach(() => {
   localStorageMock.getItem.mockClear();
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
-  
+
   // Reset all mocks
   vi.clearAllMocks();
 });

@@ -21,13 +21,12 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
   );
 
   const getStatusColor = (task: SubTask) => {
-    const isActive = activeTaskId === task.id;
-    const isBlocked = task.status === TaskStatus.PENDING && task.dependencies?.length > 0;
+    const isBlocked = task.status === TaskStatus.PENDING && (task.dependencies?.length || 0) > 0;
 
     if (isBlocked) {
       return "border-slate-800/60 bg-slate-900/40 text-slate-500 opacity-70";
     }
-    
+
     switch (task.status) {
       case TaskStatus.COMPLETED:
         return "bg-emerald-500/15 border-emerald-500/50 text-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.25)]";
@@ -41,7 +40,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
   };
 
   return (
-    <div 
+    <div
       className="h-full overflow-y-auto overflow-x-hidden p-8 bg-slate-950/60 rounded-3xl border border-slate-900/50 backdrop-blur-xl no-scrollbar shadow-2xl"
       role="region"
       aria-label="Task timeline"
@@ -49,7 +48,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
     >
       <div className="relative min-h-full">
         {/* Timeline connector */}
-        <div 
+        <div
           className="absolute left-12 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/30 via-slate-800/50 to-transparent shadow-sm"
           aria-hidden="true"
           role="presentation"
@@ -73,7 +72,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                 id={`timeline-task-${task.id}`}
               >
                 {/* Timeline marker */}
-                <div 
+                <div
                   className="relative z-20 flex-shrink-0 mt-2 w-10"
                   role="img"
                   aria-label={`${task.status} indicator for task ${task.id}`}
@@ -93,10 +92,10 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Connector to next item */}
                   {!isLast && (
-                    <div 
+                    <div
                       className="absolute left-1/2 top-full -translate-x-1/2 w-px h-10 bg-slate-800/30"
                       aria-hidden="true"
                     />
@@ -104,7 +103,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                 </div>
 
                 {/* Task content */}
-                <article 
+                <article
                   className={cn(
                     "flex-1 p-6 rounded-2xl border backdrop-blur-xl transition-all duration-500 shadow-xl group-hover:shadow-2xl",
                     isActive
@@ -125,7 +124,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                         {task.category || "General"}
                       </span>
                     </div>
-                    
+
                     <span
                       id={`task-status-${task.id}`}
                       className={cn(
@@ -144,7 +143,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                   </header>
 
                   {/* Task description */}
-                  <h3 
+                  <h3
                     id={`task-title-${task.id}`}
                     className="text-lg font-bold text-slate-100 mb-4 leading-tight group-hover:text-white transition-colors line-clamp-3"
                   >
@@ -153,7 +152,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
 
                   {/* Dependencies */}
                   {task.dependencies && task.dependencies.length > 0 && (
-                    <div 
+                    <div
                       className="mt-6 pt-4 border-t border-slate-800/30"
                       role="list"
                       aria-label={`${task.dependencies.length} dependencies`}
@@ -162,7 +161,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                         <ArrowRight className="w-3 h-3" aria-hidden="true" />
                         Dependencies ({task.dependencies.length})
                       </span>
-                      <ul 
+                      <ul
                         className="flex flex-wrap gap-1.5"
                         role="list"
                       >

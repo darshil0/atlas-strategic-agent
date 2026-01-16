@@ -1,4 +1,4 @@
-import { Plan, Message, Priority, TaskStatus } from "../../types";
+import { Plan, Message } from "../types";
 
 /**
  * Enterprise Persistence Layer for Atlas Strategic Agent
@@ -7,17 +7,17 @@ import { Plan, Message, Priority, TaskStatus } from "../../types";
 const STORAGE_KEYS = {
   // Core state
   CURRENT_PLAN: "atlas_current_plan_v1",
-  MESSAGES: "atlas_messages_v1", 
+  MESSAGES: "atlas_messages_v1",
   SETTINGS: "atlas_settings_v1",
-  
+
   // GitHub integration
   GITHUB_API_KEY: "github_api_key_v1",
   GITHUB_OWNER: "github_owner_v1",
   GITHUB_REPO: "github_repo_v1",
-  
+
   // Jira integration
   JIRA_API_KEY: "jira_api_key_v1",
-  JIRA_DOMAIN: "jira_domain_v1", 
+  JIRA_DOMAIN: "jira_domain_v1",
   JIRA_PROJECT_KEY: "jira_project_key_v1",
   JIRA_EMAIL: "jira_email_v1",
 } as const;
@@ -52,6 +52,10 @@ export class PersistenceService {
       this.clearPlan();
       return null;
     }
+  }
+
+  static clearPlan(): void {
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_PLAN);
   }
 
   /**
@@ -109,11 +113,11 @@ export class PersistenceService {
   /**
    * Jira Integration Storage  
    */
-  static saveJiraConfig(config: { 
-    apiKey: string; 
-    domain: string; 
-    projectKey: string; 
-    email: string 
+  static saveJiraConfig(config: {
+    apiKey: string;
+    domain: string;
+    projectKey: string;
+    email: string
   }): void {
     PersistenceService.saveSecret(STORAGE_KEYS.JIRA_API_KEY, config.apiKey);
     localStorage.setItem(STORAGE_KEYS.JIRA_DOMAIN, config.domain);
@@ -147,7 +151,10 @@ export class PersistenceService {
   static getGithubOwner(): string | null { return localStorage.getItem(STORAGE_KEYS.GITHUB_OWNER); }
   static saveGithubRepo(repo: string): void { localStorage.setItem(STORAGE_KEYS.GITHUB_REPO, repo); }
   static getGithubRepo(): string | null { return localStorage.getItem(STORAGE_KEYS.GITHUB_REPO); }
-  
+
+  static saveJiraApiKey(apiKey: string): void {
+    PersistenceService.saveSecret(STORAGE_KEYS.JIRA_API_KEY, apiKey);
+  }
   static saveJiraDomain(domain: string): void { localStorage.setItem(STORAGE_KEYS.JIRA_DOMAIN, domain); }
   static getJiraDomain(): string | null { return localStorage.getItem(STORAGE_KEYS.JIRA_DOMAIN); }
   static saveJiraProjectKey(projectKey: string): void { localStorage.setItem(STORAGE_KEYS.JIRA_PROJECT_KEY, projectKey); }

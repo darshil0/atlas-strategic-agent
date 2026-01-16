@@ -1,10 +1,7 @@
-// vite.config.ts (or vite.config.mts)
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "node:path"; // Use node: prefix in ESM
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-// import { loadEnv } from "vite"; // Uncomment if you need env loading
 
 // __dirname replacement in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -12,9 +9,6 @@ const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // If you actually need env values, uncomment:
-  // const env = loadEnv(mode, process.cwd(), "");
-
   return {
     server: {
       port: 3000,
@@ -44,15 +38,22 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    // Only keep this block if you are using Vitest
     test: {
       environment: "jsdom",
       globals: true,
-      setupFiles: "./src/test/setup.ts",
+      setupFiles: ["./src/test/setup.ts"],
       include: ["src/**/*.{test,spec}.{ts,tsx}"],
+      css: true,
       coverage: {
+        provider: "v8",
         reporter: ["text", "json", "html"],
-        exclude: ["node_modules/", "src/test/setup.ts"],
+        exclude: [
+          "node_modules/",
+          "src/test/setup.ts",
+          "**/*.config.{ts,js}",
+          "**/types/**",
+          "**/*.d.ts",
+        ],
       },
     },
   };

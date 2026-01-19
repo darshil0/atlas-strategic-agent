@@ -22,11 +22,13 @@ export default tseslint.config(
       sourceType: "module",
       globals: {
         ...globals.browser,
-        // Vitest globals
-        ...globals.jest, // or use explicit vitest types if preferred
+        // Vitest/Jest-style test globals
+        ...globals.jest,
       },
     },
     rules: {
+      // Prefer "strict" variant if you want stronger TS rules:
+      // ...tseslint.configs.strictTypeChecked.rules,
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",

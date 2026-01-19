@@ -1,3 +1,4 @@
+// src/components/DependencyGraph.tsx
 import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -16,7 +17,7 @@ import {
   type NodeProps,
   type NodeTypes,
 } from "@xyflow/react";
-import { SubTask, TaskStatus, Priority } from "../types";
+import { SubTask, TaskStatus, Priority } from "../types/plan.types"; // Fixed import
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
 import "@xyflow/react/dist/style.css";
@@ -26,7 +27,6 @@ function cn(...inputs: ClassValue[]) {
 }
 
 /** Custom node typings */
-
 type TaskNodeData = {
   task: SubTask;
   isActive: boolean;
@@ -51,24 +51,24 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
   const getStatusStyles = () => {
     if (isWhatIfEnabled) {
       if (isInCascade) {
-        return "border-rose-500 bg-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.4)] ring-1 ring-rose-500";
+        return "glass-1 border-rose-500/50 shadow-[0_0_20px_rgba(244,63,94,0.4)] ring-1 ring-rose-500/50 backdrop-blur-3xl";
       }
-      return "border-slate-800 bg-slate-900/40 opacity-30 grayscale cursor-not-allowed";
+      return "glass-1 border-slate-800/50 bg-slate-900/40 opacity-30 grayscale cursor-not-allowed backdrop-blur-3xl";
     }
 
     if (isBlocked && task.status === TaskStatus.PENDING) {
-      return "border-slate-800 bg-slate-950/60 opacity-50 grayscale cursor-not-allowed";
+      return "glass-1 border-slate-800/50 bg-slate-950/60 opacity-50 grayscale cursor-not-allowed backdrop-blur-3xl";
     }
 
     switch (task.status) {
       case TaskStatus.COMPLETED:
-        return "border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_10px_rgba(16,185,129,0.1)]";
+        return "glass-1 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.1)] backdrop-blur-3xl";
       case TaskStatus.FAILED:
-        return "border-rose-500/30 bg-rose-500/5";
+        return "glass-1 border-rose-500/30 backdrop-blur-3xl";
       case TaskStatus.IN_PROGRESS:
-        return "border-blue-500/60 bg-blue-600/10 shadow-[0_0_25px_rgba(59,130,246,0.2)]";
+        return "glass-1 border-atlas-blue/60 shadow-[0_0_25px_rgba(59,130,246,0.2)] backdrop-blur-3xl";
       default:
-        return "border-slate-800 bg-slate-900/40 hover:border-slate-600";
+        return "glass-1 border-slate-800/50 hover:border-slate-600/50 backdrop-blur-3xl";
     }
   };
 
@@ -79,7 +79,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
       case Priority.MEDIUM:
         return "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]";
       default:
-        return "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]";
+        return "bg-atlas-blue shadow-[0_0_10px_rgba(59,130,246,0.6)]";
     }
   };
 
@@ -91,31 +91,33 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         }
       }}
       className={cn(
-        "flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 backdrop-blur-3xl select-none relative",
+        "flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 select-none relative group",
         getStatusStyles(),
         isActive
-          ? "ring-2 ring-blue-500 ring-offset-4 ring-offset-slate-950 scale-110 z-50 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
-          : "hover:border-slate-500",
+          ? "ring-2 ring-atlas-blue/70 ring-offset-4 ring-offset-slate-950/50 scale-110 z-50 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
+          : "hover:border-white/20 hover:shadow-xl",
       )}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
     >
       <div className={cn("w-1.5 shrink-0", getPriorityAccent())} />
       <div className="flex-1 px-4 py-4 relative">
         <Handle type="target" position={Position.Top} className="!opacity-0" />
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center opacity-40 font-mono text-[7px] tracking-[0.2em] uppercase">
-            <span className="bg-slate-950/50 px-1.5 py-0.5 rounded border border-white/5">
+          <div className="flex justify-between items-center opacity-60 font-mono text-[7px] tracking-[0.2em] uppercase">
+            <span className="glass-2 px-1.5 py-0.5 rounded border border-white/10 text-slate-300">
               #{task.id}
             </span>
-            <span className="truncate max-w-[80px]">
+            <span className="truncate max-w-[80px] capitalize">
               {task.category || "STRATEGIC"}
             </span>
           </div>
           <p
             className={cn(
-              "font-bold leading-snug line-clamp-2 min-h-[2.8em] tracking-tight",
+              "font-display font-bold leading-snug line-clamp-2 min-h-[2.8em] tracking-tight",
               task.status === TaskStatus.COMPLETED
-                ? "text-slate-600"
-                : "text-slate-100",
+                ? "text-slate-400"
+                : "text-white",
             )}
           >
             {task.description}
@@ -124,13 +126,15 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
             <div className="flex items-center gap-1.5">
               <span
                 className={cn(
-                  "w-1 h-1 rounded-full",
+                  "w-1.5 h-1.5 rounded-full",
                   task.status === TaskStatus.IN_PROGRESS
-                    ? "animate-pulse bg-blue-400"
+                    ? "animate-pulse bg-atlas-blue"
+                    : task.status === TaskStatus.COMPLETED
+                    ? "bg-emerald-400"
                     : "bg-slate-600",
                 )}
               />
-              <span className="text-[7px] uppercase font-black tracking-widest text-slate-500">
+              <span className="text-[8px] uppercase font-black tracking-widest text-slate-400 font-mono">
                 {String(task.status).replace("-", " ")}
               </span>
             </div>
@@ -235,12 +239,12 @@ const DependencyGraph = ({
           type: "smoothstep",
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: complete ? "#3b82f6" : "#1e293b",
+            color: complete ? "#10b981" : "#64748b",
           },
           style: {
-            stroke: complete ? "#3b82f6" : "#1e293b",
-            strokeWidth: 2,
-            opacity: complete ? 1 : 0.3,
+            stroke: complete ? "#10b981" : "#475569",
+            strokeWidth: 2.5,
+            opacity: complete ? 1 : 0.4,
           },
         });
       });
@@ -266,7 +270,11 @@ const DependencyGraph = ({
   }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   return (
-    <div className="h-full min-h-[500px] w-full border border-slate-900 rounded-3xl overflow-hidden bg-slate-950/50 backdrop-blur-xl relative group shadow-2xl">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="h-full min-h-[500px] w-full glass-1 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-3xl relative shadow-2xl group"
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -277,33 +285,29 @@ const DependencyGraph = ({
         fitViewOptions={{ padding: 0.3 }}
         minZoom={0.05}
         maxZoom={2}
-        // If you intend to allow user connections, wire through onConnect:
-        // onConnect={(connection) => {
-        //   if (onConnect && connection.source && connection.target) {
-        //     onConnect(connection.source, connection.target);
-        //   }
-        // }}
       >
         <Background
           variant={BackgroundVariant.Lines}
           gap={40}
           size={1}
-          color="rgba(30, 41, 59, 0.5)"
+          color="rgba(148, 163, 184, 0.1)"
         />
         <MiniMap<TaskNodeType>
           nodeColor={(n: TaskNodeType) => {
             const t = n.data?.task;
             if (t?.status === TaskStatus.COMPLETED) return "#10b981";
             if (t?.status === TaskStatus.IN_PROGRESS) return "#3b82f6";
-            return "#334155";
+            return "#475569";
           }}
           maskColor="rgba(15, 23, 42, 0.8)"
-          className="!bg-slate-950 !border-slate-800 !rounded-2xl !overflow-hidden !shadow-2xl"
+          className="!bg-slate-950/80 !border-slate-800/50 !rounded-2xl !overflow-hidden !shadow-2xl backdrop-blur-xl"
           style={{ height: 120, width: 180 }}
         />
-        <Controls className="!bg-slate-900 !border-slate-800 !rounded-xl !shadow-none !m-4" />
+        <Controls 
+          className="!bg-slate-950/80 !border-slate-800/50 !backdrop-blur-xl !rounded-2xl !shadow-2xl !m-4 hover:shadow-3xl transition-all" 
+        />
       </ReactFlow>
-    </div>
+    </motion.div>
   );
 };
 

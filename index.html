@@ -1,46 +1,50 @@
 <!doctype html>
 <html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Keep version in sync with package.json (3.2.1) -->
+    <title>Atlas Strategic Agent | V3.2.1</title>
+    <meta
+      name="description"
+      content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis."
+    />
 
-  <!-- Keep version in sync with package.json (3.2.0) -->
-  <title>Atlas Strategic Agent | V3.2.0</title>
-  <meta name="description"
-    content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Atlas Strategic Agent" />
+    <meta
+      property="og:description"
+      content="Autonomous strategic reasoning powered by Gemini 2.0 Flash."
+    />
+    <meta property="og:image" content="/og-preview.png" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Atlas Strategic Agent" />
-  <meta property="og:description" content="Autonomous strategic reasoning powered by Gemini 1.5 Flash." />
-  <meta property="og:image" content="/og-preview.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
-    rel="stylesheet" />
-</head>
+  <body>
+    <div id="loader">
+      <div class="pulse-ring"></div>
+    </div>
 
-<body>
-  <div id="loader">
-    <div class="pulse-ring"></div>
-  </div>
+    <div id="root"></div>
 
-  <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
 
-  <script type="module" src="/src/index.tsx"></script>
-
-  <script>
-    window.addEventListener("load", () => {
-      const loader = document.getElementById("loader");
-      if (loader) {
-        loader.style.opacity = "0";
-        setTimeout(() => loader.remove(), 500);
-      }
-    });
-  </script>
-</body>
-
+    <script>
+      window.addEventListener("load", () => {
+        const loader = document.getElementById("loader");
+        if (loader) {
+          loader.style.opacity = "0";
+          setTimeout(() => loader.remove(), 500);
+        }
+      });
+    </script>
+  </body>
 </html>

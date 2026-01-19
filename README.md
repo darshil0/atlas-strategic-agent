@@ -8,7 +8,7 @@
 
 ### *Executive Vision → Executable Enterprise Roadmaps*
 
-**Atlas** is a multi-model AI agent that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" architecture to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization.
+**Atlas** is a multi-model AI agent that bridges the gap between high-level executive intent and granular project execution. Powered by **Gemini 2.0 Flash**, it utilizes a multi-agent "Mission Control" architecture to generate dynamic, glassmorphic strategic roadmaps with native Jira and GitHub synchronization. [file:1]
 
 ---
 
@@ -73,7 +73,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+The application will be available at `http://localhost:3000`.
 
 ---
 
@@ -112,39 +112,39 @@ npm run coverage         # Generate coverage report (80% threshold)
 ```text
 atlas-strategic-agent/
 ├── src/
-│   ├── components/          # React UI Components
-│   │   ├── TaskCard.tsx     # Individual task visualization
+│   ├── components/              # React UI Components
+│   │   ├── TaskCard.tsx         # Individual task visualization
 │   │   ├── DependencyGraph.tsx  # XYFlow dependency viewer
 │   │   └── SettingsModal.tsx    # API key management
-│   ├── config/              # Centralized Configuration
-│   │   ├── env.ts           # Environment validation
-│   │   └── prompts.ts       # System prompts for agents
+│   ├── config/                  # Centralized Configuration
+│   │   ├── env.ts               # Environment validation
+│   │   └── prompts.ts           # System prompts for agents
 │   ├── lib/
-│   │   └── adk/             # Agent Development Kit
-│   │       ├── agents/      # Agent implementations
-│   │       ├── factory.ts   # Agent factory pattern
-│   │       └── protocol.ts  # A2UI protocol parser
-│   ├── services/            # External Services
+│   │   └── adk/                 # Agent Development Kit
+│   │       ├── agents/          # Agent implementations
+│   │       ├── factory.ts       # Agent factory pattern
+│   │       └── protocol.ts      # A2UI protocol parser
+│   ├── services/                # External Services
 │   │   ├── gemini.service.ts    # LLM integration
 │   │   ├── github.service.ts    # GitHub API v3
 │   │   ├── jira.service.ts      # Jira REST API
 │   │   └── storage.service.ts   # Persistence layer
-│   ├── types/               # TypeScript Definitions
-│   │   ├── plan.types.ts    # Core data models
-│   │   └── agent.types.ts   # Agent interfaces
-│   ├── test/                # Test Infrastructure
-│   │   └── setup.ts         # Vitest global setup
-│   ├── index.css            # Global Styles + Tailwind
-│   ├── App.tsx              # Main Application Entry
-│   └── main.tsx             # React 19 root renderer
-├── public/                  # Static Assets
-├── .env.example             # Environment variable template
-├── vite.config.ts           # Vite build configuration
-├── vitest.config.ts         # Test configuration
-├── tsconfig.json            # TypeScript compiler options
-├── tailwind.config.ts       # Tailwind CSS customization
-├── eslint.config.js         # ESLint rules
-└── package.json             # Dependencies and scripts
+│   ├── types/                   # TypeScript Definitions
+│   │   ├── plan.types.ts        # Core data models
+│   │   └── agent.types.ts       # Agent interfaces
+│   ├── test/                    # Test Infrastructure
+│   │   └── setup.ts             # Vitest global setup
+│   ├── index.css                # Global Styles + Tailwind
+│   ├── App.tsx                  # Main Application Entry
+│   └── main.tsx                 # React 19 root renderer
+├── public/                      # Static Assets
+├── .env.example                 # Environment variable template
+├── vite.config.ts               # Vite build configuration
+├── vitest.config.ts             # Test configuration
+├── tsconfig.json                # TypeScript compiler options
+├── tailwind.config.ts           # Tailwind CSS customization
+├── eslint.config.js             # ESLint rules
+└── package.json                 # Dependencies and scripts
 ```
 
 ---
@@ -173,13 +173,13 @@ VITE_MAX_TOKENS=8000
 
 ### API Key Security
 
-⚠️ **Important**: API keys are stored in browser localStorage with Base64 obfuscation. For production deployments, use an Edge Function proxy to keep keys server-side.
+⚠️ **Important**: API keys are stored in browser `localStorage` with Base64 obfuscation for convenience, not true secrecy. For production deployments, route all LLM and integration calls through a backend/edge proxy and keep secrets server-side. [file:1]
 
 ---
 
 ## 🧪 Testing Strategy
 
-Atlas includes a comprehensive test suite with **80% coverage requirement**:
+Atlas includes a comprehensive test suite with an **80% coverage requirement**:
 
 ```bash
 # Run tests in watch mode
@@ -253,17 +253,17 @@ graph TD
 
 ### Security Measures
 
-✅ **API Key Management**: Base64 obfuscation + localStorage isolation  
-✅ **Type Safety**: 100% TypeScript coverage with strict mode  
+✅ **API Key Management**: Local obfuscation plus recommended backend proxy in production  
+✅ **Type Safety**: Strict TypeScript across the codebase  
 ✅ **Input Validation**: Runtime schema validation for LLM outputs  
-✅ **XSS Prevention**: React's built-in escaping + Content Security Policy  
-✅ **Dependency Scanning**: Regular npm audit checks
+✅ **XSS Prevention**: React's escaping plus CSP headers  
+✅ **Dependency Scanning**: Regular `npm audit` checks
 
 ### Performance Optimizations
 
-⚡ **Bundle Size**: Gzipped < 1.5MB (45% reduction from v3.1.4)  
+⚡ **Bundle Size**: Gzipped ≈ 1.5MB after recent optimizations  
 ⚡ **Code Splitting**: Dynamic imports for vendor chunks  
-⚡ **Tree Shaking**: Vite's automatic dead code elimination  
+⚡ **Tree Shaking**: Vite’s dead code elimination  
 ⚡ **Local CSS**: PostCSS pipeline (no CDN dependency)  
 ⚡ **React 19**: Concurrent rendering for smooth animations
 
@@ -273,21 +273,22 @@ graph TD
 
 ### Completed ✅
 
-- [x] **V3.2.0**: Enterprise sync (GitHub/Jira) + ADK refactor
+- [x] **V3.2.1**: Test infrastructure & coverage thresholds
+- [x] **V3.2.0**: Enterprise sync (GitHub/Jira) + ADK enhancements
 - [x] **V3.1.6**: Codebase hygiene (dead code removal)
 - [x] **V3.1.5**: Performance overhaul (local CSS, bundle optimization)
 - [x] **V3.1.4**: Runtime hardening (safe JSON parsing, env validation)
 - [x] **V3.1.3**: Multi-agent synthesis architecture
 - [x] **V3.1.0**: Dependency visualization with XYFlow
-- [x] **V3.0.0**: Foundation with Glassmorphism 2.0
+- [x] **V3.0.0**: Foundation with Glassmorphism 2.0 [file:1]
 
 ### Planned 🚀
 
-- [ ] **V4.0.0**: Real-time collaboration (WebSockets)
+- [ ] **V4.0.0**: Real-time collaboration (WebSockets) and collaborative editing
 - [ ] **V3.3.0**: Monte Carlo risk modeling
-- [ ] **V3.2.5**: Resource optimizer (headcount/budget allocation)
-- [ ] **V3.2.2**: Slack/Teams integration for alerts
-- [ ] **V3.2.1**: PDF export with Puppeteer
+- [ ] **V3.2.x**: Resource optimizer (headcount/budget allocation)
+- [ ] **V3.2.x**: Slack/Teams integration for alerts
+- [ ] **V3.2.x**: Advanced executive reporting (PDF exports) [file:1]
 
 ---
 
@@ -330,7 +331,7 @@ This project is part of the **Advanced Agentic Coding** initiative.
 ## 🙏 Acknowledgments
 
 - **Google AI**: For the Gemini 2.0 Flash model
-- **Vercel**: For the React team and ecosystem
+- **Vercel**: For the React ecosystem
 - **Tailwind Labs**: For Tailwind CSS
 - **XYFlow Team**: For the dependency visualization library
 
@@ -372,3 +373,4 @@ If you find Atlas useful, please consider giving it a star! ⭐
 [Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [Request Feature](https://github.com/darshil0/atlas-strategic-agent/issues) · [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki)
 
 </div>
+```

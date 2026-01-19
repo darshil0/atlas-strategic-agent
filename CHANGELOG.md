@@ -36,28 +36,28 @@ This release focuses on establishing production-ready development infrastructure
   
 * **Documentation**:
   * Created `FIXES_APPLIED.md` documenting all infrastructure improvements
-  * Enhanced README.md with testing, contribution, and deployment sections
+  * Enhanced `README.md` with testing, contribution, and deployment sections
   * Added detailed project structure documentation
 
 ### Changed
 * **TypeScript Configuration**:
-  * Removed conflicting `vitest/globals` from types array
+  * Removed conflicting `vitest/globals` from `types` array
   * Streamlined type declarations for better IDE support
   
 * **Vite Configuration**:
   * Added `provider: "v8"` for coverage generation
   * Expanded test exclusion patterns
-  * Fixed setupFiles format (string → array)
+  * Fixed `setupFiles` format (string → array)
   * Added CSS support for component tests
   
 * **Git Configuration**:
-  * Enhanced `.gitignore` with lock file variants (yarn, pnpm)
+  * Enhanced `.gitignore` with lockfile variants (Yarn, pnpm)
   * Added coverage reports and temp directories to exclusions
 
 ### Fixed
 * **Critical**: Resolved missing test setup file that was breaking test execution
 * **Build**: Fixed TypeScript type conflicts between Vite and Vitest
-* **Development**: Corrected Vite config setupFiles format preventing proper test initialization
+* **Development**: Corrected Vite config `setupFiles` format preventing proper test initialization
 * **Coverage**: Added proper coverage provider and exclusion patterns
 
 ### Developer Experience
@@ -73,7 +73,7 @@ This release focuses on establishing production-ready development infrastructure
 
 ### 🔄 Enterprise Sync Engine
 
-Major release introducing native integrations with enterprise project management platforms and enhanced LLM reasoning capabilities.
+Minor feature release introducing native integrations with enterprise project management platforms and enhanced LLM reasoning capabilities. (Version number `3.2.0` indicates a backward-compatible feature release under Semantic Versioning.) [file:1]
 
 ### Added
 * **Enterprise Sync Engine**:
@@ -129,7 +129,7 @@ Routine maintenance release focused on removing dead code and ensuring version c
 * **Obsolete Configurations**: Removed deprecated Vite plugin options
 
 ### Fixed
-* **Version Sync**: Corrected `index.html` title from V3.1.4 to V3.1.5 to match `package.json`
+* **Version Sync**: Corrected `index.html` title from `v3.1.4` to `v3.1.5` to match `package.json`
 * **Documentation**: Updated all version references in README and docs
 
 ### Technical Debt
@@ -143,7 +143,7 @@ Routine maintenance release focused on removing dead code and ensuring version c
 
 ### ⚡ Performance Optimization
 
-Major performance overhaul focusing on bundle size reduction and build pipeline optimization.
+Performance-focused release targeting bundle size reduction and build pipeline optimization. (Still a minor release within the `3.x.x` line.) [file:1]
 
 ### Changed
 * **Performance Optimization**: 
@@ -176,7 +176,7 @@ Major performance overhaul focusing on bundle size reduction and build pipeline 
 Security and stability release focusing on error handling and data validation.
 
 ### Added
-* **Safe JSON Parsing**: Implemented try-catch wrappers for all JSON.parse operations
+* **Safe JSON Parsing**: Implemented try-catch wrappers for all `JSON.parse` operations
 * **Environment Validation**: Added runtime checks for required environment variables
 * **Error Boundaries**: Created React error boundaries for graceful failure handling
 * **Logging Framework**: Integrated structured logging with log levels
@@ -217,7 +217,7 @@ Architectural release introducing the multi-agent collaboration framework.
   * Implemented parser with error recovery and validation
 
 ### Architecture
-```
+```text
 ADK
 ├── agents/
 │   ├── strategist.ts    (High-level decomposition)
@@ -273,7 +273,7 @@ Foundation release establishing core architecture and design system.
   
 * **Identity**: 
   * Established the **Glassmorphic design system** with custom Tailwind theme
-  * Core strategic modeling components (TaskCard, Timeline, Gantt)
+  * Core strategic modeling components (`TaskCard`, `Timeline`, `Gantt`)
   * Responsive layout with mobile-first approach
   
 * **Core Features**:
@@ -292,16 +292,18 @@ Foundation release establishing core architecture and design system.
 
 ## Version History Summary
 
-| Version | Release Date | Focus Area | Key Metric |
-|---------|-------------|------------|------------|
-| 3.2.1 | 2026-01-17 | Testing Infrastructure | 80% coverage threshold |
-| 3.2.0 | 2026-01-14 | Enterprise Sync | GitHub + Jira integration |
-| 3.1.6 | 2026-01-16 | Code Hygiene | Dead code removal |
-| 3.1.5 | 2026-01-12 | Performance | 45% bundle reduction |
-| 3.1.4 | 2026-01-11 | Runtime Hardening | Safe JSON parsing |
-| 3.1.3 | 2026-01-10 | ADK Architecture | Multi-agent system |
-| 3.1.0 | 2026-01-09 | Visualization | XYFlow integration |
-| 3.0.0 | 2026-01-08 | Foundation | Initial release |
+| Version | Release Date | Focus Area              | Key Metric / Highlight           |
+|---------|--------------|-------------------------|----------------------------------|
+| 3.2.1   | 2026-01-17   | Testing Infrastructure  | 80% coverage threshold           |
+| 3.2.0   | 2026-01-14   | Enterprise Sync         | GitHub + Jira integration        |
+| 3.1.6   | 2026-01-16   | Code Hygiene            | Dead code removal                |
+| 3.1.5   | 2026-01-12   | Performance             | 45% bundle reduction             |
+| 3.1.4   | 2026-01-11   | Runtime Hardening       | Safe JSON parsing                |
+| 3.1.3   | 2026-01-10   | ADK Architecture        | Multi-agent system               |
+| 3.1.0   | 2026-01-09   | Visualization           | XYFlow integration               |
+| 3.0.0   | 2026-01-08   | Foundation              | Initial release                  |
+
+> Note: The table keeps versions in descending order (latest first) as recommended for human-friendly changelogs. [web:22]
 
 ---
 
@@ -310,7 +312,7 @@ Foundation release establishing core architecture and design system.
 ### Upgrading from 3.1.x to 3.2.x
 
 #### Breaking Changes
-None. This is a backward-compatible release.
+None. This is a backward-compatible upgrade within major version `3`. [file:1][web:16]
 
 #### New Features
 1. **GitHub Integration**: Add `VITE_GITHUB_TOKEN` to `.env`
@@ -318,7 +320,7 @@ None. This is a backward-compatible release.
 3. **Settings Modal**: Access via gear icon in top navigation
 
 #### Deprecated
-* Direct localStorage API access (use `storage.service.ts` instead)
+* Direct `localStorage` API access (use `storage.service.ts` instead)
 
 ---
 
@@ -336,7 +338,7 @@ For issues, questions, or contributions:
 
 Thank you to all contributors who have helped shape Atlas:
 
-* [@darshil0](https://github.com/darshil0) - Project Lead & Architecture
+* [@darshil0](https://github.com/darshil0) – Project Lead & Architecture
 * Community contributors welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---

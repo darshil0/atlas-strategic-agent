@@ -373,4 +373,3 @@ If you find Atlas useful, please consider giving it a star! ⭐
 [Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [Request Feature](https://github.com/darshil0/atlas-strategic-agent/issues) · [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki)
 
 </div>
-```

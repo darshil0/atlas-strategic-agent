@@ -1,9 +1,10 @@
+// src/components/TaskCard.tsx
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { SubTask, TaskStatus, Priority, type Citation } from "../types";
-import { ICONS } from "../config";
+import { SubTask, TaskStatus, Priority, type Citation } from "@types/plan.types"; // Fixed path
+import { ICONS } from "@config/icons"; // Fixed path
 import {
   Plus,
   ChevronDown,
@@ -40,7 +41,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const expandButtonRef = useRef<HTMLButtonElement>(null);
-  const exportButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Auto-expand and scroll to active task
   useEffect(() => {
@@ -56,19 +56,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const getStatusColor = (status: TaskStatus) => {
     if (isBlocked && status === TaskStatus.PENDING) {
-      return "border-slate-800 bg-slate-900/60 opacity-70 cursor-not-allowed";
+      return "glass-1 border-slate-800/50 opacity-70 cursor-not-allowed backdrop-blur-3xl";
     }
     switch (status) {
       case TaskStatus.COMPLETED:
-        return "border-emerald-500/40 bg-emerald-500/10 hover:border-emerald-500/60";
+        return "glass-1 border-emerald-500/40 backdrop-blur-3xl shadow-emerald/20 hover:border-emerald-500/60";
       case TaskStatus.FAILED:
-        return "border-rose-500/40 bg-rose-500/10 hover:border-rose-500/60";
+        return "glass-1 border-rose-500/40 backdrop-blur-3xl hover:border-rose-500/60";
       case TaskStatus.IN_PROGRESS:
-        return "border-blue-500/60 bg-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.15)]";
+        return "glass-1 border-atlas-blue/60 backdrop-blur-3xl shadow-[0_0_20px_rgba(59,130,246,0.15)]";
       case TaskStatus.WAITING:
-        return "border-amber-500/40 bg-amber-500/10 hover:border-amber-500/60";
+        return "glass-1 border-amber-500/40 backdrop-blur-3xl hover:border-amber-500/60";
       default:
-        return "border-slate-800 bg-slate-900/60 hover:border-slate-600";
+        return "glass-1 border-slate-800/50 backdrop-blur-3xl hover:border-slate-600/50";
     }
   };
 
@@ -79,7 +79,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       case Priority.MEDIUM:
         return "text-amber-400 border-amber-500/40 bg-amber-500/15 shadow-sm shadow-amber-500/20";
       case Priority.LOW:
-        return "text-blue-400 border-blue-500/40 bg-blue-500/15 shadow-sm shadow-blue-500/20";
+        return "text-atlas-blue border-atlas-blue/40 bg-atlas-blue/15 shadow-sm shadow-atlas-blue/20";
     }
   };
 
@@ -87,10 +87,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       onClick?.();
-    }
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault();
-      // Could implement focus navigation between cards here
     }
   }, [onClick]);
 
@@ -110,44 +106,54 @@ const TaskCard: React.FC<TaskCardProps> = ({
       onClick={onClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        "rounded-2xl border transition-all duration-300 group overflow-hidden glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
+        "rounded-3xl border transition-all duration-300 group overflow-hidden backdrop-blur-3xl focus:outline-none focus:ring-2 focus:ring-atlas-blue focus:ring-offset-2 focus:ring-offset-slate-950/50 shadow-xl hover:shadow-2xl",
         getStatusColor(task.status),
         isActive &&
-        "scale-[1.02] z-20 border-blue-500/60 shadow-[0_0_40px_rgba(59,130,246,0.25)] ring-2 ring-blue-500/30",
+          "scale-[1.02] z-20 border-atlas-blue/70 shadow-[0_0_40px_rgba(59,130,246,0.25)] ring-2 ring-atlas-blue/40",
         isBlocked && "opacity-70 cursor-not-allowed"
       )}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
     >
       {/* Main card content */}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="mt-1 shrink-0 opacity-80">
-            {ICONS[isBlocked ? TaskStatus.BLOCKED : task.status] || ICONS[task.status]}
-          </div>
+      <div className="p-6">
+        <div className="flex items-start gap-4">
+          <motion.div 
+            className="mt-1 shrink-0 p-2 glass-2 rounded-2xl border border-white/20"
+            animate={{ 
+              scale: isActive ? 1.1 : 1,
+              rotate: isActive ? 3 : 0 
+            }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            {ICONS[isBlocked ? "BLOCKED" : task.status] || <Clock className="h-5 w-5 text-slate-500" />}
+          </motion.div>
+          
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-4">
               <h3
                 id={`task-title-${task.id}`}
                 className={cn(
-                  "text-base font-semibold leading-tight pr-8",
+                  "font-display text-xl font-bold leading-tight pr-8",
                   task.status === TaskStatus.COMPLETED
-                    ? "text-slate-500 line-through"
-                    : "text-slate-200 group-hover:text-white group-focus:text-white",
+                    ? "text-slate-500/80 line-through"
+                    : "text-white group-hover:text-white/90",
                 )}
               >
                 {task.description}
               </h3>
               <span
-                className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700 ml-2 shrink-0"
+                className="font-mono text-xs text-slate-500/80 bg-glass-2 px-3 py-1.5 rounded-2xl border border-white/20 backdrop-blur-xl"
                 aria-label={`Task ID: ${task.id}`}
               >
                 #{task.id}
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2 items-center mb-3">
+            <div className="flex flex-wrap gap-3 items-center mb-6">
               <span
                 className={cn(
-                  "px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border-2 shadow-sm",
+                  "px-4 py-2 rounded-2xl text-xs font-mono font-black uppercase tracking-wide border-2 shadow-lg backdrop-blur-sm",
                   getPriorityColor(task.priority),
                 )}
                 aria-label={`Priority: ${task.priority}`}
@@ -155,36 +161,39 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 {task.priority.toLowerCase()}
               </span>
               {task.duration && (
-                <span className="text-[10px] text-slate-500 font-mono flex items-center gap-1.5 bg-slate-900/30 px-2 py-1 rounded border border-slate-800">
-                  <Clock className="w-3 h-3" /> {task.duration}
+                <span className="font-mono text-xs text-slate-400 bg-glass-2 px-4 py-2 rounded-2xl border border-white/20 backdrop-blur-xl flex items-center gap-2">
+                  <Clock className="h-3 w-3" />
+                  {task.duration}
                 </span>
               )}
             </div>
 
             <div className="flex items-center justify-between gap-4">
               <span
-                className="text-[10px] text-slate-500 uppercase tracking-widest font-black bg-slate-900/30 px-2 py-0.5 rounded"
+                className="font-mono text-xs text-slate-500/80 uppercase tracking-widest bg-glass-2 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-xl"
                 aria-label={`Category: ${task.category || 'Strategic'}`}
               >
                 {task.category || "Strategic"}
               </span>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {task.status === TaskStatus.PENDING && !isBlocked && onDecompose && (
-                  <button
+                  <motion.button
                     type="button"
                     onClick={(e: React.MouseEvent) => {
                       e.stopPropagation();
                       onDecompose(task.id);
                     }}
-                    className="text-[10px] font-black uppercase tracking-wider text-slate-400 hover:text-blue-400 px-3 py-1.5 bg-slate-900/50 hover:bg-blue-500/10 border border-slate-800/50 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+                    className="glass-2 px-6 py-3 border border-white/20 text-xs font-mono font-black uppercase tracking-widest text-slate-300 hover:text-white hover:border-white/40 hover:bg-white/10 rounded-2xl transition-all backdrop-blur-xl flex items-center gap-2 shadow-lg hover:shadow-xl"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     aria-label={`Decompose task ${task.id}`}
                   >
-                    <Plus className="w-3 h-3 inline -ml-1 mr-1" />
+                    <Plus className="h-3 w-3" />
                     Decompose
-                  </button>
+                  </motion.button>
                 )}
                 {(task.result || task.output) && (
-                  <button
+                  <motion.button
                     ref={expandButtonRef}
                     type="button"
                     onClick={(e: React.MouseEvent) => {
@@ -192,24 +201,26 @@ const TaskCard: React.FC<TaskCardProps> = ({
                       setIsExpanded((prev) => !prev);
                     }}
                     className={cn(
-                      "text-[10px] font-black uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
+                      "glass-2 px-6 py-3 border border-white/20 text-xs font-mono font-black uppercase tracking-widest inline-flex items-center gap-2 rounded-2xl transition-all backdrop-blur-xl shadow-lg hover:shadow-xl",
                       isExpanded
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30 hover:bg-blue-500/30"
-                        : "bg-slate-900/50 text-slate-400 hover:bg-slate-800 hover:text-blue-300 border-slate-800/50",
+                        ? "text-atlas-blue border-atlas-blue/40 bg-atlas-blue/20 hover:bg-atlas-blue/30"
+                        : "text-slate-300 hover:text-slate-100 hover:border-white/40 hover:bg-white/10",
                     )}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     aria-expanded={isExpanded}
                     aria-controls={`task-content-${task.id}`}
                   >
                     {isExpanded ? (
                       <>
-                        Collapse <ChevronUp className="w-3 h-3" />
+                        Collapse <ChevronUp className="h-3 w-3" />
                       </>
                     ) : (
                       <>
-                        Expand <ChevronDown className="w-3 h-3" />
+                        Expand <ChevronDown className="h-3 w-3" />
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 )}
               </div>
             </div>
@@ -225,29 +236,33 @@ const TaskCard: React.FC<TaskCardProps> = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="border-t border-slate-800/50 bg-gradient-to-b from-slate-950/70 to-slate-900/50 p-4"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="glass-2 border-t border-white/20 backdrop-blur-3xl p-6"
           >
             {(task.output || task.result) && (
-              <div className="space-y-3 mb-4">
+              <div className="space-y-6 mb-6">
                 {task.output && (
                   <div>
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="font-mono text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                       Expected Output
                     </h4>
-                    <p className="text-[11px] text-slate-300 font-medium italic bg-slate-900/50 p-3 rounded-lg border border-slate-800/50 leading-relaxed">
-                      {task.output}
-                    </p>
+                    <div className="glass-2 p-5 rounded-2xl border border-white/20 backdrop-blur-3xl">
+                      <p className="text-sm text-slate-200 font-medium leading-relaxed whitespace-pre-wrap">
+                        {task.output}
+                      </p>
+                    </div>
                   </div>
                 )}
                 {task.result && (
                   <div>
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="font-mono text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                       Execution Result
                     </h4>
-                    <pre className="text-[11px] text-slate-200 font-mono leading-relaxed whitespace-pre-wrap bg-slate-900/70 p-3 rounded-lg border border-slate-800/50 max-h-32 overflow-y-auto">
-                      {task.result}
-                    </pre>
+                    <div className="glass-2 p-5 rounded-2xl border border-white/20 backdrop-blur-3xl max-h-40 overflow-y-auto">
+                      <pre className="text-sm text-slate-200 font-mono leading-relaxed whitespace-pre-wrap">
+                        {task.result}
+                      </pre>
+                    </div>
                   </div>
                 )}
               </div>
@@ -255,64 +270,68 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             {/* Export buttons */}
             {(onExport || exported) && (
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                <button
-                  ref={(el) => { exportButtonsRef.current[0] = el; }}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <motion.button
                   onClick={() => handleExport("github")}
                   disabled={!!exported?.github}
                   className={cn(
-                    "group flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-bold h-full",
+                    "glass-2 group flex flex-col items-center gap-2 p-5 rounded-2xl border transition-all text-sm font-mono font-black backdrop-blur-3xl shadow-xl hover:shadow-2xl",
                     !!exported?.github
-                      ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 cursor-default"
-                      : "bg-slate-900/50 border-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
+                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300 cursor-default shadow-emerald/20"
+                      : "border-white/20 hover:border-white/40 hover:bg-white/10 text-slate-300 hover:text-white",
                   )}
-                  aria-label={`Export to ${exported?.github ? 'GitHub (completed)' : 'GitHub'}}`}
+                  whileHover={{ scale: !!exported?.github ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  aria-label={`Export to ${exported?.github ? 'GitHub (completed)' : 'GitHub'}`}
                 >
-                  <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span>{exported?.github ? "✅ Exported" : "GitHub"}</span>
-                </button>
-                <button
-                  ref={(el) => { exportButtonsRef.current[1] = el; }}
+                  <Github className={cn("h-6 w-6", exported?.github && "text-emerald-400")} />
+                  <span>{exported?.github ? "✅ GitHub" : "GitHub"}</span>
+                </motion.button>
+                <motion.button
                   onClick={() => handleExport("jira")}
                   disabled={!!exported?.jira}
                   className={cn(
-                    "group flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-bold h-full",
+                    "glass-2 group flex flex-col items-center gap-2 p-5 rounded-2xl border transition-all text-sm font-mono font-black backdrop-blur-3xl shadow-xl hover:shadow-2xl",
                     !!exported?.jira
-                      ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 cursor-default"
-                      : "bg-slate-900/50 border-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
+                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300 cursor-default shadow-emerald/20"
+                      : "border-white/20 hover:border-white/40 hover:bg-white/10 text-slate-300 hover:text-white",
                   )}
-                  aria-label={`Export to ${exported?.jira ? 'Jira (completed)' : 'Jira'}}`}
+                  whileHover={{ scale: !!exported?.jira ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  aria-label={`Export to ${exported?.jira ? 'Jira (completed)' : 'Jira'}`}
                 >
-                  <Ticket className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span>{exported?.jira ? "✅ Exported" : "Jira"}</span>
-                </button>
+                  <Ticket className={cn("h-6 w-6", exported?.jira && "text-emerald-400")} />
+                  <span>{exported?.jira ? "✅ Jira" : "Jira"}</span>
+                </motion.button>
               </div>
             )}
 
             {/* Citations */}
             {task.citations && task.citations.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                <h4 className="font-mono text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                   Grounding Citations ({task.citations.length})
                 </h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {task.citations.slice(0, 3).map((citation: Citation, index: number) => (
-                    <a
+                    <motion.a
                       key={index}
                       href={citation.uri}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[11px] text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg border border-blue-500/30 transition-all group"
+                      className="glass-2 inline-flex items-center gap-2 text-sm text-atlas-blue hover:text-white bg-atlas-blue/10 hover:bg-atlas-blue/20 px-5 py-3 rounded-2xl border border-atlas-blue/30 hover:border-atlas-blue/50 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl group"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       aria-label={`Source citation: ${citation.title || 'Untitled'}`}
                     >
-                      <LinkIcon className="w-3 h-3" />
-                      <span className="truncate max-w-[140px]">
-                        {citation.title || citation.uri.split('/').pop()}
+                      <LinkIcon className="h-4 w-4" />
+                      <span className="truncate max-w-[160px] font-mono">
+                        {citation.title || `#${index + 1}`}
                       </span>
-                    </a>
+                    </motion.a>
                   ))}
                   {task.citations.length > 3 && (
-                    <span className="text-[10px] text-slate-500 px-2 py-1 rounded bg-slate-900/50">
+                    <span className="glass-2 text-xs text-slate-500 font-mono px-4 py-3 rounded-2xl bg-slate-900/50 border border-white/10 backdrop-blur-xl">
                       +{task.citations.length - 3} more
                     </span>
                   )}

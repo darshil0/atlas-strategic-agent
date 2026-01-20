@@ -280,7 +280,7 @@ graph TD
 - [x] **V3.1.4**: Runtime hardening (safe JSON parsing, env validation)
 - [x] **V3.1.3**: Multi-agent synthesis architecture
 - [x] **V3.1.0**: Dependency visualization with XYFlow
-- [x] **V3.0.0**: Foundation with Glassmorphism 2.0 [file:1]
+- [x] **V3.0.0**: Foundation with Glassmorphism 2.0 
 
 ### Planned 🚀
 
@@ -288,7 +288,7 @@ graph TD
 - [ ] **V3.3.0**: Monte Carlo risk modeling
 - [ ] **V3.2.x**: Resource optimizer (headcount/budget allocation)
 - [ ] **V3.2.x**: Slack/Teams integration for alerts
-- [ ] **V3.2.x**: Advanced executive reporting (PDF exports) [file:1]
+- [ ] **V3.2.x**: Advanced executive reporting (PDF exports) 
 
 ---
 

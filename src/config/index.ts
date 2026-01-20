@@ -1,4 +1,3 @@
-```tsx
 /**
  * Atlas Core Configuration Barrel (v3.2.1)
  * Centralized exports for your glassmorphic AI planning system
@@ -6,47 +5,46 @@
  * 🏗️  Architecture: Monorepo-style config organization
  * 🔧  Path aliases: `@/config/*` → `src/config/*`
  * 🎨  Design system: Glassmorphic + atlas-blue theming
- * 
- * Usage:
- * ```typescript
- * // Environment & validation
- * import { ENV, validateEnv, initializeEnv } from '@/config';
- * 
- * // UI Components & tokens
- * import { TaskCard, DependencyGraph, glassTokens } from '@/config/ui';
- * 
- * // System constants
- * import { SYSTEM_CONFIG, PRIORITY_WEIGHTS } from '@/config/system';
- * 
- * // All at once
- * import { ENV, TaskCard, SYSTEM_CONFIG } from '@/config';
- * ```
  */
 
 export * from "./env";           // 🌐 Environment (Gemini, GitHub, Jira)
-export * from "./system";        // ⚙️  System constants (tasks, priorities)
+export * from "./system";       // ⚙️  System constants (tasks, priorities)  
 export * from "./ui";           // 🎨 UI components + design tokens
 
 /**
- * Quick validation helper for app bootstrap
+ * App bootstrap helper - validates full config stack
  */
 export const bootstrapConfig = async (): Promise<boolean> => {
-  const envValid = await import("./env").then(m => m.initializeEnv());
-  const uiReady = import("./ui").then(m => !!m.glassTokens);
-  const systemReady = import("./ui").then(m => !!m.SYSTEM_CONFIG);
-  
-  return Promise.all([envValid, uiReady, systemReady]).then(([env]) => env);
+  try {
+    // Validate environment first (critical)
+    const { initializeEnv } = await import("./env");
+    const envValid = await initializeEnv();
+    
+    if (!envValid) return false;
+    
+    // Lazy check UI/system (non-blocking)
+    await Promise.allSettled([
+      import("./ui"),
+      import("./system")
+    ]);
+    
+    return true;
+  } catch (error) {
+    console.error("❌ Config bootstrap failed:", error);
+    return false;
+  }
 };
 
 /**
- * Development helper - log full config state
+ * Development config inspector
  */
 export const logConfig = (): void => {
-  console.group("🏛️ ATLAS CONFIG BOOTSTRAP");
-  console.log("ENV:", import.meta.env.DEV ? "✅ Loaded" : "🔒 Production");
-  console.log("UI:", "🎨 Glassmorphic tokens ready");
-  console.log("SYSTEM:", "⚙️ Task bank + priorities loaded");
-  console.log("READY:", import.meta.env.DEV ? "🚀 Development" : "🔥 Production");
+  if (!import.meta.env.DEV) return;
+  
+  console.group("🏛️ ATLAS CONFIG STATUS");
+  console.log("• ENV:", "✅ Loaded"); 
+  console.log("• UI:", "🎨 Glassmorphic ready");
+  console.log("• SYSTEM:", "⚙️ Task bank loaded");
+  console.log("• MODE:", import.meta.env.DEV ? "🚀 Dev" : "🔥 Prod");
   console.groupEnd();
 };
-```

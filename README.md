@@ -14,7 +14,11 @@
 
 ## 🎯 What Makes Atlas Different?
 
-Atlas offers several key differentiators that set it apart from traditional project management tools. The platform features a multi-agent synthesis approach where Strategist, Analyst, and Critic agents collaborate in real-time to generate comprehensive roadmaps. Through the A2UI Protocol, it streams UI components directly from LLM reasoning, creating a seamless experience. The what-if simulation capability allows you to model failure cascades and timeline impacts before they occur. Enterprise-ready features include direct GitHub Issues and Jira Cloud integration for immediate task synchronization. Finally, the premium glassmorphic interface is specifically designed for executive presentations, ensuring your strategic plans look as polished as they are actionable.
+- **Multi-Agent Synthesis** - Strategist, Analyst, and Critic agents collaborate in real-time
+- **A2UI Protocol** - Stream UI components directly from LLM reasoning
+- **What-If Simulations** - Model failure cascades and timeline impacts
+- **Enterprise-Ready** - Direct GitHub Issues and Jira Cloud integration
+- **Premium UX** - Glassmorphic interface designed for executive presentations
 
 ---
 
@@ -32,7 +36,14 @@ Atlas doesn't just generate text; it facilitates a **collaborative synthesis** b
 
 ## ✨ Key Capabilities
 
-Atlas provides a comprehensive suite of features designed for enterprise strategic planning. The A2UI Protocol enables real-time streaming of UI components directly from LLM reasoning using React 19 and Framer Motion, creating a fluid and responsive experience. What-If Simulation allows you to model failure cascades and see how delays impact deadlines through XYFlow and custom logic. Enterprise Sync capabilities let you bulk-export tasks directly to GitHub Issues or Jira Cloud using REST API v3, eliminating manual data entry. The Glassmorphic UI delivers a premium, high-performance interface built with Tailwind and Lucide, perfect for executive presentations. Multi-Model Support leverages Gemini 2.0 Flash with JSON schema enforcement through Google Generative AI for reliable outputs. Finally, Persistent State management uses IndexedDB and localStorage with Base64 obfuscation for local caching.
+| Feature | Description | Technology |
+|---------|-------------|------------|
+| **A2UI Protocol** | Real-time streaming of UI components directly from LLM reasoning | React 19 + Framer Motion |
+| **What-If Simulation** | Model failure cascades to see how delays impact deadlines | XYFlow + Custom Logic |
+| **Enterprise Sync** | Bulk-export tasks directly to GitHub Issues or Jira Cloud (ADF) | REST API v3 |
+| **Glassmorphic UI** | Premium, high-performance interface for executive presentations | Tailwind + Lucide |
+| **Multi-Model Support** | Gemini 2.0 Flash with JSON schema enforcement | Google Generative AI |
+| **Persistent State** | Local caching with Base64 obfuscation | IndexedDB + localStorage |
 
 ---
 
@@ -40,7 +51,9 @@ Atlas provides a comprehensive suite of features designed for enterprise strateg
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed: Node.js version 20 or higher (LTS recommended), npm version 10 or higher (or yarn 1.22+), and a Google Gemini API Key which you can obtain from the Google AI Studio.
+- **Node.js** 20+ (LTS recommended)
+- **npm** 10+ or **yarn** 1.22+
+- **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
 
 ### Quick Start
 
@@ -68,11 +81,29 @@ The application will be available at `http://localhost:3000`.
 
 ### Available Scripts
 
-The following scripts are available to streamline your development workflow. For development tasks, use `npm run dev` to start the dev server with HMR, `npm run build` for production builds with type checking, and `npm run preview` to preview the production build locally. Code quality tools include `npm run lint` to run ESLint with strict TypeScript checks, `npm run format` for code formatting with Prettier, and `npm run type-check` for TypeScript type checking without emit. Testing capabilities are accessed through `npm test` to run the test suite in watch mode, `npm run test:ui` to open the Vitest UI, and `npm run coverage` to generate coverage reports with the 80% threshold requirement.
+```bash
+# Development
+npm run dev              # Start dev server with HMR
+npm run build            # Production build with type checking
+npm run preview          # Preview production build locally
+
+# Code Quality
+npm run lint             # Run ESLint (strict TypeScript checks)
+npm run format           # Format code with Prettier
+npm run type-check       # TypeScript type checking without emit
+
+# Testing
+npm test                 # Run test suite in watch mode
+npm run test:ui          # Open Vitest UI
+npm run coverage         # Generate coverage report (80% threshold)
+```
 
 ### Code Quality Standards
 
-The project maintains high code quality through several enforced standards. TypeScript is configured in strict mode with comprehensive type safety across the entire codebase. ESLint uses a custom configuration with TypeScript-specific rules to catch potential issues early. Prettier handles automated code formatting with an 80 character width limit for consistency. Vitest enforces an 80% coverage requirement across all metrics including lines, functions, branches, and statements.
+- **TypeScript** - Strict mode with comprehensive type safety
+- **ESLint** - Custom config with TypeScript rules
+- **Prettier** - Automated code formatting (80 char width)
+- **Vitest** - 80% coverage requirement across all metrics
 
 ---
 
@@ -142,7 +173,7 @@ VITE_MAX_TOKENS=8000
 
 ### API Key Security
 
-**Important Security Notice**: API keys are stored in browser localStorage with Base64 obfuscation for convenience, not true secrecy. For production deployments, you should route all LLM and integration calls through a backend or edge proxy and keep secrets server-side to ensure proper security.
+⚠️ **Important**: API keys are stored in browser `localStorage` with Base64 obfuscation for convenience, not true secrecy. For production deployments, route all LLM and integration calls through a backend/edge proxy and keep secrets server-side.
 
 ---
 
@@ -163,21 +194,58 @@ npm run test:ui
 
 ### Test Structure
 
-The test suite is organized alongside the source code for easy maintenance. Components like TaskCard.tsx have corresponding TaskCard.test.tsx files for component testing. Services such as gemini.service.ts include gemini.service.test.ts files for service-level testing. The Agent Development Kit includes tests for agent logic, with files like strategist.test.ts testing the strategist agent implementation.
+```text
+src/
+├── components/
+│   ├── TaskCard.tsx
+│   └── TaskCard.test.tsx        # Component tests
+├── services/
+│   ├── gemini.service.ts
+│   └── gemini.service.test.ts   # Service tests
+└── lib/adk/
+    ├── agents/
+    │   ├── strategist.ts
+    │   └── strategist.test.ts   # Agent logic tests
+```
 
 ### Coverage Thresholds
 
-All coverage metrics must meet or exceed 80% across the following categories: lines, functions, branches, and statements.
+- **Lines**: 80%
+- **Functions**: 80%
+- **Branches**: 80%
+- **Statements**: 80%
 
 ---
 
 ## 🛠️ Project Architecture
 
-The architecture follows a clear flow from executive input through the Mission Control Orchestrator, which coordinates Agent Synthesis across the Strategist Agent, Analyst Agent, and Critic Agent. These agents feed into the A2UI Protocol Parser, which renders the Glassmorphic React UI. From there, users can export to various formats including GitHub Issues API v3, Jira Cloud REST API, Mermaid diagrams, or JSON export.
+```mermaid
+graph TD
+    A[Executive Input] --> B[Mission Control Orchestrator]
+    B --> C{Agent Synthesis}
+    C --> C1[Strategist Agent]
+    C --> C2[Analyst Agent]
+    C --> C3[Critic Agent]
+    C1 & C2 & C3 --> D[A2UI Protocol Parser]
+    D --> E[Glassmorphic React UI]
+    E --> F{Export Options}
+    F --> F1[GitHub Issues API v3]
+    F --> F2[Jira Cloud REST API]
+    F --> F3[Mermaid Diagram]
+    F --> F4[JSON Export]
+```
 
 ### Core Technologies
 
-The frontend is built with React 19 utilizing concurrent features for optimal performance. The build process uses Vite 6.0 with esbuild for fast compilation. Styling is handled through Tailwind CSS with local compilation for zero runtime overhead. State management combines React Context with localStorage for persistence. The AI provider is Google Gemini 2.0 Flash, which powers the multi-agent system. Visualization uses XYFlow (React Flow) for dependency graphs, while animations are handled by Framer Motion 12. Testing infrastructure uses Vitest with Testing Library for comprehensive coverage. Type safety is enforced through TypeScript 5.7 running in strict mode.
+- **Frontend**: React 19 with concurrent features
+- **Build Tool**: Vite 6.0 with esbuild
+- **Styling**: Tailwind CSS (local compilation)
+- **State Management**: React Context + localStorage
+- **AI Provider**: Google Gemini 2.0 Flash
+- **Visualization**: XYFlow (React Flow)
+- **Animation**: Framer Motion 12
+- **Testing**: Vitest + Testing Library
+- **Type Safety**: TypeScript 5.7 (Strict mode)
 
 ---
 
@@ -185,39 +253,72 @@ The frontend is built with React 19 utilizing concurrent features for optimal pe
 
 ### Security Measures
 
-Security is implemented through multiple layers. API Key Management uses local obfuscation with a recommended backend proxy for production deployments. Type Safety is enforced through strict TypeScript across the entire codebase. Input Validation includes runtime schema validation for LLM outputs to prevent malformed data. XSS Prevention leverages React's built-in escaping plus CSP headers. Dependency Scanning is performed regularly through npm audit checks to identify and address vulnerabilities.
+- ✅ **API Key Management** - Local obfuscation plus recommended backend proxy in production
+- ✅ **Type Safety** - Strict TypeScript across the codebase
+- ✅ **Input Validation** - Runtime schema validation for LLM outputs
+- ✅ **XSS Prevention** - React's escaping plus CSP headers
+- ✅ **Dependency Scanning** - Regular `npm audit` checks
 
 ### Performance Optimizations
 
-Performance has been optimized across multiple dimensions. The bundle size is approximately 1.5MB when gzipped after recent optimizations. Code splitting uses dynamic imports for vendor chunks to reduce initial load time. Tree shaking through Vite's dead code elimination removes unused code. The local CSS pipeline uses PostCSS with no CDN dependency for faster loading. React 19's concurrent rendering enables smooth animations without blocking the UI.
+- ⚡ **Bundle Size** - Gzipped ≈ 1.5MB after recent optimizations
+- ⚡ **Code Splitting** - Dynamic imports for vendor chunks
+- ⚡ **Tree Shaking** - Vite's dead code elimination
+- ⚡ **Local CSS** - PostCSS pipeline (no CDN dependency)
+- ⚡ **React 19** - Concurrent rendering for smooth animations
 
 ---
 
 ## 🗺️ Roadmap
 
-### Completed
+### Completed ✅
 
-Recent releases have delivered significant capabilities. Version 3.2.1 introduced test infrastructure with coverage thresholds. Version 3.2.0 added enterprise sync for GitHub and Jira along with ADK enhancements. Version 3.1.6 focused on codebase hygiene with dead code removal. Version 3.1.5 delivered a performance overhaul including local CSS and bundle optimization. Version 3.1.4 implemented runtime hardening with safe JSON parsing and environment validation. Version 3.1.3 established the multi-agent synthesis architecture. Version 3.1.0 added dependency visualization with XYFlow. Version 3.0.0 laid the foundation with Glassmorphism 2.0.
+- [x] **V3.2.1** - Test infrastructure & coverage thresholds
+- [x] **V3.2.0** - Enterprise sync (GitHub/Jira) + ADK enhancements
+- [x] **V3.1.6** - Codebase hygiene (dead code removal)
+- [x] **V3.1.5** - Performance overhaul (local CSS, bundle optimization)
+- [x] **V3.1.4** - Runtime hardening (safe JSON parsing, env validation)
+- [x] **V3.1.3** - Multi-agent synthesis architecture
+- [x] **V3.1.0** - Dependency visualization with XYFlow
+- [x] **V3.0.0** - Foundation with Glassmorphism 2.0
 
-### Planned
+### Planned 🚀
 
-Future releases will continue to expand capabilities. Version 4.0.0 will introduce real-time collaboration through WebSockets with collaborative editing features. Version 3.3.0 will add Monte Carlo risk modeling for more sophisticated analysis. Upcoming 3.2.x releases will include a resource optimizer for headcount and budget allocation, Slack and Teams integration for alerts, and advanced executive reporting with PDF exports.
+- [ ] **V4.0.0** - Real-time collaboration (WebSockets) and collaborative editing
+- [ ] **V3.3.0** - Monte Carlo risk modeling
+- [ ] **V3.2.x** - Resource optimizer (headcount/budget allocation)
+- [ ] **V3.2.x** - Slack/Teams integration for alerts
+- [ ] **V3.2.x** - Advanced executive reporting (PDF exports)
 
 ---
 
 ## 📚 Documentation
 
-Additional documentation is available in the repository. The Changelog provides version history and release notes. The Contributing Guide explains how to contribute to the project. API Documentation covers the service layer in detail. The ADK Guide provides information on the Agent Development Kit. The Deployment Guide offers instructions for production deployment.
+- [Changelog](./CHANGELOG.md) - Version history and release notes
+- [Contributing Guide](./CONTRIBUTING.md) - How to contribute
+- [API Documentation](./docs/API.md) - Service layer documentation
+- [ADK Guide](./docs/ADK.md) - Agent Development Kit guide
+- [Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the community. To contribute, start by forking the repository and creating a feature branch. Run the test suite to ensure everything works correctly. Commit your changes with clear, descriptive messages. Push to your feature branch and open a Pull Request with a detailed description of your changes.
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Run tests (`npm test`)
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ### Contribution Guidelines
 
-Contributors should follow the existing code style enforced by Prettier and ESLint. All new features must include tests that maintain the 80% coverage requirement. Documentation should be updated as needed to reflect changes. All CI checks must pass before a pull request can be merged.
+- Follow the existing code style (Prettier + ESLint)
+- Write tests for new features (maintain 80% coverage)
+- Update documentation as needed
+- Ensure all CI checks pass
 
 ---
 
@@ -229,7 +330,10 @@ This project is part of the **Advanced Agentic Coding** initiative.
 
 ## 🙏 Acknowledgments
 
-This project builds on the excellent work of several organizations and teams. Google AI provides the Gemini 2.0 Flash model that powers the multi-agent system. Vercel maintains the React ecosystem that forms the foundation of the UI. Tailwind Labs created Tailwind CSS, which enables the efficient styling system. The XYFlow Team developed the dependency visualization library that makes complex relationships clear.
+- **Google AI** - For the Gemini 2.0 Flash model
+- **Vercel** - For the React ecosystem
+- **Tailwind Labs** - For Tailwind CSS
+- **XYFlow Team** - For the dependency visualization library
 
 ---
 
@@ -238,19 +342,25 @@ This project builds on the excellent work of several organizations and teams. Go
 **Darshil Shah**  
 *QA Engineering Leader & AI Architect*
 
-Connect with me through LinkedIn, GitHub, X (Twitter), or email for questions, feedback, or collaboration opportunities.
+- 🔗 [LinkedIn](https://linkedin.com/in/darshil-qa-lead)
+- 🐙 [GitHub](https://github.com/darshil0)
+- 🐦 [X (Twitter)](https://x.com/soulsurfer300)
+- 📧 [Email](mailto:contact@darshilshah.com)
 
 ---
 
 ## ⭐ Star History
 
-If you find Atlas useful, please consider giving it a star on GitHub!
+If you find Atlas useful, please consider giving it a star! ⭐
 
 ---
 
 ## 📊 Stats
 
-Project statistics and badges are available on the GitHub repository including stars, forks, open issues, and license information.
+![GitHub stars](https://img.shields.io/github/stars/darshil0/atlas-strategic-agent?style=social)
+![GitHub forks](https://img.shields.io/github/forks/darshil0/atlas-strategic-agent?style=social)
+![GitHub issues](https://img.shields.io/github/issues/darshil0/atlas-strategic-agent)
+![GitHub license](https://img.shields.io/github/license/darshil0/atlas-strategic-agent)
 
 ---
 

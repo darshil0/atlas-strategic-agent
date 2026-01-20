@@ -236,12 +236,12 @@ import { TaskCard } from './TaskCard';
 describe('TaskCard', () => {
   it('should render task title', () => {
     const task = { id: '1', title: 'Test Task', priority: 'high' };
-    render(<TaskCard task={task} onUpdate={jest.fn()} />);
+    render(<TaskCard task={task} onUpdate={vi.fn()} />);
     expect(screen.getByText('Test Task')).toBeInTheDocument();
   });
 
   it('should call onUpdate when edited', () => {
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     const task = { id: '1', title: 'Test Task', priority: 'high' };
     render(<TaskCard task={task} onUpdate={onUpdate} />);
     // Test interaction
@@ -473,21 +473,26 @@ atlas-strategic-agent/
 ├── src/
 │   ├── components/          # React UI components
 │   │   ├── TaskCard.tsx
-│   │   └── TaskCard.test.tsx
+│   │   └── DependencyGraph.tsx
 │   ├── config/              # Configuration files
 │   │   ├── env.ts
 │   │   └── prompts.ts
+│   ├── data/                # Static Data & Templates
+│   │   └── taskBank.ts
 │   ├── lib/
 │   │   └── adk/            # Agent Development Kit
-│   │       ├── agents/
+│   │       ├── agents.ts
 │   │       ├── factory.ts
 │   │       └── protocol.ts
 │   ├── services/           # External service integrations
-│   │   ├── gemini.service.ts
-│   │   ├── github.service.ts
-│   │   └── jira.service.ts
+│   │   ├── geminiService.ts
+│   │   ├── githubService.ts
+│   │   └── jiraService.ts
 │   ├── types/              # TypeScript type definitions
-│   └── test/               # Test utilities and setup
+│   │   └── index.ts
+│   └── test/               # Test infrastructure
+│       ├── setup.ts
+│       └── smoke.test.ts
 ├── docs/                   # Additional documentation
 ├── public/                 # Static assets
 └── [config files]          # Build and dev configs

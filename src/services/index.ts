@@ -8,9 +8,12 @@
 
 import { GithubService } from "@services/githubService";
 import { JiraService } from "@services/jiraService";
+import { PersistenceService } from "@services/persistenceService";
 import { ENV } from "@config";
-import type { Plan, SubTask } from "@types/plan.types";
+import { TaskStatus, Priority } from "@types";
+import type { Plan, SubTask, A2UIMessage } from "@types";
 import { MissionControl } from "@lib/adk/orchestrator";
+import { ui } from "@lib/adk/uiBuilder";
 
 /**
  * Production singleton services with health checks
@@ -45,9 +48,12 @@ export const syncServices = {
   /**
    * Bidirectional sync: Pull updates from GitHub/Jira → Update Atlas Plan
    */
-  pullUpdates: async (plan: Plan): Promise<Plan> {
+  pullUpdates: async (plan: Plan): Promise<Plan> => {
     const [githubTasks, jiraTasks] = await Promise.allSettled([
-      githubService.importPlan(PersistenceService.getGithubOwner()!, PersistenceService.getGithubRepo()!),
+      githubService.importPlan(
+        PersistenceService.getGithubOwner()!,
+        PersistenceService.getGithubRepo()!
+      ),
       jiraService.importPlan(),
     ]);
 
@@ -112,10 +118,14 @@ export const enterpriseWorkflows = {
    */
   sync2026Roadmap: async (plan: Plan): Promise<void> => {
     await syncServices.syncToAll(plan);
-    
+
     const mission = new MissionControl();
-    const summary = await AtlasService.summarizeMission(plan, "Full enterprise sync complete");
-    
+    // Use mission instead of undefined AtlasService
+    const summary = await mission.summarizeMission(
+      plan,
+      "Full enterprise sync complete"
+    );
+
     console.log("🏛️ [Enterprise Sync] 2026 Roadmap deployed:", summary);
   },
 

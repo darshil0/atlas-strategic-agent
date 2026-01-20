@@ -125,7 +125,7 @@ Minor feature release introducing native integrations with enterprise project ma
 
 ---
 
-## [3.1.6] - 2026-01-16
+## [3.1.6] - 2026-01-13
 
 ### 🧹 Codebase Hygiene
 
@@ -237,10 +237,7 @@ Architectural release introducing the multi-agent collaboration framework.
 
 ```text
 ADK
-├── agents/
-│   ├── strategist.ts    (High-level decomposition)
-│   ├── analyst.ts       (Feasibility scoring)
-│   └── critic.ts        (Risk assessment)
+├── agents.ts            (Agent implementations)
 ├── factory.ts           (Agent creation)
 ├── orchestrator.ts      (MissionControl)
 └── protocol.ts          (A2UI parser)
@@ -318,7 +315,7 @@ Foundation release establishing core architecture and design system.
 |---------|--------------|-------------------------|----------------------------------|
 | 3.2.1   | 2026-01-17   | Testing Infrastructure  | 80% coverage threshold           |
 | 3.2.0   | 2026-01-14   | Enterprise Sync         | GitHub + Jira integration        |
-| 3.1.6   | 2026-01-16   | Code Hygiene            | Dead code removal                |
+| 3.1.6   | 2026-01-13   | Code Hygiene            | Dead code removal                |
 | 3.1.5   | 2026-01-12   | Performance             | 45% bundle reduction             |
 | 3.1.4   | 2026-01-11   | Runtime Hardening       | Safe JSON parsing                |
 | 3.1.3   | 2026-01-10   | ADK Architecture        | Multi-agent system               |
@@ -343,7 +340,7 @@ None. This is a backward-compatible upgrade within major version 3.
 
 #### Deprecated
 
-- Direct `localStorage` API access (use `storage.service.ts` instead)
+- Direct `localStorage` API access (use `persistenceService.ts` instead)
 
 ---
 

@@ -264,17 +264,3 @@ export interface PersistenceConfig {
 export type Quarter = "Q1" | "Q2" | "Q3" | "Q4";
 export type Theme = "AI" | "Cyber" | "Infra" | "Growth" | "Ops" | "Legal";
 
-// Export core types for easy imports
-export type {
-  SubTask,
-  Plan,
-  Message,
-  Citation,
-  BankTask,
-  AGUIEvent,
-  TaskCardProps,
-  DependencyGraphProps,
-  GithubIssueResult,
-  JiraTicketResult,
-  SyncResult,
-};

@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V3.2.0
+# 🌌 Atlas Strategic Agent V3.2.1
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -43,7 +43,7 @@ Atlas doesn't just generate text; it facilitates a **collaborative synthesis** b
 | **Enterprise Sync** | Bulk-export tasks directly to GitHub Issues or Jira Cloud (ADF) | REST API v3 |
 | **Glassmorphic UI** | Premium, high-performance interface for executive presentations | Tailwind + Lucide |
 | **Multi-Model Support** | Gemini 2.0 Flash with JSON schema enforcement | Google Generative AI |
-| **Persistent State** | Local caching with Base64 obfuscation | IndexedDB + localStorage |
+| **Persistent State** | Local caching with Base64 obfuscation | persistenceService + localStorage |
 
 ---
 
@@ -119,21 +119,23 @@ atlas-strategic-agent/
 │   ├── config/                  # Centralized Configuration
 │   │   ├── env.ts               # Environment validation
 │   │   └── prompts.ts           # System prompts for agents
+│   ├── data/                    # Static Data & Templates
+│   │   └── taskBank.ts          # 2026 Strategic Objectives bank
 │   ├── lib/
 │   │   └── adk/                 # Agent Development Kit
-│   │       ├── agents/          # Agent implementations
+│   │       ├── agents.ts        # Agent implementations
 │   │       ├── factory.ts       # Agent factory pattern
 │   │       └── protocol.ts      # A2UI protocol parser
 │   ├── services/                # External Services
-│   │   ├── gemini.service.ts    # LLM integration
-│   │   ├── github.service.ts    # GitHub API v3
-│   │   ├── jira.service.ts      # Jira REST API
-│   │   └── storage.service.ts   # Persistence layer
+│   │   ├── geminiService.ts     # LLM integration
+│   │   ├── githubService.ts     # GitHub API v3
+│   │   ├── jiraService.ts       # Jira REST API
+│   │   └── persistenceService.ts # Persistence layer
 │   ├── types/                   # TypeScript Definitions
-│   │   ├── plan.types.ts        # Core data models
-│   │   └── agent.types.ts       # Agent interfaces
+│   │   └── index.ts             # Core data models and interfaces
 │   ├── test/                    # Test Infrastructure
-│   │   └── setup.ts             # Vitest global setup
+│   │   ├── setup.ts             # Vitest global setup & mocks
+│   │   └── smoke.test.ts        # Core integration tests
 │   ├── index.css                # Global Styles + Tailwind
 │   ├── App.tsx                  # Main Application Entry
 │   └── main.tsx                 # React 19 root renderer
@@ -196,16 +198,12 @@ npm run test:ui
 
 ```text
 src/
-├── components/
-│   ├── TaskCard.tsx
-│   └── TaskCard.test.tsx        # Component tests
-├── services/
-│   ├── gemini.service.ts
-│   └── gemini.service.test.ts   # Service tests
-└── lib/adk/
-    ├── agents/
-    │   ├── strategist.ts
-    │   └── strategist.test.ts   # Agent logic tests
+├── test/
+│   ├── setup.ts             # Vitest global setup & mocks
+│   └── smoke.test.ts        # Core integration tests
+├── components/              # UI components (tested via smoke test)
+├── services/                # Service layer (tested via smoke test)
+└── lib/adk/                 # Agent logic (tested via smoke test)
 ```
 
 ### Coverage Thresholds

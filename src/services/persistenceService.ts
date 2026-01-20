@@ -6,7 +6,7 @@
  * Single import: `import { PersistenceService } from '@/services/persistenceService'`
  */
 
-import { Plan, Message, Priority, TaskStatus } from "@types/plan.types";
+import { Plan, Message, Priority, TaskStatus } from "@types";
 import { ENV } from "@config";
 
 // Typed storage schema for perfect TypeScript inference

@@ -4,7 +4,7 @@
  * Perfect integration with MissionControl → GitHub → Jira enterprise pipeline
  */
 
-import { SubTask, Priority, TaskStatus } from "@types/plan.types";
+import { SubTask, Priority, TaskStatus } from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 import { ENV } from "@config";

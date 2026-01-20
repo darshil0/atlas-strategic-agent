@@ -4,7 +4,7 @@
  * Perfect sync for MissionControl → ReactFlow → GitHub Actions pipeline
  */
 
-import { SubTask, TaskStatus, Priority } from "@types/plan.types";
+import { SubTask, TaskStatus, Priority } from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 import { ENV } from "@config";

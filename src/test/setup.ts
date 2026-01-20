@@ -8,6 +8,7 @@
 import { expect, afterEach, vi, beforeEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
+import { Plan, TaskStatus, Priority } from '@types';
 
 // Extend Vitest expect with jest-dom matchers
 expect.extend(matchers);
@@ -136,7 +137,7 @@ global.console = {
 };
 
 // === ATLAS-SPECIFIC TEST UTILITIES ===
-global.ATLAS_TEST_UTILS = {
+(global as any).ATLAS_TEST_UTILS = {
   /**
    * Create mock 2026 Q1 plan for testing
    */

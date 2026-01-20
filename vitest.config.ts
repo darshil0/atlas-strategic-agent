@@ -28,16 +28,23 @@ export default defineConfig({
         "**/*.test.{ts,tsx}",
       ],
       all: true,
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80,
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@adk": path.resolve(__dirname, "./src/lib/adk"),
+      "@services": path.resolve(__dirname, "./src/services"),
+      "@types": path.resolve(__dirname, "./src/types"),
+      "@config": path.resolve(__dirname, "./src/config/index.ts"),
+      "@data": path.resolve(__dirname, "./src/data"),
+      "@lib": path.resolve(__dirname, "./src/lib"),
     },
   },
 });

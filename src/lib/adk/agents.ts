@@ -4,12 +4,13 @@
  * A2UI Protocol + ReactFlow visualization + GitHub/Jira sync ready
  */
 
-import { UIBuilder } from "@lib/adk/uiBuilder";     // Fixed path alias
-import { BaseAgent } from "@lib/adk/types";         // Fixed path alias
+import { UIBuilder } from "@lib/adk/uiBuilder";
+import { BaseAgent } from "@lib/adk/types";
 import { A2UIMessage, AGUIEvent, A2UIComponentType } from "@lib/adk/protocol";
-import { TaskStatus, Priority, SubTask } from "@types/plan.types";  // Fixed path alias
-import { ENV } from "@config";                     // Fixed path alias
-import { TASK_BANK } from "@data/taskBank";        // Task bank integration
+import { TaskStatus, Priority } from "@types";
+import type { SubTask } from "@types";
+import { ENV } from "@config";
+import { TASK_BANK } from "@data/taskBank";
 
 // Enhanced context with full SubTask compatibility
 type StrategyContext = {

@@ -31,7 +31,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@adk/*": ["src/lib/adk/*"]
+      "@adk/*": ["src/lib/adk/*"],
+      "@services/*": ["src/services/*"],
+      "@types": ["src/types/index.ts"],
+      "@config": ["src/config/index.ts"],
+      "@data/*": ["src/data/*"],
+      "@lib/*": ["src/lib/*"]
     },
 
     "types": [

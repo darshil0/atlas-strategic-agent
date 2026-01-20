@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@": path.resolve(__dirname, "./src"),
         "@adk": path.resolve(__dirname, "./src/lib/adk"),
+        "@services": path.resolve(__dirname, "./src/services"),
+        "@types": path.resolve(__dirname, "./src/types/index.ts"),
+        "@config": path.resolve(__dirname, "./src/config/index.ts"),
+        "@data": path.resolve(__dirname, "./src/data"),
+        "@lib": path.resolve(__dirname, "./src/lib"),
       },
     },
     css: {

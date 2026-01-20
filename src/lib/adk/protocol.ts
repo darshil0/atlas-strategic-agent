@@ -1,14 +1,17 @@
-import { AgentPersona } from "./types";
-
 /**
- * A2UI (Agent-to-User Interface) Protocol Specification v1.0
- * Type-safe contract between Atlas agents and React renderer.
- * Powers Strategist/Analyst/Critic agent UIs.
+ * A2UI (Agent-to-User Interface) Protocol v1.1 - Glassmorphic Edition
+ * Type-safe contract for Atlas agent swarm ↔ React glassmorphic renderer
+ * Powers Strategist/Analyst/Critic UIs in your 2026 roadmap planner
  */
 
+import { AgentPersona } from "@lib/adk/types"; // Fixed path alias
+
+/**
+ * Glassmorphic Component Primitives - A2UIRenderer ready
+ */
 export enum A2UIComponentType {
   CONTAINER = "container",
-  TEXT = "text",
+  TEXT = "text", 
   BUTTON = "button",
   INPUT = "input",
   CARD = "card",
@@ -20,42 +23,50 @@ export enum A2UIComponentType {
 }
 
 /**
- * Component-specific props with common fields
+ * Base props with glassmorphic + accessibility support
  */
 export interface BaseProps {
   id?: string;
-  className?: string;
+  className?: string;           // Tailwind glass-* classes
   ariaLabel?: string;
   disabled?: boolean;
+  variant?: "glass" | "primary" | "secondary" | "danger";
   children?: A2UIElement[];
 }
 
+/**
+ * Component-specific glassmorphic props
+ */
 export type A2UIProps = Record<string, unknown> & BaseProps;
 
-// === COMPONENT PROPS INTERFACES ===
+// === GLASSMORPHIC COMPONENT PROPS ===
 export interface TextProps extends BaseProps {
   text: string;
+  size?: "xs" | "sm" | "base" | "lg"; // font-* matching your system
 }
 
 export interface ButtonProps extends BaseProps {
   label: string;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "glass" | "secondary" | "danger";
   actionData?: unknown;
+  loading?: boolean;
 }
 
 export interface CardProps extends BaseProps {
   title?: string;
+  subtitle?: string;
 }
 
 export interface ProgressProps extends BaseProps {
   label: string;
   value: number; // 0-100
+  showPercentage?: boolean;
 }
 
 export interface InputProps extends BaseProps {
   label?: string;
   placeholder?: string;
-  inputType?: string;
+  inputType?: "text" | "email" | "password" | "number";
   value?: string;
 }
 
@@ -66,13 +77,19 @@ export interface ChartProps extends BaseProps {
 }
 
 export interface ListProps extends BaseProps {
-  items: Array<{ label: string; value?: string; icon?: string }>;
+  items: Array<{
+    label: string;
+    value?: string;
+    icon?: string;        // Lucide icon name
+    selected?: boolean;
+  }>;
 }
 
-// === CORE INTERFACES ===
+// === CORE PROTOCOL INTERFACES ===
 export interface A2UIMessage {
-  version: "1.0";
+  version: "1.1";              // Glassmorphic edition
   timestamp: number;
+  sessionId?: string;
   elements: A2UIElement[];
 }
 
@@ -84,27 +101,45 @@ export interface A2UIElement {
 }
 
 /**
- * AGUI (Agent-GUI Interaction) Events
- * Standardized events from A2UIRenderer → Agents
+ * Agent → Renderer Events (glassmorphic interactions)
  */
 export interface AGUIEvent {
   elementId: string;
-  action: string; // "click", "input_blur", "input_submit", "item_click", etc.
+  action: AGUIAction;           // Typed actions
   data?: unknown;
   timestamp: number;
   sessionId?: string;
+  agentPersona?: AgentPersona;  // Which agent triggered
 }
 
+export type AGUIAction = 
+  | "click" 
+  | "input_blur" 
+  | "input_submit" 
+  | "input_change"
+  | "item_click"
+  | "toggle" 
+  | "select_change"
+  | "task_select"
+  | "decompose"
+  | "export_github"
+  | "export_jira";
+
+/**
+ * Agent session tracking
+ */
 export interface AGUISession {
   id: string;
-  agentId: string | AgentPersona;
+  agentId: AgentPersona | string;
+  goal: string;                 // Original strategic goal
   history: A2UIMessage[];
   createdAt: number;
   updatedAt: number;
+  status: "planning" | "analyzing" | "reviewing" | "complete";
 }
 
 /**
- * Production-grade message validation and sanitization
+ * Production-grade validation + sanitization
  */
 export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
@@ -113,86 +148,83 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
 
   const msg = data as Partial<A2UIMessage>;
 
-  // Version check
-  if (msg.version !== "1.0") {
-    console.warn(`[A2UI] Version mismatch: expected "1.0", got "${msg.version}"`);
+  // Protocol version (glassmorphic edition)
+  if (msg.version !== "1.1" && msg.version !== "1.0") {
+    console.warn(`[A2UI] Version mismatch: expected "1.1", got "${msg.version}"`);
     return null;
   }
 
-  // Elements validation
-  if (!Array.isArray(msg.elements)) {
+  // Elements array validation
+  if (!Array.isArray(msg.elements) || msg.elements.length === 0) {
     return null;
   }
 
   const validElements: A2UIElement[] = msg.elements
-    .filter((el) => {
-      if (!el || typeof el !== "object" || Array.isArray(el)) return false;
-
-      const element = el as Partial<A2UIElement>;
-      return (
-        typeof element.id === "string" &&
-        element.id.length > 0 &&
-        typeof element.type === "string" &&
-        Object.values(A2UIComponentType).includes(element.type as A2UIComponentType) &&
-        typeof element.props === "object" &&
-        element.props !== null
-      );
-    })
-    .map((el: A2UIElement) => ({
-      id: el.id,
-      type: el.type,
-      props: { ...el.props }, // Defensive copy
-      children: el.children || [],
-    }))
-    .filter((el) => el.children?.every(isValidElement));
+    .filter(validateElement)
+    .map(sanitizeElement);
 
   if (validElements.length === 0) {
     return null;
   }
 
   return {
-    version: "1.0",
+    version: "1.1",
     timestamp: Date.now(),
     elements: validElements,
   };
 }
 
-/**
- * Recursive element validation helper
- */
-function isValidElement(el: unknown): el is A2UIElement {
+function validateElement(el: unknown): el is Partial<A2UIElement> {
   if (!el || typeof el !== "object" || Array.isArray(el)) return false;
 
   const element = el as Partial<A2UIElement>;
-  if (
-    typeof element.id !== "string" ||
-    !element.id ||
-    typeof element.type !== "string" ||
-    !Object.values(A2UIComponentType).includes(element.type as A2UIComponentType)
-  ) {
-    return false;
-  }
+  return (
+    typeof element.id === "string" && element.id.length > 0 &&
+    typeof element.type === "string" && 
+    Object.values(A2UIComponentType).includes(element.type as A2UIComponentType) &&
+    typeof element.props === "object" && element.props !== null &&
+    (!element.children || Array.isArray(element.children))
+  );
+}
 
-  if (!element.props || typeof element.props !== "object") {
-    return false;
-  }
-
-  // Validate children recursively
-  if (Array.isArray(element.children)) {
-    return element.children.every(isValidElement);
-  }
-
-  return true;
+function sanitizeElement(el: Partial<A2UIElement>): A2UIElement {
+  return {
+    id: el.id || `a2ui-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    type: el.type!,
+    props: { 
+      ...el.props,
+      className: (el.props as any)?.className || "glass-2", // Default glassmorphic
+      variant: (el.props as any)?.variant || "glass",
+    },
+    children: el.children?.filter(validateElement).map(sanitizeElement) || [],
+  };
 }
 
 /**
- * Type guard for safe element access
+ * Type guards for safe runtime access
  */
 export function isValidA2UIElement(el: unknown): el is A2UIElement {
-  return isValidElement(el);
+  return validateElement(el);
+}
+
+export function isValidA2UIMessage(msg: unknown): msg is A2UIMessage {
+  return !!validateA2UIMessage(msg);
 }
 
 /**
- * Protocol version constants
+ * Protocol constants matching your glassmorphic system
  */
-export const A2UI_PROTOCOL_VERSION = "1.0" as const;
+export const A2UI_PROTOCOL_VERSION = "1.1" as const;
+export const GLASSMORPHIC_DEFAULTS = {
+  className: "glass-2 backdrop-blur-3xl",
+  variant: "glass" as const,
+} as const;
+
+/**
+ * Quick glassmorphic message builder (convenience)
+ */
+export const createGlassMessage = (elements: A2UIElement[]): A2UIMessage => ({
+  version: A2UI_PROTOCOL_VERSION,
+  timestamp: Date.now(),
+  elements,
+});

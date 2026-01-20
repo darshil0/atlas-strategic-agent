@@ -1,26 +1,32 @@
-import { SubTask, TaskStatus } from "../types";
-import { PersistenceService } from "./persistenceService";
-
 /**
- * GitHub Issues Integration for Atlas Task Management
- * Converts SubTasks → GitHub Issues with full metadata sync
+ * Atlas GitHub Service (v3.2.1) - Glassmorphic GitHub Issues Integration
+ * Converts SubTasks ↔ GitHub Issues with TaskBank labels + milestones
+ * Perfect sync for MissionControl → ReactFlow → GitHub Actions pipeline
  */
+
+import { SubTask, TaskStatus, Priority } from "@types/plan.types";
+import { PersistenceService } from "@services/persistenceService";
+import { TASK_BANK } from "@data/taskBank";
+import { ENV } from "@config";
+
+// GitHub REST API v1.1.7 (Jan 2026)
 export class GithubService {
   private static readonly GITHUB_API_BASE = "https://api.github.com";
   private static readonly GITHUB_API_VERSION = "2022-11-28";
+  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.2.1";
 
   /**
-   * Create GitHub Issue from Atlas SubTask
-   * Includes full metadata, labels, assignees, and milestones
+   * Create GitHub Issue from Atlas SubTask with glassmorphic labels
+   * Auto-maps TASK_BANK themes → GitHub labels/milestones
    */
   async createIssue(task: SubTask): Promise<{
     issueNumber: number;
     htmlUrl: string;
     issueId: string;
+    githubLabels: string[];
   }> {
     const config = this.getValidatedConfig();
-
-    const issueData = this.buildIssuePayload(task, config);
+    const issueData = this.buildGlassmorphicIssuePayload(task, config);
 
     const response = await fetch(
       `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues`,
@@ -29,8 +35,9 @@ export class GithubService {
         headers: {
           "Content-Type": "application/json",
           "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+          "Accept": "application/vnd.github+json",
           "Authorization": `Bearer ${config.apiKey}`,
-          "User-Agent": "Atlas-Strategic-Agent/3.2.0",
+          "User-Agent": GithubService.USER_AGENT,
         },
         body: JSON.stringify(issueData),
       }
@@ -38,19 +45,28 @@ export class GithubService {
 
     if (!response.ok) {
       const errorData = await this.parseErrorResponse(response);
-      throw new Error(`GitHub API Error [${response.status}]: ${errorData.message}`);
+      throw new Error(`GitHub API [${response.status}]: ${errorData.message}`);
     }
 
     const issue = await response.json() as GitHubIssue;
+    
+    if (ENV.DEBUG_MODE) {
+      console.group("🏛️ [GitHubService] Issue Created");
+      console.log(`#${issue.number}: ${issue.html_url}`);
+      console.log("Labels:", issueData.labels);
+      console.groupEnd();
+    }
+
     return {
       issueNumber: issue.number,
       htmlUrl: issue.html_url,
       issueId: issue.id.toString(),
+      githubLabels: issueData.labels,
     };
   }
 
   /**
-   * Update existing GitHub Issue with task status changes
+   * Bidirectional sync: Update GitHub Issue ↔ Atlas SubTask status
    */
   async updateIssue(
     owner: string,
@@ -59,16 +75,19 @@ export class GithubService {
     task: Partial<SubTask>
   ): Promise<void> {
     const apiKey = PersistenceService.getGithubApiKey();
-    if (!apiKey) {
-      throw new Error("GitHub API key required for updates");
-    }
+    if (!apiKey) throw new Error("GitHub API key required");
 
-    const updateData: any = {
+    const updateData: GitHubIssueUpdate = {
       state: task.status === TaskStatus.COMPLETED ? "closed" : "open",
     };
 
-    if (task.priority) {
-      updateData.labels = [`priority-${task.priority.toLowerCase()}`, task.category];
+    // Sync priority/category → labels
+    if (task.priority || task.category) {
+      updateData.labels = [
+        task.priority ? `priority-${task.priority.toLowerCase()}` : undefined,
+        task.category,
+        "atlas-strategic",
+      ].filter(Boolean) as string[];
     }
 
     const response = await fetch(
@@ -79,94 +98,232 @@ export class GithubService {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
           "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+          "User-Agent": GithubService.USER_AGENT,
         },
         body: JSON.stringify(updateData),
       }
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to update issue #${issueNumber}`);
+      throw new Error(`Failed to update GitHub issue #${issueNumber}: ${response.statusText}`);
     }
   }
 
   /**
-   * Sync entire plan to GitHub Issues with labels/milestones
+   * Bulk sync entire 2026 roadmap to GitHub Issues + Projects
+   * Creates milestones for Q1-Q4 + theme labels from TASK_BANK
    */
-  async syncPlan(tasks: SubTask[]): Promise<void> {
-    this.getValidatedConfig();
+  async syncPlan(tasks: SubTask[], dryRun = false): Promise<SyncResult> {
+    const config = this.getValidatedConfig();
+    const results: SyncResult = {
+      created: 0,
+      skipped: 0,
+      failed: [],
+      milestones: new Map<string, number>(),
+    };
+
+    if (dryRun) {
+      console.log(`[GitHubService] Dry-run: Would sync ${tasks.length} tasks to ${config.owner}/${config.repo}`);
+      return results;
+    }
+
+    // Pre-create Q1-Q4 milestones
+    await this.ensureMilestones(config);
 
     for (const task of tasks) {
       try {
-        await this.createIssue(task);
+        // Skip if already synced (check GitHub first)
+        const existing = await this.findExistingIssue(config, task.id);
+        if (existing) {
+          results.skipped++;
+          continue;
+        }
+
+        const issue = await this.createIssue(task);
+        results.created++;
+        
+        // Link to GitHub Project (Atlas 2026 Roadmap)
+        await this.addToProject(config, issue.issueNumber);
       } catch (error) {
-        console.warn(`Failed to sync task ${task.id}:`, error);
-        // Continue with other tasks
+        results.failed.push({ taskId: task.id, error: error as Error });
+        console.warn(`[GitHubService] Failed to sync ${task.id}:`, error);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Import GitHub Issues → Atlas SubTasks (reverse sync)
+   */
+  async importPlan(owner: string, repo: string): Promise<SubTask[]> {
+    const apiKey = PersistenceService.getGithubApiKey();
+    if (!apiKey) throw new Error("GitHub API key required");
+
+    const response = await fetch(
+      `${GithubService.GITHUB_API_BASE}/repos/${owner}/${repo}/issues?labels=atlas-strategic&state=open&per_page=100`,
+      {
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+          "User-Agent": GithubService.USER_AGENT,
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch GitHub issues");
+
+    const issues = await response.json() as GitHubIssue[];
+    return issues.map(issue => this.parseIssueToSubTask(issue));
+  }
+
+  // === PRIVATE IMPLEMENTATION ===
+
+  private async ensureMilestones(config: GitHubConfig): Promise<void> {
+    const quarters = ["2026 Q1", "2026 Q2", "2026 Q3", "2026 Q4"];
+    
+    for (const quarter of quarters) {
+      try {
+        const response = await fetch(
+          `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/milestones`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${config.apiKey}`,
+              "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+            },
+            body: JSON.stringify({
+              title: quarter,
+              description: `Atlas Strategic Roadmap ${quarter}`,
+              state: "open",
+            }),
+          }
+        );
+        
+        if (response.status === 201 || response.status === 422) { // Already exists
+          continue;
+        }
+      } catch (error) {
+        console.warn(`Failed to create milestone ${quarter}:`, error);
       }
     }
   }
 
-  private getValidatedConfig(): {
-    apiKey: string;
-    owner: string;
-    repo: string;
-  } {
+  private async findExistingIssue(config: GitHubConfig, taskId: string): Promise<GitHubIssue | null> {
+    const response = await fetch(
+      `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues?labels=${encodeURIComponent(taskId)}`,
+      {
+        headers: { "Authorization": `Bearer ${config.apiKey}` },
+      }
+    );
+    
+    if (!response.ok) return null;
+    
+    const issues = await response.json() as GitHubIssue[];
+    return issues[0] || null;
+  }
+
+  private getValidatedConfig(): GitHubConfig {
     const apiKey = PersistenceService.getGithubApiKey();
     const owner = PersistenceService.getGithubOwner();
     const repo = PersistenceService.getGithubRepo();
 
-    if (!apiKey) throw new Error("GitHub API key missing from storage");
-    if (!owner) throw new Error("GitHub owner missing from storage");
-    if (!repo) throw new Error("GitHub repository missing from storage");
+    if (!apiKey || !owner || !repo) {
+      throw new Error("GitHub config incomplete. Check PersistenceService.");
+    }
 
     return { apiKey, owner, repo };
   }
 
-  private buildIssuePayload(task: SubTask, config: any): GitHubIssuePayload {
+  private buildGlassmorphicIssuePayload(task: SubTask, config: GitHubConfig): GitHubIssuePayload {
+    const themeLabels = this.getTaskBankLabels(task);
+    const priorityLabel = `priority-${task.priority?.toLowerCase()}`;
+    const quarterLabel = task.category?.replace(/2026 /, "q")?.toLowerCase();
+
     const labels = [
-      `priority-${task.priority?.toLowerCase()}`,
-      task.category,
+      task.id,                    // AI-26-Q1-001
+      priorityLabel,
+      quarterLabel,
+      ...themeLabels,
       "atlas-strategic",
-    ].filter((l): l is string => !!l);
+      "glassmorphic-roadmap",     // Project board column
+    ].filter(Boolean);
 
-    const body = `
-🚀 **Atlas Strategic Task**
+    const body = `\
+🚀 **Atlas Strategic Task** ${this.getThemeEmoji(task.theme)}
 
-**ID:** ${task.id}
+**ID:** \`${task.id}\`
 **Priority:** ${task.priority}
-**Status:** ${task.status}
-**Category:** ${task.category}
-**Dependencies:** ${task.dependencies?.join(", ") || "None"}
+**Quarter:** ${task.category}
+**Theme:** ${task.theme || "General"}
+**Dependencies:** ${task.dependencies?.join(" → ") || "None"}
 
 ---
 
 ${task.description}
 
-**Execution Context:**
-• Goal alignment: Strategic 2026 Roadmap
-• Created: ${new Date().toISOString().slice(0, 10)}
+**📊 TASK_BANK Alignment:**
+${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.description.slice(0, 20)))
+  .map(t => `• ${t.id}: ${t.description}`)
+  .join("\n") || "New strategic objective"}
 
 ---
-*Generated by Atlas Strategic Agent v3.2.0*
+*Generated by Atlas v3.2.1 • ${new Date().toISOString().slice(0, 10)}*
 `;
 
     return {
-      title: `[${task.id}] ${task.description.substring(0, 50)}${task.description.length > 50 ? "..." : ""}`,
+      title: `[${task.id}] ${task.description.substring(0, 60)}${task.description.length > 60 ? "..." : ""}`,
       body: body.trim(),
       labels,
       assignees: config.assignees || [],
     };
   }
 
-  private async parseErrorResponse(response: Response): Promise<any> {
-    try {
-      return await response.json();
-    } catch {
-      return { message: await response.text() };
-    }
+  private getTaskBankLabels(task: SubTask): string[] {
+    const matchingTask = TASK_BANK.find(t => t.id === task.id || t.description.includes(task.description.slice(0, 20)));
+    return matchingTask ? [`taskbank-${matchingTask.theme.toLowerCase()}`] : [];
+  }
+
+  private getThemeEmoji(theme?: string): string {
+    const emojis: Record<string, string> = {
+      AI: "🤖", Cyber: "🛡️", ESG: "🌱", Global: "🌍", Infra: "⚡", People: "👥"
+    };
+    return emojis[theme || ""] || "🎯";
+  }
+
+  private parseIssueToSubTask(issue: GitHubIssue): SubTask {
+    // Parse Atlas metadata from issue body/labels
+    const taskIdMatch = issue.title.match(/\[([A-Z]+-\d+-\d+)\]/);
+    const taskId = taskIdMatch?.[1] || `GH-${issue.number}`;
+    
+    return {
+      id: taskId,
+      description: issue.title.replace(/^\[.*?\]\s*/, "").trim(),
+      status: issue.state === "closed" ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+      priority: (issue.labels.find(l => l.startsWith("priority-")) as string)?.replace("priority-", Priority.HIGH as any) as Priority || Priority.MEDIUM,
+      category: issue.labels.find(l => l.includes("q")) || "2026 Q1",
+      theme: issue.labels.find(l => ["ai", "cyber", "esg", "global", "infra", "people"].some(t => l.includes(t))) || undefined,
+      dependencies: [],
+    };
   }
 }
 
-// GitHub API types for type safety
+// === TYPES ===
+interface GitHubConfig {
+  apiKey: string;
+  owner: string;
+  repo: string;
+  assignees?: string[];
+}
+
+interface SyncResult {
+  created: number;
+  skipped:  number;
+  failed: Array<{ taskId: string; error: Error }>;
+  milestones: Map<string, number>;
+}
+
 interface GitHubIssuePayload {
   title: string;
   body: string;
@@ -174,9 +331,16 @@ interface GitHubIssuePayload {
   assignees?: string[];
 }
 
+interface GitHubIssueUpdate {
+  state?: "open" | "closed";
+  labels?: string[];
+}
+
 interface GitHubIssue {
   id: number;
   number: number;
   html_url: string;
   title: string;
+  state: "open" | "closed";
+  labels: string[];
 }

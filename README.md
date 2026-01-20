@@ -366,7 +366,7 @@ If you find Atlas useful, please consider giving it a star! ⭐
 
 <div align="center">
 
-**Built with ❤️ by the Atlas Team**
+**Built with ❤️ by Darshil**
 
 *Transforming executive vision into executable reality*
 

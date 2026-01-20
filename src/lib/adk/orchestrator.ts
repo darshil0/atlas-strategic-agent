@@ -1,112 +1,157 @@
-import { A2UIMessage } from "./protocol";
-import { BaseAgent, AgentPersona, AgentExecutionContext } from "./types";
-import type { Plan, SubTask } from "../../types";
-import { AgentFactory } from "./factory";
-import { ENV } from "../../config";
+/**
+ * Atlas MissionControl (v3.2.1) - Glassmorphic Multi-Agent Orchestrator
+ * Coordinates Strategist → Analyst → Critic swarm for 2026 enterprise roadmaps
+ * ReactFlow visualization + A2UI glassmorphic feedback + failure cascade analysis
+ */
+
+import { A2UIMessage } from "@lib/adk/protocol";
+import { BaseAgent, AgentPersona, AgentExecutionContext } from "@lib/adk/types";
+import type { Plan, SubTask } from "@types/plan.types";
+import { AgentFactory } from "@lib/adk/factory";
+import { ENV } from "@config";
+import { TASK_BANK } from "@data/taskBank";
 
 /**
- * MissionControl: Multi-agent orchestrator for collaborative strategic synthesis
- * Coordinates Strategist → Analyst → Critic workflow for robust plan generation
+ * Production MissionControl - Full agent swarm orchestration
  */
 export class MissionControl {
   private agents: Map<AgentPersona, BaseAgent> = new Map();
   private readonly maxIterations = 3;
-  private readonly scoreThreshold = 85;
+  private readonly scoreThreshold = 88; // Raised for production quality
 
   constructor() {
-    // Initialize agent ensemble
-    this.agents.set(AgentPersona.STRATEGIST, AgentFactory.create(AgentPersona.STRATEGIST));
-    this.agents.set(AgentPersona.ANALYST, AgentFactory.create(AgentPersona.ANALYST));
-    this.agents.set(AgentPersona.CRITIC, AgentFactory.create(AgentPersona.CRITIC));
+    // Initialize glassmorphic agent ensemble
+    this.agents.set(AgentPersona.STRATEGIST, AgentFactory.getOrCreate(AgentPersona.STRATEGIST));
+    this.agents.set(AgentPersona.ANALYST, AgentFactory.getOrCreate(AgentPersona.ANALYST));
+    this.agents.set(AgentPersona.CRITIC, AgentFactory.getOrCreate(AgentPersona.CRITIC));
 
     if (ENV.DEBUG_MODE) {
-      console.log("[MissionControl] Initialized with agents:", Array.from(this.agents.keys()));
+      console.group("🏛️ [MissionControl] Swarm Initialized");
+      console.log("Agents:", Array.from(this.agents.keys()).join(" → "));
+      console.log("Pipeline:", "Strategist → Analyst → Critic → Visualize");
+      console.log("Max iterations:", this.maxIterations);
+      console.groupEnd();
     }
   }
 
   private getAgent(persona: AgentPersona): BaseAgent {
     const agent = this.agents.get(persona);
     if (!agent) {
-      throw new Error(`[MissionControl] Agent not registered: ${persona}`);
+      throw new Error(`🚨 [MissionControl] Missing agent: ${persona}`);
     }
     return agent;
   }
 
   /**
-   * Orchestrates full multi-agent planning cycle
-   * Strategist → Analyst → Critic → Refine (up to 3 iterations)
+   * Full swarm pipeline: Goal → 2026 Roadmap → Analysis → Optimization
+   * Returns ReactFlow-ready Plan + glassmorphic A2UI feedback
    */
   async processCollaborativeInput(
     goal: string,
     context: AgentExecutionContext = {}
-  ): Promise<{ text: string; a2ui?: A2UIMessage; plan?: Plan }> {
+  ): Promise<{ 
+    text: string; 
+    a2ui?: A2UIMessage; 
+    plan?: Plan;
+    validation: {
+      iterations: number;
+      finalScore: number;
+      graphReady: boolean;
+      q1HighCount: number;
+    };
+  }> {
     if (ENV.DEBUG_MODE) {
-      console.log("[MissionControl] Starting collaborative synthesis:", { goal });
+      console.group("🚀 [MissionControl] 2026 SYNTHESIS START");
+      console.log("🎯 Goal:", goal.slice(0, 80) + "...");
     }
 
-    let proposal: unknown;
+    let proposal: unknown = {};
     let iterations = 0;
+    let criticScore = 0;
 
-    // Phase 1: Strategist generates initial plan
+    // === PHASE 1: STRATEGIST ROADMAP GENERATION ===
     const strategist = this.getAgent(AgentPersona.STRATEGIST);
     proposal = await strategist.execute(goal, context);
 
-    // Phase 2: Iterative refinement via Critic feedback
+    // === PHASE 2: CRITIC-LED ITERATIVE REFINEMENT ===
     while (iterations < this.maxIterations) {
-      const criticResult = await this.evaluatePlan(proposal);
+      const criticResult = await this.evaluatePlan(proposal as Plan);
+      criticScore = criticResult.score;
 
       if (criticResult.score >= this.scoreThreshold || iterations >= this.maxIterations - 1) {
         break;
       }
 
       iterations++;
-
+      
       if (ENV.DEBUG_MODE) {
-        console.log(`[MissionControl] Iteration ${iterations}: Score ${criticResult.score}`);
+        console.log(`🔄 Iteration ${iterations}: ${criticScore}/100`);
       }
 
-      // Feed critic feedback back to strategist
+      // Strategist refines based on critic feedback
       const feedbackPrompt = [
         goal,
-        `CRITIC FEEDBACK (Score: ${criticResult.score}):`,
-        ...criticResult.feedback.slice(0, 3), // Top 3 issues
+        `\n--- CRITIC SCORE: ${criticScore}/100 ---`,
+        ...criticResult.issues.slice(0, 3).map(i => `• ${i.description}`)
       ].join("\n");
 
-      proposal = await strategist.execute(feedbackPrompt, { ...context, plan: proposal });
+      proposal = await strategist.execute(feedbackPrompt, { 
+        ...context, 
+        previousPlan: proposal,
+        criticFeedback: criticResult 
+      });
     }
 
-    // Phase 3: Analyst validation
+    // === PHASE 3: ANALYST FINAL VALIDATION ===
     const analyst = this.getAgent(AgentPersona.ANALYST);
-    const analysis = await analyst.execute("Final feasibility check", {
-      ...context,
-      plan: proposal
-    }) as { feasibility?: number; notes?: string[] };
+    const analysis = await analyst.execute("Final 2026 feasibility validation", {
+      plan: proposal,
+      taskBank: TASK_BANK,
+    });
 
-    // Phase 4: Return coordinated result
+    // === PHASE 4: GLASSMORPHIC SUMMARY ===
+    const q1HighCount = (proposal as Plan)?.tasks?.filter(
+      t => t.priority === Priority.HIGH && t.category?.includes("Q1")
+    )?.length || 0;
+
     const result = {
-      text: this.formatSynthesisSummary(goal, iterations, analysis, proposal),
-      a2ui: strategist.getInitialUI(),
+      text: this.formatGlassmorphicSummary(goal, iterations, criticScore, analysis, q1HighCount),
+      a2ui: this.createGlassmorphicUI(goal, iterations, criticScore, q1HighCount),
       plan: proposal as Plan | undefined,
+      validation: {
+        iterations,
+        finalScore: criticScore,
+        graphReady: criticScore >= 80,
+        q1HighCount,
+      },
     };
 
     if (ENV.DEBUG_MODE) {
-      console.log("[MissionControl] Synthesis complete:", { iterations, score: await this.evaluatePlan(proposal) });
+      console.groupEnd();
+      console.log("✅ [MissionControl] Pipeline complete:", result.validation);
     }
 
     return result;
   }
 
   /**
-   * Simulates task failure cascade analysis for risk visualization
+   * ReactFlow "What-If" failure cascade simulation
+   * Visualizes dependency chain impact in DependencyGraph
    */
-  async simulateFailure(plan: Plan, failedTaskId: string): Promise<{ cascade: string[]; riskScore: number }> {
+  async simulateFailure(plan: Plan, failedTaskId: string): Promise<{ 
+    cascade: string[]; 
+    riskScore: number; 
+    impactedHighPriority: number;
+  }> {
     if (!plan.tasks?.length) {
-      return { cascade: [failedTaskId], riskScore: 100 };
+      return { cascade: [failedTaskId], riskScore: 100, impactedHighPriority: 0 };
     }
 
     const cascade = new Set([failedTaskId]);
     const queue: string[] = [failedTaskId];
+    let highPriorityImpact = 0;
 
+    // BFS dependency traversal
     while (queue.length > 0) {
       const currentId = queue.shift()!;
       const dependents = plan.tasks.filter((task: SubTask) =>
@@ -117,58 +162,122 @@ export class MissionControl {
         if (!cascade.has(dependent.id)) {
           cascade.add(dependent.id);
           queue.push(dependent.id);
+          
+          // Track HIGH priority impact
+          if (dependent.priority === Priority.HIGH) {
+            highPriorityImpact++;
+          }
         }
       }
     }
 
-    const taskCount = plan.tasks.length;
-    const riskScore = Math.round((cascade.size / taskCount) * 100 * 10) / 10; // 1 decimal
+    const totalTasks = plan.tasks.length;
+    const riskScore = Math.round((cascade.size / totalTasks) * 100 * 10) / 10;
+
+    if (ENV.DEBUG_MODE) {
+      console.warn("💥 [Cascade] Failure simulation:", {
+        failed: failedTaskId,
+        cascade: cascade.size,
+        risk: `${riskScore}%`,
+        critical: highPriorityImpact,
+      });
+    }
 
     return {
       cascade: Array.from(cascade),
       riskScore,
+      impactedHighPriority: highPriorityImpact,
     };
   }
 
   /**
-   * Evaluate plan quality via Critic agent
+   * Production plan evaluation via Critic agent
    */
-  private async evaluatePlan(plan: unknown): Promise<{ score: number; feedback: string[] }> {
+  private async evaluatePlan(plan: Plan): Promise<{ 
+    score: number; 
+    issues: Array<{ type: string; severity: string; description: string }>;
+    feedback: string[];
+  }> {
     const critic = this.getAgent(AgentPersona.CRITIC);
+    
     try {
-      const result = await critic.execute<{ score: number; feedback: string[] }>("Evaluate strategic plan", {
+      const result = await critic.execute("Comprehensive 2026 roadmap evaluation", {
         plan,
+        taskBank: TASK_BANK,
       });
+
+      const criticResult = result as any;
       return {
-        score: Math.max(0, Math.min(100, (result as any).score ?? 50)),
-        feedback: ((result as any).feedback as string[]) ?? ["No feedback available"],
+        score: Math.max(0, Math.min(100, criticResult.score ?? 50)),
+        issues: criticResult.issues ?? [],
+        feedback: criticResult.feedback ?? ["Evaluation complete"],
       };
     } catch (error) {
-      console.error("[MissionControl] Critic evaluation failed:", error);
-      return { score: 50, feedback: ["Evaluation unavailable"] };
+      console.error("🚨 [MissionControl] Critic failed:", error);
+      return { 
+        score: 50, 
+        issues: [],
+        feedback: ["Critic evaluation temporarily unavailable"] 
+      };
     }
   }
 
   /**
-   * Format human-readable synthesis summary
+   * Glassmorphic summary matching your design system
    */
-  private formatSynthesisSummary(
+  private formatGlassmorphicSummary(
     goal: string,
     iterations: number,
-    analysis: { feasibility?: number; notes?: string[] },
-    _plan: unknown
+    score: number,
+    analysis: any,
+    q1HighCount: number
   ): string {
-    const feasibility = (analysis as any).feasibility ?? 85;
-    const notes = ((analysis as any).notes as string[])?.slice(0, 2) ?? ["Analysis complete"];
+    const feasibility = analysis?.feasibility ?? 87;
+    
+    return `\
+🏛️ **ATLAS v3.2.1 SYNTHESIS COMPLETE**
 
-    return [
-      `🎯 **Strategic Synthesis Complete**`,
-      `📋 Goal: ${goal.substring(0, 80)}${goal.length > 80 ? "..." : ""}`,
-      `🔄 Iterations: ${iterations + 1}`,
-      `📊 Feasibility: ${feasibility}%`,
-      `✅ ${notes[0]}`,
-      ...(notes.length > 1 ? [`💡 ${notes[1]}`] : []),
-      `🚀 Ready for execution`,
-    ].join("\n");
+🎯 **Goal**: ${goal.substring(0, 80)}${goal.length > 80 ? "..." : ""}
+
+📊 **Metrics**
+• Iterations: ${iterations + 1}
+• Quality Score: **${score}/100**
+• Feasibility: **${feasibility}%**
+• Q1 Critical: **${q1HighCount} HIGH**
+
+✅ **ReactFlow Ready**: ${score >= 80 ? "🎨 Visualizable" : "⚠️ Needs refinement"}
+🚀 **Status**: Execution pipeline primed
+`;
+  }
+
+  /**
+   * A2UI glassmorphic dashboard for real-time feedback
+   */
+  private createGlassmorphicUI(
+    goal: string,
+    iterations: number,
+    score: number,
+    q1HighCount: number
+  ): A2UIMessage {
+    return new UIBuilder()
+      .add(A2UIComponentType.CARD, {
+        title: "🏛️ MissionControl Status",
+        children: [
+          A2UIComponentType.PROGRESS,
+          {
+            label: "Plan Quality",
+            value: score,
+          },
+          A2UIComponentType.LIST,
+          {
+            items: [
+              { label: `Q1 Critical Path: ${q1HighCount}`, icon: "📈" },
+              { label: `Refinement Cycles: ${iterations + 1}`, icon: "🔄" },
+              { label: goal.slice(0, 40) + "...", icon: "🎯" },
+            ],
+          },
+        ],
+      })
+      .build();
   }
 }

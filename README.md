@@ -53,7 +53,7 @@ Atlas doesn't just generate text; it facilitates a **collaborative synthesis** b
 
 - **Node.js** 20+ (LTS recommended)
 - **npm** 10+ or **yarn** 1.22+
-- **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
+- **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
 
 ### Quick Start
 
@@ -73,7 +73,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+The application will be available at `http://localhost:5173` (Vite's default port).
 
 ---
 
@@ -95,7 +95,7 @@ npm run type-check       # TypeScript type checking without emit
 # Testing
 npm test                 # Run test suite in watch mode
 npm run test:ui          # Open Vitest UI
-npm run coverage         # Generate coverage report (80% threshold)
+npm run test:coverage    # Generate coverage report (80% threshold)
 ```
 
 ### Code Quality Standards
@@ -109,7 +109,7 @@ npm run coverage         # Generate coverage report (80% threshold)
 
 ## 📂 Project Structure
 
-```text
+```
 atlas-strategic-agent/
 ├── src/
 │   ├── components/              # React UI Components

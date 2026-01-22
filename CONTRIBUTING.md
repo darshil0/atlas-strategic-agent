@@ -51,7 +51,7 @@ Before you begin contributing, ensure you have the following installed:
 - **Node.js** 20+ (LTS recommended)
 - **npm** 10+ or **yarn** 1.22+
 - **Git** 2.40+
-- **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
+- **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
 
 ### Fork and Clone
 
@@ -155,6 +155,7 @@ interface TaskProps {
 
 function createTask(props: TaskProps): Task {
   // Implementation
+  return task;
 }
 ```
 
@@ -182,6 +183,7 @@ interface TaskCardProps {
 
 export function TaskCard({ task, onUpdate }: TaskCardProps) {
   // Component logic
+  return <div>{task.title}</div>;
 }
 ```
 
@@ -190,7 +192,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 - Use Tailwind utility classes for styling
 - Follow the existing glassmorphic design system
 - Ensure responsive design (mobile-first)
-- Maintain WCAG AAA contrast ratios
+- Maintain WCAG AA contrast ratios (minimum standard)
 - Use semantic HTML elements
 
 ### Code Organization
@@ -221,7 +223,7 @@ All contributions must maintain or improve the **80% coverage threshold**:
 npm test
 
 # Run tests with coverage
-npm run coverage
+npm run test:coverage
 
 # Open test UI
 npm run test:ui
@@ -231,18 +233,19 @@ npm run test:ui
 
 ```typescript
 import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { TaskCard } from './TaskCard';
 
 describe('TaskCard', () => {
   it('should render task title', () => {
-    const task = { id: '1', title: 'Test Task', priority: 'high' };
+    const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={vi.fn()} />);
     expect(screen.getByText('Test Task')).toBeInTheDocument();
   });
 
   it('should call onUpdate when edited', () => {
     const onUpdate = vi.fn();
-    const task = { id: '1', title: 'Test Task', priority: 'high' };
+    const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={onUpdate} />);
     // Test interaction
   });
@@ -292,14 +295,18 @@ Implements probability distribution modeling for timeline predictions.
 Includes new MonteCarlo service with statistical analysis.
 
 Closes #123
+```
 
+```bash
 fix(ui): resolve race condition in dependency graph
 
 The XYFlow component was causing crashes when tasks were updated
 rapidly. Added debouncing and proper cleanup in useEffect.
 
 Fixes #456
+```
 
+```bash
 docs(readme): update installation instructions
 
 Added troubleshooting section for common setup issues.
@@ -468,7 +475,7 @@ migrate them to Atlas without manual entry.
 
 Understanding the project structure will help you navigate the codebase:
 
-```text
+```
 atlas-strategic-agent/
 ├── src/
 │   ├── components/          # React UI components

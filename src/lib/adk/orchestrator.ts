@@ -1,9 +1,9 @@
 /**
- * MissionControl v3.2.4 - Glassmorphic Swarm Orchestrator
+ * MissionControl v1.0.0 - Glassmorphic Swarm Orchestrator
  * High-performance state machine for Strategist → Analyst → Critic pipeline
  */
 
-import { AgentPersona, BaseAgent } from "./types";
+import { AgentPersona } from "./types";
 import {
   Plan,
   Priority,

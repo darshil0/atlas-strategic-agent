@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V3.2.4
+# 🌌 Atlas Strategic Agent V1.0.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -113,29 +113,13 @@ npm run coverage         # Generate coverage report (80% threshold)
 atlas-strategic-agent/
 ├── src/
 │   ├── components/              # React UI Components
-│   │   ├── TaskCard.tsx         # Individual task visualization
-│   │   ├── DependencyGraph.tsx  # XYFlow dependency viewer
-│   │   └── SettingsModal.tsx    # API key management
 │   ├── config/                  # Centralized Configuration
-│   │   ├── env.ts               # Environment validation
-│   │   └── prompts.ts           # System prompts for agents
 │   ├── data/                    # Static Data & Templates
-│   │   └── taskBank.ts          # 2026 Strategic Objectives bank
 │   ├── lib/
 │   │   └── adk/                 # Agent Development Kit
-│   │       ├── agents.ts        # Agent implementations
-│   │       ├── factory.ts       # Agent factory pattern
-│   │       └── protocol.ts      # A2UI protocol parser
 │   ├── services/                # External Services
-│   │   ├── geminiService.ts     # LLM integration
-│   │   ├── githubService.ts     # GitHub API v3
-│   │   ├── jiraService.ts       # Jira REST API
-│   │   └── persistenceService.ts # Persistence layer
 │   ├── types/                   # TypeScript Definitions
-│   │   └── index.ts             # Core data models and interfaces
 │   ├── test/                    # Test Infrastructure
-│   │   ├── setup.ts             # Vitest global setup & mocks
-│   │   └── smoke.test.ts        # Core integration tests
 │   ├── index.css                # Global Styles + Tailwind
 │   ├── App.tsx                  # Main Application Entry
 │   └── main.tsx                 # React 19 root renderer
@@ -148,70 +132,6 @@ atlas-strategic-agent/
 ├── eslint.config.js             # ESLint rules
 └── package.json                 # Dependencies and scripts
 ```
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Required
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-
-# Optional: Enterprise Integrations
-VITE_GITHUB_TOKEN=ghp_xxxxxxxxxxxx
-VITE_JIRA_DOMAIN=your-company.atlassian.net
-VITE_JIRA_EMAIL=your-email@company.com
-VITE_JIRA_API_TOKEN=your_jira_token
-
-# Optional: Application Settings
-VITE_DEBUG_MODE=false
-VITE_DEFAULT_MODEL=gemini-2.0-flash-exp
-VITE_MAX_TOKENS=8000
-```
-
-### API Key Security
-
-⚠️ **Important**: API keys are stored in browser `localStorage` with Base64 obfuscation for convenience, not true secrecy. For production deployments, route all LLM and integration calls through a backend/edge proxy and keep secrets server-side.
-
----
-
-## 🧪 Testing Strategy
-
-Atlas includes a comprehensive test suite with an **80% coverage requirement**:
-
-```bash
-# Run tests in watch mode
-npm test
-
-# Generate coverage report
-npm run coverage
-
-# Open interactive test UI
-npm run test:ui
-```
-
-### Test Structure
-
-```text
-src/
-├── test/
-│   ├── setup.ts             # Vitest global setup & mocks
-│   └── smoke.test.ts        # Core integration tests
-├── components/              # UI components (tested via smoke test)
-├── services/                # Service layer (tested via smoke test)
-└── lib/adk/                 # Agent logic (tested via smoke test)
-```
-
-### Coverage Thresholds
-
-- **Lines**: 80%
-- **Functions**: 80%
-- **Branches**: 80%
-- **Statements**: 80%
 
 ---
 
@@ -233,63 +153,19 @@ graph TD
     F --> F4[JSON Export]
 ```
 
-### Core Technologies
-
-- **Frontend**: React 19 with concurrent features
-- **Build Tool**: Vite 7.0 with esbuild
-- **Styling**: Tailwind CSS (local compilation)
-- **State Management**: React Context + localStorage
-- **AI Provider**: Google Gemini 2.0 Flash
-- **Visualization**: XYFlow (React Flow)
-- **Animation**: Framer Motion 12
-- **Testing**: Vitest + Testing Library
-- **Type Safety**: TypeScript 5.7 (Strict mode)
-
----
-
-## 🔒 Security & Performance
-
-### Security Measures
-
-- ✅ **API Key Management** - Local obfuscation plus recommended backend proxy in production
-- ✅ **Type Safety** - Strict TypeScript across the codebase
-- ✅ **Input Validation** - Runtime schema validation for LLM outputs
-- ✅ **XSS Prevention** - React's escaping plus CSP headers
-- ✅ **Dependency Scanning** - Regular `npm audit` checks
-
-### Performance Optimizations
-
-- ⚡ **Bundle Size** - Gzipped ≈ 1.5MB after recent optimizations
-- ⚡ **Code Splitting** - Dynamic imports for vendor chunks
-- ⚡ **Tree Shaking** - Vite's dead code elimination
-- ⚡ **Local CSS** - PostCSS pipeline (no CDN dependency)
-- ⚡ **React 19** - Concurrent rendering for smooth animations
-
 ---
 
 ## 🗺️ Roadmap
 
 ### Completed ✅
 
-- [x] **V3.2.4** - Critical stability: JSON parsing fixes & Vitest stubGlobal migration
-- [x] **V3.2.3** - Interactive risk simulation & type-system hardening
-- [x] **V3.2.2** - Codebase hardening & Vite 7 upgrade
-- [x] **V3.2.1** - Test infrastructure & coverage thresholds
-- [x] **V3.2.0** - Enterprise sync (GitHub/Jira) + ADK enhancements
-- [x] **V3.1.6** - Codebase hygiene (dead code removal)
-- [x] **V3.1.5** - Performance overhaul (local CSS, bundle optimization)
-- [x] **V3.1.4** - Runtime hardening (safe JSON parsing, env validation)
-- [x] **V3.1.3** - Multi-agent synthesis architecture
-- [x] **V3.1.0** - Dependency visualization with XYFlow
-- [x] **V3.0.0** - Foundation with Glassmorphism 2.0
+- [x] **V1.0.0** - Initial enterprise release: Multi-agent synthesis, A2UI, XYFlow, and GitHub/Jira sync.
 
 ### Planned 🚀
 
-- [ ] **V4.0.0** - Real-time collaboration (WebSockets) and collaborative editing
-- [ ] **V3.3.0** - Monte Carlo risk modeling
-- [ ] **V3.2.x** - Resource optimizer (headcount/budget allocation)
-- [ ] **V3.2.x** - Slack/Teams integration for alerts
-- [ ] **V3.2.x** - Advanced executive reporting (PDF exports)
+- [ ] **V1.1.0** - Monte Carlo risk modeling
+- [ ] **V1.2.0** - Real-time collaboration (WebSockets)
+- [ ] **V2.0.0** - Resource optimizer (headcount/budget allocation)
 
 ---
 
@@ -297,29 +173,6 @@ graph TD
 
 - [Changelog](./CHANGELOG.md) - Version history and release notes
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
-- [API Documentation](./docs/API.md) - Service layer documentation
-- [ADK Guide](./docs/ADK.md) - Agent Development Kit guide
-- [Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Run tests (`npm test`)
-4. Commit your changes (`git commit -m 'Add amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
-
-### Contribution Guidelines
-
-- Follow the existing code style (Prettier + ESLint)
-- Write tests for new features (maintain 80% coverage)
-- Update documentation as needed
-- Ensure all CI checks pass
 
 ---
 
@@ -347,21 +200,6 @@ This project is part of the **Advanced Agentic Coding** initiative.
 - 🐙 [GitHub](https://github.com/darshil0)
 - 🐦 [X (Twitter)](https://x.com/soulsurfer300)
 - 📧 [Email](mailto:contact@darshilshah.com)
-
----
-
-## ⭐ Star History
-
-If you find Atlas useful, please consider giving it a star! ⭐
-
----
-
-## 📊 Stats
-
-![GitHub stars](https://img.shields.io/github/stars/darshil0/atlas-strategic-agent?style=social)
-![GitHub forks](https://img.shields.io/github/forks/darshil0/atlas-strategic-agent?style=social)
-![GitHub issues](https://img.shields.io/github/issues/darshil0/atlas-strategic-agent)
-![GitHub license](https://img.shields.io/github/license/darshil0/atlas-strategic-agent)
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * ATLAS App (v3.2.4) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v1.0.0) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  */
 
@@ -7,13 +7,12 @@ import React, {
   useState,
   useRef,
   useEffect,
-  useMemo,
   useCallback,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { BankTask, Message, Plan, TaskStatus, SubTask } from "@types";
+import { Message, Plan, Priority, SubTask, TaskStatus } from "@types";
 import { AtlasService } from "@services/geminiService";
 import { PersistenceService } from "@services/persistenceService";
 import { githubService, jiraService } from "@/services";
@@ -236,7 +235,7 @@ const App: React.FC = () => {
                 <ShieldCheck className="text-atlas-blue h-6 w-6" />
               </div>
               <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
-                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V3.2.4</span>
+                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V1.0.0</span>
               </h1>
             </div>
             <button

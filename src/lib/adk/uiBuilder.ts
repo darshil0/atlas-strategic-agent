@@ -1,5 +1,5 @@
 /**
- * Glassmorphic UIBuilder v1.1.2 - Atlas A2UI Fluent API (v3.2.4)
+ * Glassmorphic UIBuilder v1.1.2 - Atlas A2UI Fluent API (v1.0.0)
  * Production-ready fluent interface for Strategist/Analyst/Critic glassmorphic UIs
  */
 
@@ -99,7 +99,7 @@ export class UIBuilder {
     q1Count: number
   ): this {
     return this
-      .card("🏛️ MissionControl v3.2.4", "Strategic Synthesis Pipeline")
+      .card("🏛️ MissionControl v1.0.0", "Strategic Synthesis Pipeline")
       .progress("Plan Quality", score)
       .text(`Q1 Critical Path: ${q1Count} HIGH priority`, { size: "sm" })
       .text(`Refinement Cycles: ${iterations + 1}`, { size: "sm" })

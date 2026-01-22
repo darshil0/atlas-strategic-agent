@@ -1,5 +1,5 @@
 /**
- * Atlas Integration Hub (v3.2.4) - Glassmorphic Sync Orchestrator
+ * Atlas Integration Hub (v1.0.0) - Glassmorphic Sync Orchestrator
  * Single import for GitHub Issues + Jira Tickets bidirectional sync
  */
 
@@ -7,120 +7,111 @@ import { GithubService } from "@services/githubService";
 import { JiraService } from "@services/jiraService";
 import { PersistenceService } from "@services/persistenceService";
 import { AtlasService } from "@services/geminiService";
-import { TaskStatus, Priority } from "@types";
-import type { Plan } from "@types";
+import { Plan } from "@types";
 
-/**
- * Production singleton services
- */
 export const githubService = new GithubService();
 export const jiraService = new JiraService();
+export const persistenceService = PersistenceService;
+export const atlasService = AtlasService;
 
 /**
- * Unified sync orchestrator for enterprise PM tools
+ * Enterprise Synchronization Services (v1.0.0)
+ * Orchestrates cross-platform strategic roadmap consistency
  */
 export const syncServices = {
   /**
-   * One-click sync: Atlas Plan → GitHub + Jira
+   * Bulk synchronizes the strategic roadmap to all linked enterprise platforms
    */
-  syncToAll: async (plan: Plan): Promise<any> => {
-    const [githubResult, jiraResult] = await Promise.allSettled([
-      githubService.syncPlan(plan.tasks),
-      jiraService.syncPlan(plan.tasks),
-    ]);
+  syncToAll: async (plan: Plan, dryRun = false): Promise<any> => {
+    const results: any = { github: null, jira: null };
 
-    return {
-      github: (githubResult.status === "fulfilled" ? githubResult.value : null),
-      jira: (jiraResult.status === "fulfilled" ? jiraResult.value : null),
-      totalCreated: (githubResult.status === "fulfilled" ? githubResult.value.created : 0) +
-        (jiraResult.status === "fulfilled" ? jiraResult.value.created : 0),
-      timestamp: new Date().toISOString(),
-    };
+    // 1. Sync to GitHub Issues
+    try {
+      results.github = await githubService.syncPlan(plan.tasks, dryRun);
+    } catch (e) {
+      console.error("GitHub Sync Failed:", e);
+      results.github = { error: String(e) };
+    }
+
+    // 2. Sync to Jira Tickets
+    try {
+      results.jira = await jiraService.syncPlan(plan.tasks, dryRun);
+    } catch (e) {
+      console.error("Jira Sync Failed:", e);
+      results.jira = { error: String(e) };
+    }
+
+    return results;
   },
 
   /**
-   * Bidirectional sync: Pull updates from GitHub/Jira
+   * Pulls latest status updates from all linked enterprise platforms
    */
   pullUpdates: async (plan: Plan): Promise<Plan> => {
-    const owner = PersistenceService.getGithubOwner();
-    const repo = PersistenceService.getGithubRepo();
+    let updatedPlan = { ...plan };
 
-    if (!owner || !repo) return plan;
+    try {
+      const owner = PersistenceService.getGithubOwner();
+      const repo = PersistenceService.getGithubRepo();
 
-    const [githubTasks, jiraTasks] = await Promise.allSettled([
-      githubService.importPlan(owner, repo),
-      jiraService.importPlan(),
-    ]);
-
-    const externalTasks = [
-      ...(githubTasks.status === "fulfilled" ? githubTasks.value : []),
-      ...(jiraTasks.status === "fulfilled" ? jiraTasks.value : []),
-    ];
-
-    const updatedTasks = plan.tasks.map(task => {
-      const externalMatch = externalTasks.find(et => et.id === task.id);
-      if (externalMatch) {
-        return { ...task, status: externalMatch.status };
+      if (owner && repo) {
+        const ghUpdates = await githubService.importPlan(owner, repo);
+        // Logic to merge status/priority from GH back to local plan
+        updatedPlan.tasks = updatedPlan.tasks.map(t => {
+          const match = ghUpdates.find(g => g.id === t.id);
+          return match ? { ...t, status: match.status } : t;
+        });
       }
-      return task;
-    });
+    } catch (e) {
+      console.error("Failed to pull GitHub updates:", e);
+    }
 
-    return { ...plan, tasks: updatedTasks };
-  },
-
-  /**
-   * Health check all services
-   */
-  healthCheck: async (): Promise<any[]> => {
-    const checks = await Promise.allSettled([
-      githubService.createIssue({ id: "HEALTH-CHECK", description: "Test", status: TaskStatus.PENDING, priority: Priority.LOW, category: "2026 Q1" }),
-      jiraService.createTicket({ id: "HEALTH-CHECK", description: "Test", status: TaskStatus.PENDING, priority: Priority.LOW, category: "2026 Q1" }),
-    ]);
-
-    return checks.map((check, i) => ({
-      service: i === 0 ? "GitHub" : "Jira",
-      healthy: check.status === "fulfilled",
-      timestamp: new Date().toISOString(),
-    }));
+    return updatedPlan;
   },
 };
 
 /**
- * Enterprise workflow presets
+ * Enterprise Strategic Workflows (v1.0.0)
+ * Presets for common executive orchestration pipelines
  */
-export const enterpriseWorkflows = {
-  /**
-   * 2026 Roadmap → GitHub Project + Jira Epic sync
-   */
-  sync2026Roadmap: async (plan: Plan): Promise<void> => {
-    await syncServices.syncToAll(plan);
-
-    const summary = await AtlasService.summarizeMission(
-      plan,
-      "Full enterprise sync complete across GitHub Issues and Jira Cloud."
-    );
-
-    console.log("🏛️ [Enterprise Sync] 2026 Roadmap deployed:", summary);
+export const WORKFLOW_PRESETS = [
+  {
+    id: "mission-control",
+    name: "MissionControl Strategy",
+    description: "Multi-agent synthesis for high-stakes roadmap generation",
+    icon: "ShieldHero",
+    steps: ["GENERATE", "ANALYZE", "CRITIQUE", "SYNC"],
   },
+  {
+    id: "rapid-deploy",
+    name: "Rapid Deployment",
+    description: "Direct-to-execution pipeline for technical workstreams",
+    icon: "Zap",
+    steps: ["GENERATE", "SYNC"],
+  },
+  {
+    id: "risk-assessment",
+    name: "Risk Simulation",
+    description: "Simulation-focused analysis for contingency planning",
+    icon: "AlertTriangle",
+    steps: ["GENERATE", "SIMULATE", "OPTIMIZE"],
+  },
+];
 
-  /**
-   * GitHub PR → Jira transition automation trigger
-   */
-  setupWorkflowAutomation: async (): Promise<void> => {
-    const workflow = `\
+/**
+ * CI/CD Strategic Pipelines
+ */
+export const CI_CD_MOCK = `
 name: Atlas Strategic Sync
 on:
-  pull_request:
-    types: [opened, synchronize, closed]
+  push:
+    branches: [ main ]
+
 jobs:
   sync-jira:
     runs-on: ubuntu-latest
     steps:
-      - uses: atlas-corp/atlas-sync-action@v3.2.3
+      - uses: atlas-corp/atlas-sync-action@v1.0.0
         with:
           jira-project: ATLAS2026
 `;
-
-    await PersistenceService.saveWorkflow(workflow);
-  },
-};

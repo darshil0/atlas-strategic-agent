@@ -1,5 +1,5 @@
 /**
- * A2UI (Agent-to-User Interface) Protocol v1.1.2 - Glassmorphic Edition (v3.2.3)
+ * A2UI (Agent-to-User Interface) Protocol v1.0.0 - Glassmorphic Edition
  * Type-safe contract for Atlas agent swarm ↔ React glassmorphic renderer
  */
 
@@ -8,7 +8,7 @@ import { AgentPersona, A2UIMessage, A2UIElement, A2UIComponentType, AGUIEvent, A
 /**
  * Protocol constants matching your glassmorphic system
  */
-export const A2UI_PROTOCOL_VERSION = "1.1" as const;
+export const A2UI_PROTOCOL_VERSION = "1.0" as const;
 export const GLASSMORPHIC_DEFAULTS = {
   className: "glass-2 backdrop-blur-3xl",
   variant: "glass" as const,
@@ -25,8 +25,8 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   const msg = data as Partial<A2UIMessage>;
 
   // Protocol version (glassmorphic edition)
-  if (msg.version !== "1.1" && msg.version !== "1.0") {
-    console.warn(`[A2UI] Version mismatch: expected "1.1", got "${msg.version}"`);
+  if (msg.version !== "1.0") {
+    console.warn(`[A2UI] Version mismatch: expected "1.0", got "${msg.version}"`);
     return null;
   }
 
@@ -44,7 +44,7 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   }
 
   return {
-    version: "1.1",
+    version: "1.0",
     timestamp: msg.timestamp || Date.now(),
     elements: validElements,
     sessionId: msg.sessionId

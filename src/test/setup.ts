@@ -1,5 +1,5 @@
 /**
- * Atlas Vitest Setup (v3.2.3) - Glassmorphic Test Environment
+ * Atlas Vitest Setup (v3.2.4) - Glassmorphic Test Environment
  * Production test configuration for MissionControl → AgentFactory → ReactFlow
  * Perfect mocks for PersistenceService, GitHub/Jira sync, localStorage encryption
  */
@@ -182,7 +182,7 @@ global.console = {
    * Mock MissionControl response
    */
   mockMissionControlResponse: (): any => ({
-    text: '🏛️ ATLAS v3.2.3 SYNTHESIS COMPLETE\nQuality Score: 92/100',
+    text: '🏛️ ATLAS v3.2.4 SYNTHESIS COMPLETE\nQuality Score: 92/100',
     validation: {
       iterations: 2,
       finalScore: 92,
@@ -216,10 +216,10 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock crypto.randomUUID for consistent test IDs
-global.crypto = {
+vi.stubGlobal('crypto', {
   getRandomValues: vi.fn(() => new Uint8Array(32)),
   randomUUID: vi.fn(() => '12345678-1234-1234-1234-123456789012'),
-} as any;
+});
 
 // Vitest snapshot serializer for A2UI messages
 expect.addSnapshotSerializer({

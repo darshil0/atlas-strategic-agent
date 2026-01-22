@@ -1,5 +1,5 @@
 /**
- * ATLAS App (v3.2.3) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.2.4) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  */
 
@@ -37,6 +37,7 @@ import {
   CloudLightning,
   Terminal,
   FileJson,
+  Clock,
 } from "lucide-react";
 
 function cn(...inputs: ClassValue[]) {
@@ -235,7 +236,7 @@ const App: React.FC = () => {
                 <ShieldCheck className="text-atlas-blue h-6 w-6" />
               </div>
               <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
-                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V3.2.3</span>
+                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V3.2.4</span>
               </h1>
             </div>
             <button
@@ -273,7 +274,7 @@ const App: React.FC = () => {
           {sidebarView === "list" && currentPlan && (
             <AnimatePresence mode="popLayout">
               {currentPlan.tasks.map((task) => (
-                <div key={task.id} ref={(el) => (taskRefs.current[task.id] = el)}>
+                <div key={task.id} ref={(el) => { taskRefs.current[task.id] = el; }}>
                   <TaskCard
                     task={task}
                     isActive={activeTaskId === task.id}
@@ -327,7 +328,7 @@ const App: React.FC = () => {
           )}
 
           {sidebarView === "timeline" && currentPlan && (
-            <TimelineView tasks={currentPlan.tasks} />
+            <TimelineView plan={currentPlan} activeTaskId={activeTaskId} />
           )}
 
           {!currentPlan && (
@@ -447,7 +448,7 @@ const App: React.FC = () => {
 
                       {m.a2ui && (
                         <div className="mt-6">
-                          <A2UIRenderer message={JSON.parse(m.a2ui)} />
+                          <A2UIRenderer elements={JSON.parse(m.a2ui).elements} onEvent={() => { }} />
                         </div>
                       )}
                     </div>
@@ -525,8 +526,8 @@ const App: React.FC = () => {
 
       {/* Task Bank Modal */}
       {isTaskBankOpen && (
-        <TaskBank onClose={() => setIsTaskBankOpen(false)} onSelectTask={(id) => {
-          handleLinkDependency(id, activeTaskId || "");
+        <TaskBank onClose={() => setIsTaskBankOpen(false)} onAddTask={(task) => {
+          handleLinkDependency(task.id, activeTaskId || "");
           setIsTaskBankOpen(false);
         }} />
       )}

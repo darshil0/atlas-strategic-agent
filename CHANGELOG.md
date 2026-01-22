@@ -4,6 +4,24 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.2.4] - 2026-01-21
+
+### 🔧 Stability & Critical Bug Fixes
+This release addresses critical parsing logic errors in the Gemini service and resolves persistent test environment configuration issues.
+
+### Fixed
+- **Gemini Parsing Engine**: 
+  - Fixed a critical bug in `AtlasService` where JSON response boundaries were being incorrectly stripped, causing fatal parse errors for structured outputs.
+  - Improved robustness of the string-to-JSON cleaning utility.
+- **Test Infrastructure**:
+  - Resolved "Cannot set property crypto" TypeError in the Vitest setup by migrating to `vi.stubGlobal`.
+  - Fixed `crypto.randomUUID` mock coverage for consistent synthetic ID generation during execution tests.
+- **Service Consistency**:
+  - Synchronized version headers to `v3.2.4` across all core integration services (GitHub, Jira, Gemini).
+  - Minor documentation refinements in service headers for better developer clarity.
+
+---
+
 ## [3.2.3] - 2026-01-20
 
 ### 🚀 Strategic Optimization & Documentation

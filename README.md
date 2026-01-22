@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V3.2.3
+# 🌌 Atlas Strategic Agent V3.2.4
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -271,6 +271,7 @@ graph TD
 
 ### Completed ✅
 
+- [x] **V3.2.4** - Critical stability: JSON parsing fixes & Vitest stubGlobal migration
 - [x] **V3.2.3** - Interactive risk simulation & type-system hardening
 - [x] **V3.2.2** - Codebase hardening & Vite 7 upgrade
 - [x] **V3.2.1** - Test infrastructure & coverage thresholds

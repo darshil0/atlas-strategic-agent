@@ -1,5 +1,5 @@
 /**
- * Atlas Gemini Service Layer (v3.2.3) - Glassmorphic Enterprise LLM
+ * Atlas Gemini Service Layer (v3.2.4) - Glassmorphic Enterprise LLM
  * Production Gemini 2.0 integration for MissionControl → Agent swarm
  * JSON schema enforcement + A2UI extraction + TaskBank aware planning
  */
@@ -265,8 +265,6 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
   private static parseResponse<T>(text: string): T {
     const cleanText = text
       .replace(/```(?:json)?\n?|\n?```/g, "")
-      .replace(/^\s*[\[\{]/, "")
-      .replace(/[\]\}]\s*$/, "")
       .trim();
 
     try {

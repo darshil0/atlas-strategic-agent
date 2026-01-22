@@ -1,0 +1,70 @@
+﻿
+> atlas-strategic-agent@3.2.2 test
+> vitest --run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.17 [39m[90mC:/Users/mayan/Downloads/atlas-strategic-agent-main/atlas-strategic-agent-main[39m
+
+ [31mΓ¥»[39m src/test/smoke.test.ts [2m([22m[2m0 test[22m[2m)[22m
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Us
+ers\mayan\AppData\Roaming\ 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (:String  
+  ) [], RemoteException
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+[1m[41m Failed Suites 1 [49
+m[22m[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»[39m
+
+[41m[1m FAIL [22m[49m 
+src/test/smoke.test.ts[2m [ 
+src/test/smoke.test.ts ][22m
+[31m[1mTypeError[22m: 
+Cannot set property crypto 
+of #<Object> which has only 
+a getter[39m
+[36m [2mΓ¥»[22m src/test/s
+etup.ts:[2m219:8[22m[39m
+    [90m217| [39m
+    [90m218| [39m[90m// 
+Mock crypto.randomUUID for 
+consistent test IDs[39m
+    [90m219| 
+[39mglobal[33m.[39mcrypto 
+[33m=[39m {
+    [90m   | [39m       
+[31m^[39m
+    [90m220| [39m  
+getRandomValues[33m:[39m 
+vi[33m.[39m[34mfn[39m(() 
+[33m=>[39m [35mnew[39m [
+33mUint8Array[39m([34m32[3
+9m))[33m,[39m
+    [90m221| [39m  
+randomUUID[33m:[39m 
+vi[33m.[39m[34mfn[39m(() 
+[33m=>[39m [32m'12345678-1
+234-1234-1234-123456789012'[
+39m)[33m,[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ
+»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»Γ
+Ä»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]Γ
+Ä»[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 18:53:35
+[2m   Duration [22m 2.51s[2m (transform 120ms, setup 0ms, import 0ms, tests 0ms, environment 1.75s)[22m
+

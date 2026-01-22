@@ -1,5 +1,5 @@
 /**
- * Atlas Integration Hub (v3.2.3) - Glassmorphic Sync Orchestrator
+ * Atlas Integration Hub (v3.2.4) - Glassmorphic Sync Orchestrator
  * Single import for GitHub Issues + Jira Tickets bidirectional sync
  */
 

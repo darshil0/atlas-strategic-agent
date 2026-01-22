@@ -1,0 +1,2 @@
+﻿origin	https://github.com/darshil0/atlas-strategic-agent (fetch)
+origin	https://github.com/darshil0/atlas-strategic-agent (push)

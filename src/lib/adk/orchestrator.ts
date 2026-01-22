@@ -1,5 +1,5 @@
 /**
- * MissionControl v1.0.0 - Glassmorphic Swarm Orchestrator
+ * MissionControl v3.2.3 - Glassmorphic Swarm Orchestrator
  * High-performance state machine for Strategist → Analyst → Critic pipeline
  */
 

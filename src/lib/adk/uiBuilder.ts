@@ -1,5 +1,5 @@
 /**
- * Glassmorphic UIBuilder v1.1.2 - Atlas A2UI Fluent API (v1.0.0)
+ * Glassmorphic UIBuilder v3.2.3 - Atlas A2UI Fluent API (v3.2.0)
  * Production-ready fluent interface for Strategist/Analyst/Critic glassmorphic UIs
  */
 

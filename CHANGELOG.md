@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
-## [1.0.0] - 2026-01-21
+## [3.2.4] - 2026-01-21
 
 ### 🚀 Initial Enterprise Release
 Atlas Strategic Agent is officially launched as a production-ready autonomous strategic orchestrator. This release establishes the core architecture for multi-agent synthesis and enterprise-grade roadmap generation.

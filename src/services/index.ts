@@ -1,5 +1,5 @@
 /**
- * Atlas Integration Hub (v1.0.0) - Glassmorphic Sync Orchestrator
+ * Atlas Integration Hub (v3.2.4) - Glassmorphic Sync Orchestrator
  * Single import for GitHub Issues + Jira Tickets bidirectional sync
  */
 
@@ -15,7 +15,7 @@ export const persistenceService = PersistenceService;
 export const atlasService = AtlasService;
 
 /**
- * Enterprise Synchronization Services (v1.0.0)
+ * Enterprise Synchronization Services (v3.2.4)
  * Orchestrates cross-platform strategic roadmap consistency
  */
 export const syncServices = {
@@ -71,7 +71,7 @@ export const syncServices = {
 };
 
 /**
- * Enterprise Strategic Workflows (v1.0.0)
+ * Enterprise Strategic Workflows (v3.2.4)
  * Presets for common executive orchestration pipelines
  */
 export const WORKFLOW_PRESETS = [
@@ -111,7 +111,7 @@ jobs:
   sync-jira:
     runs-on: ubuntu-latest
     steps:
-      - uses: atlas-corp/atlas-sync-action@v1.0.0
+      - uses: atlas-corp/atlas-sync-action@v3.2.4
         with:
           jira-project: ATLAS2026
 `;

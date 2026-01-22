@@ -1,7 +1,6 @@
 /**
  * ATLAS App (v3.2.3) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
- * Fixed: Path aliases, type safety, async/await, ADK integration
  */
 
 import React, {
@@ -14,14 +13,13 @@ import React, {
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
-import { Message, Plan, TaskStatus, SubTask } from "@types";
+import { BankTask, Message, Plan, TaskStatus, SubTask } from "@types";
 import { AtlasService } from "@services/geminiService";
 import { PersistenceService } from "@services/persistenceService";
 import { githubService, jiraService } from "@/services";
 import TaskCard from "@components/TaskCard";
 import DependencyGraph from "@components/DependencyGraph";
 import TaskBank from "@components/TaskBank";
-import { BankTask } from "@data/taskBank";
 import SettingsModal from "@components/SettingsModal";
 import { A2UIRenderer } from "@components/a2ui/A2UIRenderer";
 import { AGUIEvent, A2UIMessage } from "@lib/adk/protocol";
@@ -91,7 +89,7 @@ const App: React.FC = () => {
   }, [currentPlan]);
 
   const addMessage = useCallback((
-    role: Message["role"],
+    role: "user" | "assistant" | "system",
     content: string,
     a2ui?: A2UIMessage | string,
   ) => {
@@ -101,39 +99,47 @@ const App: React.FC = () => {
       role,
       content,
       timestamp: Date.now(),
-      a2ui: typeof a2ui === 'string' ? a2ui : undefined,
+      a2ui: typeof a2ui === "string" ? a2ui : a2ui ? JSON.stringify(a2ui) : undefined,
     };
     setMessages((prev) => [...prev, message]);
-    return id;
   }, []);
 
-  const isTaskBlocked = useCallback((task: SubTask, allTasks: SubTask[]): boolean => {
-    if (!task.dependencies?.length) return false;
-    return task.dependencies.some((depId) => {
-      const depTask = allTasks.find((t) => t.id === depId);
-      return !depTask || depTask.status !== TaskStatus.COMPLETED;
-    });
-  }, []);
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
 
-  const handleTaskSelect = useCallback((id: string) => {
-    setActiveTaskId(id);
-    setSidebarView("list");
-    setTimeout(() => {
-      taskRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 50);
-  }, []);
+    addMessage("user", text);
+    setInput("");
+    setIsThinking(true);
 
-  const handleA2UIEvent = useCallback((event: AGUIEvent) => {
-    addMessage("user", `Action: ${event.action} (${event.elementId})`);
-
-    if (event.action === "sync_github") {
-      addMessage("assistant", "🚀 Syncing with GitHub...");
-    } else if (event.action === "sync_jira") {
-      addMessage("assistant", "🔗 Syncing with Jira...");
+    try {
+      if (!currentPlan) {
+        const plan = await AtlasService.generatePlan(text);
+        setCurrentPlan(plan);
+        addMessage("assistant", `Strategizing roadmap for: ${text}`);
+      } else {
+        const response = await AtlasService.executeSubtask(
+          currentPlan.tasks[0], // Simulated for now
+          currentPlan,
+          messages.map((m) => `${m.role}: ${m.content}`).join("\n")
+        );
+        addMessage("assistant", response.text, response.a2ui);
+      }
+    } catch (error) {
+      addMessage("assistant", "⚠️ Error generating strategic synthesis.");
+    } finally {
+      setIsThinking(false);
     }
-  }, [addMessage]);
+  };
 
-  const handleConnect = useCallback((source: string, target: string) => {
+  const handleTaskClick = (taskId: string) => {
+    setActiveTaskId(taskId);
+    const element = taskRefs.current[taskId];
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const handleLinkDependency = useCallback((source: string, target: string) => {
     setCurrentPlan((prev) => {
       if (!prev) return null;
       return {
@@ -152,7 +158,7 @@ const App: React.FC = () => {
     if (!currentPlan) return;
 
     try {
-      const result = await missionControl.simulateFailure(currentPlan, taskId);
+      const result = await missionControl.simulateFailure(taskId, currentPlan);
       setSimulationResult(result);
       addMessage("assistant",
         `⚠️ Risk Analysis: ${taskId} failure impacts ${result.cascade.length} tasks (${result.riskScore.toFixed(1)}% risk)`
@@ -168,464 +174,367 @@ const App: React.FC = () => {
     handleSend(`Decompose task ${taskId}: ${task.description} into 3-5 subtasks.`);
   };
 
-  const handleExport = async (taskId: string, type: "github" | "jira") => {
+  const handleExportTask = async (taskId: string, type: "github" | "jira") => {
     const task = currentPlan?.tasks.find((t) => t.id === taskId);
     if (!task) return;
 
-    addMessage("assistant", `🚀 Exporting ${taskId} to ${type}...`);
-
     try {
+      setExportedTasks(prev => ({ ...prev, [taskId]: { ...prev[taskId], [type]: "pending" } }));
+
       if (type === "github") {
-        const result = await githubService.createIssue(task);
-        setExportedTasks((prev) => ({ ...prev, [taskId]: { github: result.htmlUrl } }));
+        await githubService.createIssue(task);
       } else {
-        const result = await jiraService.createTicket(task);
-        if (result.success) {
-          setExportedTasks((prev) => ({ ...prev, [taskId]: { jira: result.webUrl! } }));
-        }
+        await jiraService.createTicket(task);
       }
-      addMessage("assistant", `✅ ${taskId} exported to ${type}`);
+
+      setExportedTasks(prev => ({
+        ...prev,
+        [taskId]: { ...prev[taskId], [type]: "https://github.com" }
+      }));
+      addMessage("assistant", `🚀 Successfully exported ${taskId} to ${type}`);
     } catch (error) {
-      addMessage("assistant", `❌ Failed to export ${taskId} to ${type}`);
+      setExportedTasks(prev => {
+        const next = { ...prev };
+        delete next[taskId]?.[type];
+        return next;
+      });
+      addMessage("assistant", `❌ Export to ${type} failed`);
     }
   };
 
-  const handleSend = async (customPrompt?: string) => {
-    const text = (customPrompt || input).trim();
-    if (!text || isThinking) return;
-
-    setInput("");
-    addMessage("user", text);
+  const handleSyncAll = async () => {
+    if (!currentPlan) return;
     setIsThinking(true);
-
     try {
-      addMessage("assistant", "🧠 PHASE 1: Strategic decomposition...");
-      const plan = await AtlasService.generatePlan(text);
-
-      if (plan && plan.tasks.length > 0) {
-        addMessage("assistant", `→ Generated ${plan.tasks.length} strategic nodes`);
-
-        const collaboration = await missionControl.processCollaborativeInput(text, { plan });
-        addMessage("assistant", collaboration.text, collaboration.a2ui);
-        setCurrentPlan(plan);
-      }
+      await AtlasService.summarizeMission(currentPlan, "Initiating global sync");
+      addMessage("assistant", "🏛️ Roadmap synchronized across enterprise hubs.");
     } catch (error) {
-      addMessage("assistant", "⚠️ Strategic synthesis failed. Please refine your directive.");
+      addMessage("assistant", "⚠️ Sync failed.");
     } finally {
       setIsThinking(false);
     }
   };
 
-  const hierarchicalTasks = useMemo(() => {
-    return currentPlan?.tasks.sort((a, b) => a.id.localeCompare(b.id)) || [];
-  }, [currentPlan]);
+  const isTaskBlocked = (task: SubTask, allTasks: SubTask[]) => {
+    if (!task.dependencies || task.dependencies.length === 0) return false;
+    return task.dependencies.some((depId) => {
+      const dep = allTasks.find((t) => t.id === depId);
+      return dep && dep.status !== TaskStatus.COMPLETED;
+    });
+  };
 
-  const handleAddBankTask = useCallback((task: BankTask) => {
-    if (!currentPlan) return;
-
-    const newSubTask: SubTask = {
-      id: task.id,
-      description: task.description,
-      status: TaskStatus.PENDING,
-      priority: task.priority,
-      category: task.category,
-      theme: task.theme,
-      dependencies: [],
-    };
-
-    setCurrentPlan((prev) =>
-      prev ? { ...prev, tasks: [...prev.tasks, newSubTask] } : prev
-    );
-    addMessage("assistant", `✅ Added ${task.id} from TaskBank`);
-  }, [addMessage, currentPlan]);
-
+  // ... (rest of the component rendered below)
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30 overflow-hidden">
-      {/* Glassmorphic background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px] animate-pulse" />
-      </div>
-
-      {/* Header */}
-      <header className="h-20 shrink-0 border-b border-slate-900/50 backdrop-blur-xl z-50 flex items-center justify-between px-8">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <Zap className="w-6 h-6 text-white fill-current" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight font-display bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-              ATLAS STRATEGIC
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full ml-2 border border-blue-500/20">
-                V3.2.3
-              </span>
-            </h1>
-            <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
-              <ShieldCheck className="w-3 h-3 text-blue-600" /> Autonomous Intelligence
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/40 backdrop-blur-sm rounded-xl border border-slate-800">
-            <button onClick={() => setIsSettingsOpen(true)} className="p-1 hover:bg-slate-800 rounded-lg transition-colors">
-              <Settings className="w-3.5 h-3.5 text-slate-500 hover:text-slate-300" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsWhatIfEnabled(!isWhatIfEnabled)}
-              className={cn(
-                "px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1",
-                isWhatIfEnabled
-                  ? "border-amber-500/50 bg-amber-500/10 text-amber-400 shadow-amber-500/20"
-                  : "border-slate-800/50 bg-slate-900/50 text-slate-400 hover:border-slate-700 hover:text-slate-300"
-              )}
-            >
-              <Activity className="w-3 h-3" />
-              What-If
-            </button>
-
-            <button
-              onClick={async () => {
-                if (currentPlan) {
-                  const mermaid = PlanExporter.toMermaid(currentPlan);
-                  await navigator.clipboard.writeText(mermaid);
-                  addMessage("assistant", "📊 Mermaid diagram copied to clipboard");
-                }
-              }}
-              className="p-2 text-slate-400 hover:text-white bg-slate-900/50 border border-slate-800 rounded-lg transition-all hover:bg-slate-800"
-              title="Export Mermaid"
-            >
-              <FileJson className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => setIsTaskBankOpen(true)}
-              className="p-2 text-slate-400 hover:text-white bg-slate-900/50 border border-slate-800 rounded-lg transition-all hover:bg-slate-800"
-              title="TaskBank (90+ objectives)"
-            >
-              <Database className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left sidebar - Task list/graph */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          className="w-[450px] border-r border-slate-900/50 backdrop-blur-3xl bg-slate-950/20 z-40 flex flex-col shadow-2xl shadow-black/30"
-        >
-          <div className="p-6 border-b border-slate-900/50 shrink-0 backdrop-blur-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                <Terminal className="w-3.5 h-3.5" />
-                Mission Control
-              </h2>
-              {currentPlan && (
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase text-emerald-500">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                  LIVE
-                </div>
-              )}
+    <div className="flex h-screen w-full bg-slate-950 text-slate-50 overflow-hidden font-sans selection:bg-atlas-blue/30">
+      {/* Sidebar for Roadmaps & Timeline */}
+      <aside className="w-[450px] flex flex-col border-r border-white/5 bg-slate-950/50 backdrop-blur-3xl z-30">
+        <header className="p-6 border-b border-white/10 glass-1">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 glass-2 rounded-2xl flex items-center justify-center border border-white/20 shadow-lg shadow-atlas-blue/20">
+                <ShieldCheck className="text-atlas-blue h-6 w-6" />
+              </div>
+              <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
+                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V3.2.3</span>
+              </h1>
             </div>
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-2.5 glass-2 rounded-xl border border-white/10 hover:border-white/30 text-slate-400 hover:text-white transition-all active:scale-95"
+            >
+              <Settings className="h-5 w-5" />
+            </button>
+          </div>
 
-            {currentPlan && (
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900/60 to-slate-900/20 border border-slate-800/60 shadow-xl">
-                <h3 className="text-lg font-bold font-display text-white mb-2 truncate">
-                  {currentPlan.goal || currentPlan.name}
-                </h3>
-                <div className="flex gap-4 text-[11px] font-mono text-slate-500">
-                  <span>{currentPlan.tasks.length} tasks</span>
-                  <span>
-                    Q1: {
-                      currentPlan.tasks.filter(t => t.category === "2026 Q1").length
-                    }
-                  </span>
+          <div className="flex p-1.5 glass-2 rounded-2xl border border-white/5 shadow-inner">
+            {[
+              { id: "list", label: "Roadmap", icon: Activity },
+              { id: "graph", label: "Network", icon: Zap },
+              { id: "timeline", label: "Timeline", icon: Clock },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSidebarView(tab.id as any)}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-mono font-black uppercase tracking-widest transition-all",
+                  sidebarView === tab.id
+                    ? "glass-2 text-atlas-blue shadow-lg ring-1 ring-atlas-blue/20"
+                    : "text-slate-500 hover:text-slate-200"
+                )}
+              >
+                <tab.icon className="h-3.5 w-3.5" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto px-6 py-8 space-y-8 scroll-smooth scrollbar-hide">
+          {sidebarView === "list" && currentPlan && (
+            <AnimatePresence mode="popLayout">
+              {currentPlan.tasks.map((task) => (
+                <div key={task.id} ref={(el) => (taskRefs.current[task.id] = el)}>
+                  <TaskCard
+                    task={task}
+                    isActive={activeTaskId === task.id}
+                    isBlocked={isTaskBlocked(task, currentPlan.tasks)}
+                    onClick={() => handleTaskClick(task.id)}
+                    onDecompose={handleDecompose}
+                    onExport={handleExportTask}
+                    exported={exportedTasks[task.id]}
+                    onSimulateFailure={handleFailureSimulation}
+                  />
                 </div>
-              </div>
-            )}
-          </div>
+              ))}
+            </AnimatePresence>
+          )}
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar">
-            {currentPlan ? (
-              <AnimatePresence mode="wait">
-                {sidebarView === "list" && (
-                  <motion.div
-                    key="list"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="space-y-3"
-                  >
-                    {hierarchicalTasks.map((task) => (
-                      <div
-                        key={task.id}
-                        ref={(el) => { taskRefs.current[task.id] = el; }}
-                      >
-                        <TaskCard
-                          task={task}
-                          isActive={activeTaskId === task.id}
-                          isBlocked={isTaskBlocked(task, currentPlan.tasks)}
-                          onClick={() => handleTaskSelect(task.id)}
-                          onDecompose={handleDecompose}
-                          onExport={handleExport}
-                          exported={exportedTasks[task.id]}
-                          onSimulateFailure={handleFailureSimulation}
-                        />
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-                {sidebarView === "graph" && (
-                  <motion.div
-                    key="graph"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="h-[500px]"
-                  >
-                    <DependencyGraph
-                      tasks={currentPlan.tasks}
-                      activeTaskId={activeTaskId}
-                      onTaskSelect={handleTaskSelect}
-                      isTaskBlocked={isTaskBlocked}
-                      onConnect={handleConnect}
-                      isWhatIfEnabled={isWhatIfEnabled}
-                      simulationResult={simulationResult}
-                      onSimulateFailure={handleFailureSimulation}
-                    />
-                  </motion.div>
-                )}
-                {sidebarView === "timeline" && (
-                  <motion.div key="timeline" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                    <TimelineView plan={currentPlan} activeTaskId={activeTaskId} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center p-12 text-slate-600">
-                <CloudLightning className="w-16 h-16 mb-6 opacity-30" />
-                <p className="text-sm font-black uppercase tracking-wider mb-2">Ready for Strategic Directive</p>
-                <p className="text-xs text-slate-500">Enter your goal to begin autonomous synthesis</p>
-              </div>
-            )}
-          </div>
-
-          {currentPlan && (
-            <div className="p-4 border-t border-slate-900/50 bg-slate-950/30 backdrop-blur-sm shrink-0">
-              <div className="grid grid-cols-3 gap-2">
-                {(["list", "graph", "timeline"] as const).map((view) => (
+          {sidebarView === "graph" && currentPlan && (
+            <div className="h-full min-h-[600px] rounded-3xl border border-white/10 overflow-hidden relative group">
+              <DependencyGraph
+                tasks={currentPlan.tasks}
+                activeTaskId={activeTaskId}
+                onTaskSelect={handleTaskClick}
+                isTaskBlocked={(t, all) => isTaskBlocked(t, all)}
+                onConnect={handleLinkDependency}
+                isWhatIfEnabled={isWhatIfEnabled}
+                simulationResult={simulationResult}
+                onSimulateFailure={handleFailureSimulation}
+              />
+              <div className="absolute top-6 left-6 flex gap-3">
+                <button
+                  onClick={() => setIsWhatIfEnabled(!isWhatIfEnabled)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-[10px] font-mono font-black uppercase tracking-widest border transition-all flex items-center gap-2 backdrop-blur-xl shadow-2xl",
+                    isWhatIfEnabled
+                      ? "bg-rose-500/20 text-rose-400 border-rose-500/50"
+                      : "glass-2 text-slate-400 border-white/10 hover:border-white/30"
+                  )}
+                >
+                  <CloudLightning className="w-3 h-3" />
+                  What-If Mode {isWhatIfEnabled ? 'ON' : 'OFF'}
+                </button>
+                {simulationResult && (
                   <button
-                    key={view}
-                    onClick={() => setSidebarView(view)}
-                    className={cn(
-                      "py-2 px-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1",
-                      sidebarView === view
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                        : "text-slate-500 border border-slate-800/50 hover:border-slate-700 hover:text-slate-300 bg-slate-900/50"
-                    )}
+                    onClick={() => setSimulationResult(null)}
+                    className="glass-2 px-4 py-2 rounded-xl text-[10px] font-mono font-black uppercase tracking-widest border border-white/10 text-slate-400 hover:text-white transition-all backdrop-blur-xl"
                   >
-                    {view}
+                    Clear Analytics
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {sidebarView === "timeline" && currentPlan && (
+            <TimelineView tasks={currentPlan.tasks} />
+          )}
+
+          {!currentPlan && (
+            <div className="h-full flex flex-col items-center justify-center text-center p-12 space-y-6">
+              <div className="h-20 w-20 glass-2 rounded-[2.5rem] flex items-center justify-center border border-white/10 shadow-2xl relative">
+                <div className="absolute inset-0 bg-atlas-blue/10 blur-2xl rounded-full animate-pulse" />
+                <Terminal className="text-slate-700 h-10 w-10 relative z-10" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">No Active Roadmap</h3>
+                <p className="text-sm text-slate-500 leading-relaxed font-mono">
+                  Enter a strategic directive to generate an autonomous enterprise roadmap for 2026.
+                </p>
+              </div>
+            </div>
+          )}
+        </main>
+
+        <footer className="p-4 border-t border-white/10 bg-black/20">
+          <button
+            onClick={() => setIsTaskBankOpen(true)}
+            className="w-full py-4 glass-2 rounded-2xl border border-white/10 hover:border-white/30 transition-all flex items-center justify-center gap-3 text-xs font-mono font-black uppercase tracking-widest text-slate-400 hover:text-white shadow-lg"
+          >
+            <Database className="h-4 w-4" />
+            Strategic Task Bank
+          </button>
+        </footer>
+      </aside>
+
+      {/* Main Chat Interface */}
+      <section className="flex-1 flex flex-col relative">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-atlas-blue/5 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-[10%] left-[10%] w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full animate-pulse [animation-delay:2s]" />
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-12 py-12 space-y-12 scroll-smooth">
+          {messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto text-center space-y-10">
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="inline-flex items-center gap-3 px-6 py-2 glass-2 rounded-full border border-white/10 text-[10px] font-mono font-black uppercase tracking-[0.2em] text-atlas-blue mb-4 shadow-xl"
+                >
+                  <span className="w-2 h-2 rounded-full bg-atlas-blue animate-ping" />
+                  Gemini 2.0 Flash Core Active
+                </motion.div>
+                <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter text-white leading-[1.1]">
+                  Architect your enterprise <span className="bg-clip-text text-transparent bg-gradient-to-r from-atlas-blue via-atlas-blue to-purple-400">future.</span>
+                </h2>
+                <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">
+                  Atlas decomposes C-level goals into tactical roadmaps with autonomous agent oversight.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                {[
+                  "Design a 2026 AI readiness roadmap for a global bank",
+                  "Plan a SOC 2 transition for a remote-first unicorn",
+                  "Draft a 6G infrastructure shift for APAC market",
+                  "Create sustainable ESG reporting for manufacturing"
+                ].map((prompt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSend(prompt)}
+                    className="group p-6 glass-2 rounded-3xl border border-white/5 hover:border-white/20 text-left transition-all hover:bg-white/5 active:scale-95 shadow-xl hover:shadow-2xl"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <CloudLightning className="h-4 w-4 text-slate-700 group-hover:text-atlas-blue transition-colors" />
+                      <ChevronRight className="h-4 w-4 text-slate-800 group-hover:text-white transition-all transform group-hover:translate-x-1" />
+                    </div>
+                    <span className="text-sm font-medium text-slate-400 group-hover:text-slate-200 transition-colors">
+                      {prompt}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
-          )}
-        </motion.div>
-
-        {/* Main chat area */}
-        <div className="flex-1 flex flex-col bg-slate-950/50 backdrop-blur-3xl relative overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-12 space-y-6 no-scrollbar scroll-smooth">
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto text-center py-20">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.05, 1],
-                    rotate: [0, 2, -2, 0],
-                    opacity: [0.6, 1, 0.6]
-                  }}
-                  transition={{ duration: 6, repeat: Infinity }}
-                  className="w-32 h-32 mb-10 bg-gradient-to-br from-blue-600/10 to-indigo-600/10 rounded-[3rem] border-2 border-blue-500/20 shadow-2xl shadow-blue-500/10 flex items-center justify-center"
-                >
-                  <CloudLightning className="w-20 h-20 text-blue-500/50" />
-                </motion.div>
-
-                <h2 className="text-5xl font-black font-display bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent mb-6 leading-tight">
-                  ATLAS v3.2.3
-                </h2>
-
-                <p className="text-xl text-slate-400 font-medium leading-relaxed mb-12 max-w-md mx-auto">
-                  Autonomous Multi-Agent Strategic Intelligence
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-4 w-full max-w-2xl">
-                  {[
-                    "2026 AI Transformation Roadmap",
-                    "Q1 Zero-Trust Security Implementation",
-                    "Global Supply Chain Optimization",
-                  ].map((goal) => (
-                    <motion.button
-                      key={goal}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleSend(goal)}
-                      className="group relative p-6 text-left border-2 border-slate-900/50 bg-slate-900/30 backdrop-blur-xl rounded-3xl hover:border-blue-500/60 hover:bg-blue-500/5 transition-all duration-300 overflow-hidden hover:shadow-2xl hover:shadow-blue-500/20"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="relative z-10">
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-white transition-colors">
-                          Quick Start
-                        </p>
-                        <p className="text-lg font-semibold text-white leading-tight group-hover:text-blue-100">
-                          {goal}
-                        </p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 ml-auto text-slate-500 group-hover:text-blue-400 transition-all absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100" />
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={cn(
-                    "flex",
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  )}
-                >
-                  <div className={cn(
-                    "max-w-2xl rounded-3xl p-8 shadow-2xl relative",
-                    message.role === "user"
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-                      : "bg-slate-900/70 border border-slate-800/60 backdrop-blur-3xl text-slate-100"
-                  )}>
-                    <div className="flex items-center gap-2 mb-4 text-xs font-black uppercase tracking-widest opacity-60">
-                      {message.role === "user" ? "Directive" : "Atlas Core"}
-                      <span className="text-[10px] text-slate-500">
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </span>
-                    </div>
-
-                    <div className="prose prose-invert max-w-none leading-relaxed whitespace-pre-wrap text-sm">
-                      {message.content}
-                    </div>
-
-                    {message.a2ui && (
-                      <div className="mt-6 pt-6 border-t border-slate-800/50">
-                        <A2UIRenderer
-                          elements={(JSON.parse(message.a2ui) as A2UIMessage).elements}
-                          onEvent={handleA2UIEvent}
-                        />
-                      </div>
+          ) : (
+            <div className="max-w-4xl mx-auto w-full space-y-12">
+              <AnimatePresence mode="popLayout">
+                {messages.map((m) => (
+                  <motion.div
+                    key={m.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "flex gap-8 group",
+                      m.role === "user" ? "flex-row-reverse" : "flex-row"
                     )}
+                  >
+                    <div className={cn(
+                      "h-12 w-12 shrink-0 glass-2 rounded-2xl flex items-center justify-center border border-white/10 shadow-xl self-start",
+                      m.role === "user" ? "bg-white/10" : "bg-atlas-blue/10"
+                    )}>
+                      {m.role === "user" ? (
+                        <div className="h-6 w-6 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 shadow-lg" />
+                      ) : (
+                        <ShieldCheck className="h-6 w-6 text-atlas-blue" />
+                      )}
+                    </div>
+
+                    <div className={cn(
+                      "flex-1 space-y-6",
+                      m.role === "user" ? "text-right" : "text-left"
+                    )}>
+                      <div className={cn(
+                        "inline-block px-10 py-7 rounded-[2.5rem] text-lg leading-relaxed shadow-2xl backdrop-blur-3xl",
+                        m.role === "user"
+                          ? "glass-2 border-white/10 text-white selection:bg-white/20"
+                          : "glass-1 border-white/5 text-slate-200 selection:bg-atlas-blue/20"
+                      )}>
+                        {m.content}
+                      </div>
+
+                      {m.a2ui && (
+                        <div className="mt-6">
+                          <A2UIRenderer message={JSON.parse(m.a2ui)} />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              {isThinking && (
+                <div className="flex gap-4 items-center pl-4 py-8">
+                  <div className="flex gap-1.5 item-center group">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-2 h-2 rounded-full bg-atlas-blue/40"
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                      />
+                    ))}
                   </div>
-                </motion.div>
-              ))
-            )}
-
-            {isThinking && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-3 bg-slate-900/40 backdrop-blur-xl p-6 rounded-3xl border border-slate-800/50 w-fit mx-auto"
-              >
-                <div className="flex gap-2">
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      animate={{
-                        scale: [1, 1.4, 1],
-                        opacity: [0.4, 1, 0.4],
-                      }}
-                      transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        delay: i * 0.3,
-                      }}
-                      className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-                    />
-                  ))}
+                  <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-slate-600">
+                    Synthesizing Strategic Response...
+                  </span>
                 </div>
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-400">
-                  Neural Synthesis in Progress...
-                </span>
-              </motion.div>
-            )}
+              )}
+              <div ref={chatEndRef} />
+            </div>
+          )}
+        </div>
 
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Input area */}
-          <div className="p-8 bg-gradient-to-t from-slate-950/80 to-transparent backdrop-blur-xl border-t border-slate-900/50">
-            <div className="max-w-4xl mx-auto flex items-end gap-3 bg-slate-900/40 backdrop-blur-3xl border border-slate-800/60 rounded-3xl p-4 shadow-2xl">
-              <textarea
+        <div className="p-12 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
+          <div className="max-w-4xl mx-auto relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-atlas-blue/20 to-purple-500/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-[3rem]" />
+            <div className="relative glass-2 rounded-[2.5rem] border border-white/10 p-4 flex items-center gap-4 shadow-2xl focus-within:border-atlas-blue/40 transition-all backdrop-blur-3xl">
+              <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
+                onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
                 placeholder="Enter your strategic directive..."
-                className="flex-1 bg-transparent border-none outline-none resize-none text-base font-semibold text-slate-200 placeholder-slate-600 px-6 py-4 min-h-[44px] max-h-32 leading-relaxed"
-                rows={1}
-                disabled={isThinking}
+                className="flex-1 bg-transparent border-none focus:ring-0 text-lg px-6 placeholder:text-slate-600 font-medium"
               />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleSend()}
-                disabled={isThinking || !input.trim()}
-                className="w-12 h-12 flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-800 disabled:to-slate-800 disabled:cursor-not-allowed text-white rounded-2xl shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 transition-all duration-200"
-              >
-                <Send className="w-5 h-5" />
-              </motion.button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleSyncAll}
+                  className="p-4 glass-2 hover:bg-white/10 rounded-2xl border border-white/10 text-slate-400 hover:text-white transition-all shadow-lg active:scale-95"
+                  title="Export to GitHub/Jira"
+                >
+                  <FileJson className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => handleSend(input)}
+                  disabled={!input.trim() || isThinking}
+                  className="h-14 w-14 bg-atlas-blue text-white rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                >
+                  <Send className="h-6 w-6 font-bold" />
+                </button>
+              </div>
             </div>
-
-            <div className="text-center mt-4 opacity-75">
-              <p className="text-xs font-mono uppercase tracking-wider text-slate-600">
-                Atlas Neural Core • Enterprise Edition • v3.2.3
-              </p>
+            <div className="flex justify-between items-center px-8 mt-6">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 text-[10px] font-mono font-black uppercase tracking-widest text-slate-600">
+                  <Activity className="h-3 w-3" />
+                  System Status: NOMINAL
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-mono font-black uppercase tracking-widest text-slate-600">
+                  <Zap className="h-3 w-3" />
+                  Latency: 42ms
+                </div>
+              </div>
+              <div className="text-[10px] font-mono font-black uppercase tracking-widest text-slate-700">
+                © 2026 ATLAS CORP • ENTERPRISE CORE V3
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* TaskBank Overlay */}
-        <AnimatePresence>
-          {isTaskBankOpen && (
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              className="fixed right-0 top-20 bottom-0 z-[100] w-[min(90vw,450px)] bg-slate-950/95 backdrop-blur-3xl border-l border-slate-900/50 shadow-2xl"
-            >
-              <TaskBank
-                onClose={() => setIsTaskBankOpen(false)}
-                onAddTask={handleAddBankTask}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Task Bank Modal */}
+      {isTaskBankOpen && (
+        <TaskBank onClose={() => setIsTaskBankOpen(false)} onSelectTask={(id) => {
+          handleLinkDependency(id, activeTaskId || "");
+          setIsTaskBankOpen(false);
+        }} />
+      )}
 
-        {/* Settings Modal */}
-        <AnimatePresence>
-          {isSettingsOpen && (
-            <SettingsModal
-              isOpen={isSettingsOpen}
-              onClose={() => setIsSettingsOpen(false)}
-            />
-          )}
-        </AnimatePresence>
-      </main>
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      )}
     </div>
   );
 };

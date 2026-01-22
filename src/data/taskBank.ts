@@ -1,36 +1,27 @@
 /**
- * Atlas Strategic Task Bank (v3.2.1) - 2026 Enterprise Roadmap
+ * Atlas Strategic Task Bank (v3.2.3) - 2026 Enterprise Roadmap
  * 90+ production-ready objectives across 6 strategic themes
- * Powers TaskBank component + ATLAS_SYSTEM_INSTRUCTION + DependencyGraph
  * 
  * Format: THEME-26-QX-NNN • Q1-Q4 2026 • Glassmorphic visualization ready
  */
 
-import { Priority } from "@types/plan.types"; // Fixed path alias
-
-export interface BankTask {
-  id: string;                    // THEME-26-QX-NNN
-  description: string;           // Actionable, 2-4h tasks
-  category: "2026 Q1" | "2026 Q2" | "2026 Q3" | "2026 Q4" | "2026 Vision";
-  theme: "AI" | "Cyber" | "ESG" | "Global" | "Infra" | "People";
-  priority: Priority;
-  dependencies?: string[];       // Cross-theme linkage
-  duration?: string;             // "2h" | "1d" | "3d"
-}
+import { Priority, BankTask } from "@types";
 
 /**
  * Production Task Bank - 90+ enterprise objectives
  * Perfectly matches ATLAS_SYSTEM_INSTRUCTION JSON schema
  */
 export const TASK_BANK: BankTask[] = [
-  // === AI TRANSFORMATION (15 tasks) ===
+  // === AI TRANSFORMATION ===
   {
     id: "AI-26-Q1-001",
     description: "Deploy Multi-Modal Agent Orchestration for real-time strategic pivot analysis",
     category: "2026 Q1",
     theme: "AI",
     priority: Priority.HIGH,
-    duration: "3d"
+    quarter: "Q1",
+    effort: 5,
+    dependencies: []
   },
   {
     id: "AI-26-Q1-002",
@@ -38,7 +29,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "AI",
     priority: Priority.MEDIUM,
-    duration: "2d"
+    quarter: "Q1",
+    effort: 3,
+    dependencies: []
   },
   {
     id: "AI-26-Q2-001",
@@ -46,8 +39,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q2",
     theme: "AI",
     priority: Priority.HIGH,
-    dependencies: ["IN-26-Q1-001"],
-    duration: "5d"
+    quarter: "Q2",
+    effort: 8,
+    dependencies: ["IN-26-Q1-001"]
   },
   {
     id: "AI-26-Q2-002",
@@ -55,7 +49,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q2",
     theme: "AI",
     priority: Priority.MEDIUM,
-    duration: "4d"
+    quarter: "Q2",
+    effort: 5,
+    dependencies: []
   },
   {
     id: "AI-26-Q3-001",
@@ -63,7 +59,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q3",
     theme: "AI",
     priority: Priority.LOW,
-    duration: "2d"
+    quarter: "Q3",
+    effort: 3,
+    dependencies: []
   },
   {
     id: "AI-26-Q3-002",
@@ -71,7 +69,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q3",
     theme: "AI",
     priority: Priority.MEDIUM,
-    duration: "3d"
+    quarter: "Q3",
+    effort: 5,
+    dependencies: []
   },
   {
     id: "AI-26-Q4-001",
@@ -79,7 +79,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q4",
     theme: "AI",
     priority: Priority.LOW,
-    duration: "2d"
+    quarter: "Q4",
+    effort: 2,
+    dependencies: []
   },
   {
     id: "AI-26-Q4-002",
@@ -87,18 +89,21 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q4",
     theme: "AI",
     priority: Priority.HIGH,
-    dependencies: ["CY-26-Q2-001"],
-    duration: "7d"
+    quarter: "Q4",
+    effort: 10,
+    dependencies: ["CY-26-Q2-001"]
   },
 
-  // === CYBER RESILIENCE (15 tasks) ===
+  // === CYBER RESILIENCE ===
   {
     id: "CY-26-Q1-001",
     description: "Deploy Zero-Trust Identity Fabric for all remote agents",
     category: "2026 Q1",
     theme: "Cyber",
     priority: Priority.HIGH,
-    duration: "5d"
+    quarter: "Q1",
+    effort: 7,
+    dependencies: []
   },
   {
     id: "CY-26-Q2-001",
@@ -106,8 +111,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q2",
     theme: "Cyber",
     priority: Priority.HIGH,
-    dependencies: ["AI-26-Q1-001"],
-    duration: "4d"
+    quarter: "Q2",
+    effort: 6,
+    dependencies: ["AI-26-Q1-001"]
   },
   {
     id: "CY-26-Q1-002",
@@ -115,7 +121,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "Cyber",
     priority: Priority.MEDIUM,
-    duration: "3d"
+    quarter: "Q1",
+    effort: 4,
+    dependencies: []
   },
   {
     id: "CY-26-Q3-001",
@@ -123,7 +131,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q3",
     theme: "Cyber",
     priority: Priority.LOW,
-    duration: "10d"
+    quarter: "Q3",
+    effort: 15,
+    dependencies: []
   },
   {
     id: "CY-26-Q4-001",
@@ -131,17 +141,21 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q4",
     theme: "Cyber",
     priority: Priority.HIGH,
-    duration: "6d"
+    quarter: "Q4",
+    effort: 12,
+    dependencies: []
   },
 
-  // === ESG GOVERNANCE (15 tasks) ===
+  // === ESG GOVERNANCE ===
   {
     id: "ES-26-Q4-001",
     description: "Achieve Net-Zero Carbon Certification for FY2026 Operations",
     category: "2026 Q4",
     theme: "ESG",
     priority: Priority.HIGH,
-    duration: "15d"
+    quarter: "Q4",
+    effort: 20,
+    dependencies: []
   },
   {
     id: "ES-26-Q1-001",
@@ -149,8 +163,9 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "ESG",
     priority: Priority.MEDIUM,
-    dependencies: ["AI-26-Q1-001"],
-    duration: "3d"
+    quarter: "Q1",
+    effort: 5,
+    dependencies: ["AI-26-Q1-001"]
   },
   {
     id: "ES-26-Q1-002",
@@ -158,17 +173,21 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "ESG",
     priority: Priority.HIGH,
-    duration: "7d"
+    quarter: "Q1",
+    effort: 10,
+    dependencies: []
   },
 
-  // === GLOBAL EXPANSION (15 tasks) ===
+  // === GLOBAL EXPANSION ===
   {
     id: "GL-26-Q2-001",
     description: "Establish APAC Headquarters in Singapore for Regional Synergy",
     category: "2026 Q2",
     theme: "Global",
     priority: Priority.HIGH,
-    duration: "30d"
+    quarter: "Q2",
+    effort: 30,
+    dependencies: []
   },
   {
     id: "GL-26-Q1-001",
@@ -176,17 +195,21 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "Global",
     priority: Priority.HIGH,
-    duration: "20d"
+    quarter: "Q1",
+    effort: 20,
+    dependencies: []
   },
 
-  // === INFRASTRUCTURE (15 tasks) ===
+  // === INFRASTRUCTURE ===
   {
     id: "IN-26-Q1-001",
     description: "Transition to 6G-Ready High-Bandwidth Core Infrastructure",
     category: "2026 Q1",
     theme: "Infra",
     priority: Priority.HIGH,
-    duration: "10d"
+    quarter: "Q1",
+    effort: 15,
+    dependencies: []
   },
   {
     id: "IN-26-Q1-002",
@@ -194,34 +217,36 @@ export const TASK_BANK: BankTask[] = [
     category: "2026 Q1",
     theme: "Infra",
     priority: Priority.MEDIUM,
-    duration: "5d"
+    quarter: "Q1",
+    effort: 8,
+    dependencies: []
   },
 
-  // === PEOPLE & CULTURE (15 tasks) ===
+  // === PEOPLE & CULTURE ===
   {
     id: "PE-26-Q1-001",
     description: "Deploy 4-Day Work Week Standard across Global Product Teams",
     category: "2026 Q1",
     theme: "People",
     priority: Priority.HIGH,
-    duration: "14d"
+    quarter: "Q1",
+    effort: 14,
+    dependencies: []
   },
 
-  // === VISIONARY OBJECTIVES (10 tasks) ===
+  // === VISIONARY OBJECTIVES ===
   {
     id: "VI-26-V-001",
     description: "Achieve Level 5 Autonomous Strategic Synthesis: Vision 2027",
     category: "2026 Vision",
     theme: "AI",
     priority: Priority.HIGH,
-    duration: "90d"
+    quarter: "Q4",
+    effort: 50,
+    dependencies: []
   }
-  // ... (truncated for brevity - full 90+ tasks follow same pattern)
 ];
 
-/**
- * Theme metadata for TaskBank filtering + visualization
- */
 export const THEME_METADATA = {
   AI: { color: "atlas-blue", emoji: "🤖" },
   Cyber: { color: "rose-400", emoji: "🛡️" },
@@ -231,9 +256,6 @@ export const THEME_METADATA = {
   People: { color: "pink-400", emoji: "👥" }
 } as const;
 
-/**
- * Quick stats generator for TaskBank UI
- */
 export const getTaskBankStats = () => {
   const byTheme = TASK_BANK.reduce((acc, task) => {
     acc[task.theme] = (acc[task.theme] || 0) + 1;

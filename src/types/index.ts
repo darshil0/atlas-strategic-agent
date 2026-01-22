@@ -1,5 +1,5 @@
 /**
- * ATLAS Core Types (v3.2.1) - Production Type System
+ * ATLAS Core Types (v3.2.3) - Production Type System
  * Comprehensive typing for MissionControl ADK, ReactFlow, GitHub/Jira sync
  * Enterprise-grade 2026 strategic planning with glassmorphic A2UI protocol
  */
@@ -92,6 +92,23 @@ export enum AgentMode {
   SUPERVISED = "SUPERVISED",
 }
 
+export interface AgentExecutionContext {
+  sessionId?: string;
+  metadata?: Record<string, any>;
+  goal?: string;                    // C-level strategic objective
+  activeTaskId?: string;            // DependencyGraph focus
+  plan?: Plan | null;               // Current roadmap state
+  previousPlan?: Plan | null;       // Iteration history
+  criticFeedback?: any;             // Refinement input
+  taskBank?: BankTask[];            // 90+ enterprise objectives
+  [key: string]: any;
+}
+
+export interface AgentRuntimeContext extends AgentExecutionContext {
+  sessionId: string;
+  metadata: Record<string, any>;
+}
+
 export interface AgentResponse {
   text: string;
   a2ui?: A2UIMessage;
@@ -103,24 +120,68 @@ export interface AgentResponse {
   };
 }
 
+export interface MissionResult {
+  text: string;
+  a2ui?: A2UIMessage;
+  plan?: Plan;
+  validation: {
+    iterations: number;
+    finalScore: number;
+    graphReady: boolean;
+    q1HighCount: number;
+  };
+}
+
+export interface FailureCascadeResult {
+  cascade: string[];
+  riskScore: number;
+  impactedHighPriority: number;
+}
+
 // === A2UI GLASSMORPHIC PROTOCOL ===
+export enum A2UIComponentType {
+  CONTAINER = "container",
+  TEXT = "text",
+  BUTTON = "button",
+  INPUT = "input",
+  CARD = "card",
+  LIST = "list",
+  CHART = "chart",
+  PROGRESS = "progress",
+  CHECKBOX = "checkbox",
+  SELECT = "select",
+  STAT = "stat"
+}
+
 export interface A2UIMessage {
   version: "1.1";
   elements: A2UIElement[];
   timestamp: number;
+  sessionId?: string;
 }
 
-export type A2UIElement = 
-  | A2UIPanel 
-  | A2UICard 
-  | A2UIButton 
-  | A2UIProgress 
-  | A2UIStat;
+export type A2UIElement =
+  | A2UIContainer
+  | A2UIPanel
+  | A2UICard
+  | A2UIButton
+  | A2UIProgress
+  | A2UIStat
+  | A2UIText
+  | A2UIList
+  | A2UIChart;
 
 interface A2UIElementBase {
-  type: string;
+  type: A2UIComponentType | string;
   id: string;
   className?: string;
+  props?: Record<string, any>;
+  children?: A2UIElement[];
+}
+
+export interface A2UIContainer extends A2UIElementBase {
+  type: A2UIComponentType.CONTAINER;
+  children: A2UIElement[];
 }
 
 export interface A2UIPanel extends A2UIElementBase {
@@ -131,32 +192,55 @@ export interface A2UIPanel extends A2UIElementBase {
 }
 
 export interface A2UICard extends A2UIElementBase {
-  type: "card";
-  title: string;
+  type: A2UIComponentType.CARD;
+  title?: string;
   subtitle?: string;
-  children: A2UIElement[];
+  children?: A2UIElement[];
 }
 
 export interface A2UIButton extends A2UIElementBase {
-  type: "button";
+  type: A2UIComponentType.BUTTON;
   label: string;
-  actionData: string;     // "sync_github", "decompose_task"
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  actionData: any;
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "glass";
   disabled?: boolean;
 }
 
 export interface A2UIProgress extends A2UIElementBase {
-  type: "progress";
+  type: A2UIComponentType.PROGRESS;
   label: string;
   value: number;
   max?: number;
 }
 
 export interface A2UIStat extends A2UIElementBase {
-  type: "stat";
+  type: A2UIComponentType.STAT;
   label: string;
   value: string | number;
   trend?: "up" | "down" | "stable";
+}
+
+export interface A2UIText extends A2UIElementBase {
+  type: A2UIComponentType.TEXT;
+  text: string;
+  size?: "xs" | "sm" | "base" | "lg" | "xl";
+}
+
+export interface A2UIList extends A2UIElementBase {
+  type: A2UIComponentType.LIST;
+  items: Array<{
+    label: string;
+    value?: string;
+    icon?: string;
+    selected?: boolean;
+  }>;
+}
+
+export interface A2UIChart extends A2UIElementBase {
+  type: A2UIComponentType.CHART;
+  title: string;
+  data: Array<{ label: string; value: number }>;
+  maxValue?: number;
 }
 
 // === ENTERPRISE INTEGRATION ===
@@ -212,22 +296,40 @@ export interface BankTask {
 
 // === A2UI EVENT PROTOCOL ===
 export interface AGUIEvent {
-  action: string;        // "sync_github", "task_decompose"
+  action: AGUIAction | string;
   elementId: string;
   payload?: Record<string, any>;
   timestamp: number;
+  data?: any;
 }
+
+export type AGUIAction =
+  | "click"
+  | "input_blur"
+  | "input_submit"
+  | "input_change"
+  | "item_click"
+  | "toggle"
+  | "select_change"
+  | "task_select"
+  | "decompose"
+  | "export_github"
+  | "export_jira"
+  | "sync_github"
+  | "sync_jira"
+  | "visualize"
+  | "task_bank";
 
 // === REACT COMPONENT PROPS ===
 export interface TaskCardProps {
   task: SubTask;
   isActive: boolean;
   isBlocked: boolean;
-  onClick: (id: string) => void;
-  onDecompose: (id: string) => void;
-  onExport: (id: string, type: "github" | "jira") => Promise<void>;
+  onClick?: () => void;
+  onDecompose?: (id: string) => void;
+  onExport?: (id: string, type: "github" | "jira") => void;
   exported?: { github?: string; jira?: string };
-  onSimulateFailure?: (id: string) => Promise<void>;
+  onSimulateFailure?: (id: string) => void;
 }
 
 export interface DependencyGraphProps {
@@ -263,4 +365,3 @@ export interface PersistenceConfig {
 // === UTILITY TYPES ===
 export type Quarter = "Q1" | "Q2" | "Q3" | "Q4";
 export type Theme = "AI" | "Cyber" | "Infra" | "Growth" | "Ops" | "Legal";
-

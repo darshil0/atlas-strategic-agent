@@ -159,13 +159,13 @@ graph TD
 
 ### Completed ✅
 
-- [x] **V1.0.0** - Initial enterprise release: Multi-agent synthesis, A2UI, XYFlow, and GitHub/Jira sync.
+- [x] **V3.2.4** - Initial enterprise release: Multi-agent synthesis, A2UI, XYFlow, and GitHub/Jira sync.
 
 ### Planned 🚀
 
-- [ ] **V1.1.0** - Monte Carlo risk modeling
-- [ ] **V1.2.0** - Real-time collaboration (WebSockets)
-- [ ] **V2.0.0** - Resource optimizer (headcount/budget allocation)
+- [ ] **V4.0.0** - Monte Carlo risk modeling
+- [ ] **V4.1.0** - Real-time collaboration (WebSockets)
+- [ ] **V4.2.0** - Resource optimizer (headcount/budget allocation)
 
 ---
 

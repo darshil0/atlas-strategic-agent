@@ -1,5 +1,5 @@
 /**
- * Atlas Jira Service (v1.0.0) - Glassmorphic Jira Cloud REST API v3 Integration
+ * Atlas Jira Service (v3.2.4) - Glassmorphic Jira Cloud REST API v3 Integration
  * Bidirectional sync: SubTasks ↔ Jira Issues with Q1-Q4 epics + priority mapping
  */
 

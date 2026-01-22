@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent V1.0.0
+# 🌌 Atlas Strategic Agent V3.2.4
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)

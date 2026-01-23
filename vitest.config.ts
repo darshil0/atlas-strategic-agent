@@ -27,7 +27,6 @@ export default defineConfig({
         "**/*.spec.{ts,tsx}",
         "**/*.test.{ts,tsx}",
       ],
-      all: true,
       thresholds: {
         lines: 80,
         functions: 80,

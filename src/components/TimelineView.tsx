@@ -3,12 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Plan, SubTask, TaskStatus } from "@types";
 import { CheckCircle2, Clock, ArrowRight } from "lucide-react";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from "@lib/utils";
 
 interface TimelineViewProps {
   plan: Plan;

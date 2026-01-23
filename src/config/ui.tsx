@@ -5,7 +5,9 @@
  */
 
 import React from "react";
-import { TaskStatus } from "@types/plan.types"; // Fixed path alias
+import { motion } from "framer-motion";
+import { TaskStatus } from "@types";
+import { cn } from "@lib/utils";
 import {
   Circle,
   Loader2,
@@ -39,7 +41,7 @@ const createGlassIcon = (
 /**
  * Production-ready icon registry with glassmorphic enhancement
  */
-export const ICONS: Record<TaskStatus | "BLOCKED" | "STRATEGIC", React.ReactNode> = {
+export const ICONS: Record<TaskStatus | "BLOCKED" | "STRATEGIC", React.ReactElement> = {
   [TaskStatus.PENDING]: createGlassIcon(<Circle />, "text-slate-400"),
   [TaskStatus.IN_PROGRESS]: createGlassIcon(
     <Loader2 />,
@@ -57,14 +59,15 @@ export const ICONS: Record<TaskStatus | "BLOCKED" | "STRATEGIC", React.ReactNode
 /**
  * Smart icon accessor with active state enhancement
  */
-export const getTaskIcon = (status: TaskStatus, isActive = false): React.ReactNode => {
+export const getTaskIcon = (status: TaskStatus, isActive = false): React.ReactElement => {
   const baseIcon = ICONS[status] || createGlassIcon(<AlertCircle />, "text-rose-400");
   
   if (isActive) {
-    return React.cloneElement(baseIcon as React.ReactElement, {
+    const baseProps = baseIcon.props as { className?: string };
+    return React.cloneElement(baseIcon as React.ReactElement<{ className?: string }>, {
       className: cn(
         "scale-110 ring-2 ring-atlas-blue/50 shadow-[0_0_20px_rgba(59,130,246,0.4)]",
-        (baseIcon as any).props?.className
+        baseProps?.className
       )
     });
   }
@@ -76,13 +79,13 @@ export const getTaskIcon = (status: TaskStatus, isActive = false): React.ReactNo
  * Bulk icon renderer for TimelineView markers
  */
 export const getTimelineIcon = (status: TaskStatus, index: number): React.ReactNode => {
-  const colors = {
+  const colors: Partial<Record<TaskStatus, string>> = {
     [TaskStatus.COMPLETED]: "text-emerald-400 shadow-emerald/30",
     [TaskStatus.IN_PROGRESS]: "text-atlas-blue shadow-[0_0_15px_rgba(59,130,246,0.3)] animate-pulse",
     [TaskStatus.PENDING]: "text-slate-400",
   };
   
-  const IconComponent = ICONS[status]?.type || Circle;
+  const IconComponent = (ICONS[status]?.type as React.ElementType) || Circle;
   
   return (
     <motion.div

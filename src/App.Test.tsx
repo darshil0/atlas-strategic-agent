@@ -67,7 +67,6 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
     render(<App />);
     const input = screen.getByPlaceholderText(/Enter your strategic directive/i);
     await user.type(input, "Build a starship");
-    const sendButton = screen.getByRole("button", { name: "" }); // Send button has SVG only, but let's find it
 
     // Instead of clicking by name, let's find the button by its icon container
     const buttons = screen.getAllByRole("button");

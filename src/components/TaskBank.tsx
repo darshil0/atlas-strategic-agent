@@ -1,15 +1,10 @@
 // src/components/TaskBank.tsx
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TASK_BANK, type BankTask } from "@data/taskBank"; // Fixed path alias
-import { Priority } from "@types/plan.types"; // Fixed path alias
+import { TASK_BANK } from "@data/taskBank";
+import { Priority, BankTask } from "@types";
 import { Search, X, Filter, Layers, Zap, Import } from "lucide-react";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from "@lib/utils";
 
 interface TaskBankProps {
   onAddTask: (task: BankTask) => void;
@@ -35,21 +30,17 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
   const [search, setSearch] = useState("");
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
-  const filteredTasks = useMemo(() => {
-    if (!TASK_BANK?.length) return [];
-    const query = search.trim().toLowerCase();
+  const query = search.trim().toLowerCase();
+  const filteredTasks = TASK_BANK.filter((task: BankTask) => {
+    const matchesSearch =
+      !query ||
+      task.description.toLowerCase().includes(query) ||
+      task.id.toLowerCase().includes(query);
+    const matchesTheme = selectedTheme ? task.theme === selectedTheme : true;
+    return matchesSearch && matchesTheme;
+  }).sort((a: BankTask, b: BankTask) => a.id.localeCompare(b.id));
 
-    return TASK_BANK.filter((task: BankTask) => {
-      const matchesSearch =
-        !query ||
-        task.description.toLowerCase().includes(query) ||
-        task.id.toLowerCase().includes(query);
-      const matchesTheme = selectedTheme ? task.theme === selectedTheme : true;
-      return matchesSearch && matchesTheme;
-    }).sort((a: BankTask, b: BankTask) => a.id.localeCompare(b.id));
-  }, [search, selectedTheme]);
-
-  const themes = useMemo(() => Object.keys(THEME_COLORS), []);
+  const themes = Object.keys(THEME_COLORS);
 
   return (
     <motion.div 

@@ -1,13 +1,9 @@
 // src/components/SettingsModal.tsx
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { PersistenceService } from "@services/storage.service"; // Fixed path + naming
-import { Settings, X } from "lucide-react"; // Added Lucide icons
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { motion } from "framer-motion";
+import { PersistenceService } from "@services/persistenceService";
+import { Settings, X } from "lucide-react";
+import { cn } from "@lib/utils";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -15,12 +11,12 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
-  // Use refs to avoid re-renders on every keystroke
-  const githubTokenRef = useRef(PersistenceService.getGithubToken() || "");
-  const jiraDomainRef = useRef(PersistenceService.getJiraDomain() || "");
-  const jiraEmailRef = useRef(PersistenceService.getJiraEmail() || "");
-  const jiraTokenRef = useRef(PersistenceService.getJiraToken() || "");
-  const debugModeRef = useRef(PersistenceService.getDebugMode() || "false");
+  // Use refs for input elements to avoid re-renders on every keystroke
+  const githubTokenInputRef = useRef<HTMLInputElement>(null);
+  const jiraDomainInputRef = useRef<HTMLInputElement>(null);
+  const jiraEmailInputRef = useRef<HTMLInputElement>(null);
+  const jiraTokenInputRef = useRef<HTMLInputElement>(null);
+  const [debugMode, setDebugMode] = useState(PersistenceService.getDebugMode());
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -76,15 +72,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
 
+    const githubToken = githubTokenInputRef.current?.value || "";
+    const jiraDomain = jiraDomainInputRef.current?.value || "";
+    const jiraEmail = jiraEmailInputRef.current?.value || "";
+    const jiraToken = jiraTokenInputRef.current?.value || "";
+
     // Required GitHub fields
-    if (!githubTokenRef.current.trim()) newErrors.githubToken = "GitHub token required";
+    if (!githubToken.trim()) newErrors.githubToken = "GitHub token required";
     
     // Required Jira fields (if any Jira field is filled, all are required)
-    const hasJiraConfig = jiraDomainRef.current.trim() || jiraEmailRef.current.trim() || jiraTokenRef.current.trim();
+    const hasJiraConfig = jiraDomain.trim() || jiraEmail.trim() || jiraToken.trim();
     if (hasJiraConfig) {
-      if (!jiraDomainRef.current.trim()) newErrors.jiraDomain = "Jira domain required";
-      if (!jiraEmailRef.current.trim()) newErrors.jiraEmail = "Email required";
-      if (!jiraTokenRef.current.trim()) newErrors.jiraToken = "Jira token required";
+      if (!jiraDomain.trim()) newErrors.jiraDomain = "Jira domain required";
+      if (!jiraEmail.trim()) newErrors.jiraEmail = "Email required";
+      if (!jiraToken.trim()) newErrors.jiraToken = "Jira token required";
     }
 
     setErrors(newErrors);
@@ -97,11 +98,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
     setIsLoading(true);
     try {
       // Save all settings
-      PersistenceService.saveGithubToken(githubTokenRef.current);
-      PersistenceService.saveJiraDomain(jiraDomainRef.current);
-      PersistenceService.saveJiraEmail(jiraEmailRef.current);
-      PersistenceService.saveJiraToken(jiraTokenRef.current);
-      PersistenceService.saveDebugMode(debugModeRef.current === "true");
+      PersistenceService.saveGithubApiKey(githubTokenInputRef.current?.value || "");
+      PersistenceService.saveJiraDomain(jiraDomainInputRef.current?.value || "");
+      PersistenceService.saveJiraEmail(jiraEmailInputRef.current?.value || "");
+      PersistenceService.saveJiraApiKey(jiraTokenInputRef.current?.value || "");
+      PersistenceService.saveDebugMode(debugMode);
       
       // Show success feedback
       onClose();
@@ -188,9 +189,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
             </h3>
             <div className="grid grid-cols-1 gap-4">
               <InputField
-                ref={githubTokenRef}
+                ref={githubTokenInputRef}
                 label="Personal Access Token"
                 placeholder="ghp_..."
+                defaultValue={PersistenceService.getGithubApiKey() || ""}
                 error={errors.githubToken}
                 required
               />
@@ -210,23 +212,26 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
-                ref={jiraDomainRef}
+                ref={jiraDomainInputRef}
                 label="Domain"
                 placeholder="yourcompany.atlassian.net"
+                defaultValue={PersistenceService.getJiraDomain() || ""}
                 error={errors.jiraDomain}
                 type="url"
               />
               <InputField
-                ref={jiraEmailRef}
+                ref={jiraEmailInputRef}
                 label="Email"
                 placeholder="user@company.com"
+                defaultValue={PersistenceService.getJiraEmail() || ""}
                 error={errors.jiraEmail}
                 type="email"
               />
               <InputField
-                ref={jiraTokenRef}
+                ref={jiraTokenInputRef}
                 label="API Token"
                 placeholder="ATATT3x..."
+                defaultValue={PersistenceService.getJiraApiKey() || ""}
                 error={errors.jiraToken}
                 type="password"
               />
@@ -242,15 +247,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
             <label className="flex items-center gap-3 p-4 glass-2 rounded-2xl border border-white/10 cursor-pointer group">
               <input
                 type="checkbox"
-                checked={debugModeRef.current === "true"}
-                onChange={(e) => (debugModeRef.current = e.target.checked.toString())}
+                checked={debugMode}
+                onChange={(e) => setDebugMode(e.target.checked)}
                 className="w-5 h-5 rounded-lg bg-slate-800 border-slate-700 text-atlas-blue focus:ring-atlas-blue/50 transition-all duration-200"
               />
               <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
                 Enable Debug Mode
               </span>
               <span className="ml-auto text-xs text-slate-500 font-mono bg-slate-900/50 px-2 py-1 rounded-lg">
-                {debugModeRef.current === "true" ? "ON" : "OFF"}
+                {debugMode ? "ON" : "OFF"}
               </span>
             </label>
           </motion.div>
@@ -297,14 +302,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
 const InputField = React.forwardRef<
   HTMLInputElement,
   {
-    ref?: React.Ref<HTMLInputElement>;
     label: string;
     placeholder?: string;
+    defaultValue?: string;
     error?: string;
     required?: boolean;
     type?: string;
   }
->(({ label, placeholder, error, required, type = "text" }, ref) => (
+>(({ label, placeholder, defaultValue, error, required, type = "text" }, ref) => (
   <div className="space-y-2">
     <label className="block text-sm font-medium text-slate-300 mb-2">
       {label} {required && <span className="text-rose-400">*</span>}
@@ -313,7 +318,7 @@ const InputField = React.forwardRef<
       ref={ref}
       type={type}
       placeholder={placeholder}
-      defaultValue={""}
+      defaultValue={defaultValue || ""}
       className={cn(
         "w-full glass-2 border rounded-2xl px-4 py-3 text-sm text-white backdrop-blur-3xl transition-all duration-200 focus:outline-none focus:ring-2",
         error 

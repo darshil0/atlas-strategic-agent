@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.2.4
+# 🌌 Atlas Strategic Agent v3.2.5
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -203,7 +203,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.2.4
+VITE_APP_VERSION=3.2.5
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
@@ -227,6 +227,7 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
+- [x] **V3.2.5** - Centralized utilities, improved type safety, and production-ready error handling
 - [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol, ReactFlow graphs
 - [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization
 - [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives

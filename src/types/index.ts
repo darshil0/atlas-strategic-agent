@@ -169,7 +169,10 @@ export type A2UIElement =
   | A2UIStat
   | A2UIText
   | A2UIList
-  | A2UIChart;
+  | A2UIChart
+  | A2UIInput
+  | A2UICheckbox
+  | A2UISelect;
 
 interface A2UIElementBase {
   type: A2UIComponentType | string;
@@ -228,19 +231,40 @@ export interface A2UIText extends A2UIElementBase {
 
 export interface A2UIList extends A2UIElementBase {
   type: A2UIComponentType.LIST;
-  items: Array<{
+  items: {
     label: string;
     value?: string;
     icon?: string;
     selected?: boolean;
-  }>;
+  }[];
 }
 
 export interface A2UIChart extends A2UIElementBase {
   type: A2UIComponentType.CHART;
   title: string;
-  data: Array<{ label: string; value: number }>;
+  data: { label: string; value: number }[];
   maxValue?: number;
+}
+
+export interface A2UIInput extends A2UIElementBase {
+  type: A2UIComponentType.INPUT;
+  label?: string;
+  placeholder?: string;
+  value?: string;
+  inputType?: string;
+}
+
+export interface A2UICheckbox extends A2UIElementBase {
+  type: A2UIComponentType.CHECKBOX;
+  label: string;
+  checked: boolean;
+}
+
+export interface A2UISelect extends A2UIElementBase {
+  type: A2UIComponentType.SELECT;
+  label?: string;
+  options: { value: string; label: string }[];
+  value?: string;
 }
 
 // === ENTERPRISE INTEGRATION ===

@@ -8,7 +8,6 @@ import { BaseAgent } from "./types";
 import {
   A2UIMessage,
   AGUIEvent,
-  A2UIComponentType,
   TaskStatus,
   Priority,
   SubTask,
@@ -21,7 +20,7 @@ import { TASK_BANK } from "@data/taskBank";
  * Strategist Agent - Hierarchical Goal Decomposition
  */
 export class StrategistAgent extends BaseAgent {
-  name = "Strategist";
+  name = "STRATEGIST";
   description = "Decomposes goals into executable 2026 Q1-Q4 roadmaps with dependencies.";
 
   async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
@@ -48,7 +47,7 @@ export class StrategistAgent extends BaseAgent {
   }
 
   async execute<R = any>(
-    prompt: string,
+    _prompt: string,
     context: AgentExecutionContext = {}
   ): Promise<R> {
     const plan = {
@@ -85,10 +84,42 @@ export class StrategistAgent extends BaseAgent {
 }
 
 /**
+ * Architect Agent - Technical Design + Infrastructure
+ */
+export class ArchitectAgent extends BaseAgent {
+  name = "ARCHITECT";
+  description = "Technical architecture design for strategic objectives.";
+
+  async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
+    return new UIBuilder()
+      .card("🏗️ Technical Blueprint")
+      .text("Infrastructure stack: Next.js 15, Gemini 2.0, Tailwind 4.1")
+      .build();
+  }
+
+  async execute<R = any>(
+    _prompt: string,
+    _context: AgentExecutionContext = {}
+  ): Promise<R> {
+    return {
+      stack: ["React 19", "Vite 7", "TypeScript 5.9"],
+      deployment: "Edge Functions",
+      scalability: "High",
+    } as unknown as R;
+  }
+
+  getInitialUI(): A2UIMessage {
+    return new UIBuilder()
+      .text("🏗️ Architect Agent ready for technical synthesis.")
+      .build();
+  }
+}
+
+/**
  * Analyst Agent - Feasibility + Risk Scoring
  */
 export class AnalystAgent extends BaseAgent {
-  name = "Analyst";
+  name = "ANALYST";
   description = "Feasibility scoring and TASK_BANK alignment analysis.";
 
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
@@ -100,7 +131,7 @@ export class AnalystAgent extends BaseAgent {
   }
 
   async execute<R = any>(
-    prompt: string,
+    _prompt: string,
     _context: AgentExecutionContext = {}
   ): Promise<R> {
     const analysis = {
@@ -130,7 +161,7 @@ export class AnalystAgent extends BaseAgent {
  * Critic Agent - Plan Optimization + DAG Validation
  */
 export class CriticAgent extends BaseAgent {
-  name = "Critic";
+  name = "CRITIC";
   description = "Validates acyclic graphs and suggests optimizations.";
 
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {

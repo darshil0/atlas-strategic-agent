@@ -10,9 +10,7 @@ import React, {
   useCallback,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
-import { Message, Plan, Priority, SubTask, TaskStatus } from "@types";
+import { Message, Plan, SubTask, TaskStatus } from "@types";
 import { AtlasService } from "@services/geminiService";
 import { PersistenceService } from "@services/persistenceService";
 import { githubService, jiraService } from "@/services";
@@ -21,10 +19,10 @@ import DependencyGraph from "@components/DependencyGraph";
 import TaskBank from "@components/TaskBank";
 import SettingsModal from "@components/SettingsModal";
 import { A2UIRenderer } from "@components/a2ui/A2UIRenderer";
-import { AGUIEvent, A2UIMessage } from "@lib/adk/protocol";
-import { PlanExporter } from "@lib/adk/exporter";
+import { A2UIMessage } from "@lib/adk/protocol";
 import { MissionControl } from "@lib/adk/orchestrator";
 import TimelineView from "@components/TimelineView";
+import { cn } from "@lib/utils";
 import {
   Zap,
   Settings,
@@ -39,9 +37,6 @@ import {
   Clock,
 } from "lucide-react";
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 const missionControl = new MissionControl();
 
@@ -235,7 +230,7 @@ const App: React.FC = () => {
                 <ShieldCheck className="text-atlas-blue h-6 w-6" />
               </div>
               <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
-                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">V1.0.0</span>
+                ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">v3.2.5</span>
               </h1>
             </div>
             <button
@@ -447,7 +442,12 @@ const App: React.FC = () => {
 
                       {m.a2ui && (
                         <div className="mt-6">
-                          <A2UIRenderer elements={JSON.parse(m.a2ui).elements} onEvent={() => { }} />
+                          <A2UIRenderer
+                            elements={JSON.parse(m.a2ui).elements}
+                            onEvent={(event) => {
+                              console.log("A2UI Event:", event);
+                            }}
+                          />
                         </div>
                       )}
                     </div>

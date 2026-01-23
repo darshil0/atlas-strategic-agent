@@ -5,8 +5,7 @@
 
 import { AgentPersona } from "@types";
 import { BaseAgent } from "./types";
-import { StrategistAgent, AnalystAgent, CriticAgent } from "./agents";
-import { ENV } from "@config";
+import { StrategistAgent, AnalystAgent, CriticAgent, ArchitectAgent } from "./agents";
 
 /**
  * Production Agent Factory with lifecycle hooks + metrics
@@ -27,8 +26,7 @@ export class AgentFactory {
         return new CriticAgent();
 
       case AgentPersona.ARCHITECT:
-        // Architect not yet implemented in v3.2.3, fallback to Strategist or throw
-        return new StrategistAgent();
+        return new ArchitectAgent();
 
       default: {
         const _exhaustiveCheck: never = persona;

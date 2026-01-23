@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.2.5] - 2026-02-05
+
+### 🚀 Continuous Improvement & Infrastructure
+
+This release focuses on centralized utilities, improved code organization, and addressing critical linting errors and broken imports discovered during integration.
+
+### Added
+- **Centralized Utilities**: Introduced `src/lib/utils.ts` with a standardized `cn` utility for Tailwind class merging.
+- **Improved Project Structure**: Migrated 5+ components to use centralized utilities, reducing code duplication.
+
+### Fixed
+- **Import Resolution**: Fixed broken imports of `@types/plan.types` in `TaskBank.tsx` and `ui.tsx`.
+- **Linting & Quality**:
+  - Resolved "unexpected empty arrow function" error in `App.tsx`.
+  - Fixed missing `motion` imports in `src/config/ui.tsx`.
+  - Corrected versioning inconsistencies in the header and metadata.
+- **Production Safety**: Enhanced `A2UIRenderer` event handling with logging and validation.
+
+### Changed
+- **Branding**: Updated internal versioning to `v3.2.5` across all dashboard elements.
+
+---
+
 ## [3.2.4] - 2026-01-23
 
 ### 🚀 Production Hardening & Type Safety
@@ -182,6 +205,12 @@ For issues, questions, or contributions:
 ---
 
 ## Migration Guides
+
+### Upgrading from 3.2.4 to 3.2.5
+
+No breaking changes. This is a patch release focused on centralization of utilities and fixing import path issues.
+
+**Action Required**: Ensure path aliases are correctly configured in your IDE.
 
 ### Upgrading from 3.2.3 to 3.2.4
 

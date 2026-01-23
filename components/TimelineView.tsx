@@ -13,13 +13,13 @@ interface TimelineViewProps {
 
 export default function TimelineView({ plan, className }: TimelineViewProps) {
   const timelineItems = useMemo(() => {
-    const items: Array<{
+    const items: {
       title: string;
       start: string;
       end: string;
       status: "not-started" | "in-progress" | "completed";
       subtasks: SubTask[];
-    }> = [];
+    }[] = [];
 
     plan.phases.forEach((phase) => {
       phase.milestones.forEach((milestone) => {

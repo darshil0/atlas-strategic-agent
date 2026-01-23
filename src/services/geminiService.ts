@@ -17,6 +17,15 @@ if (!ENV.GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
 
+interface MissionMetrics {
+  completed: number;
+  total: number;
+  q1Complete: number;
+  q1Total: number;
+  highPriorityRemaining: number;
+  criticalPathRisk: number;
+}
+
 export class AtlasService {
   private static readonly modelName = "gemini-2.0-flash-exp"; // Jan 2026 production model
   private static readonly maxRetries = 3;
@@ -153,7 +162,7 @@ Return structured JSON matching schema exactly.`
   static async executeSubtask(
     subtask: SubTask,
     plan: Plan,
-    history: string = "",
+    history = "",
     onChunk?: (chunk: string) => void
   ): Promise<{ text: string; a2ui?: A2UIMessage }> {
     const model = this.getModel(true);
@@ -168,7 +177,7 @@ Return structured JSON matching schema exactly.`
     });
 
     let fullText = "";
-    let a2uiCandidates: string[] = [];
+    const a2uiCandidates: string[] = [];
 
     // Real-time streaming with A2UI extraction
     for await (const chunk of result.stream) {
@@ -249,7 +258,7 @@ RECENT HISTORY: ${history.slice(-800)}
 Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedback needed.`;
   }
 
-  private static computeMissionMetrics(plan: Plan) {
+  private static computeMissionMetrics(plan: Plan): MissionMetrics {
     return {
       completed: plan.tasks.filter(t => t.status === TaskStatus.COMPLETED).length,
       total: plan.tasks.length,
@@ -289,9 +298,9 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
     return undefined;
   }
 
-  private static formatMetrics(metrics: any): string {
+  private static formatMetrics(metrics: MissionMetrics): string {
     return `
-Q1: ${metrics.q1Complete}/${metrics.q1Total} (${Math.round(metrics.q1Complete / metrics.q1Total * 100) || 0}%)
+Q1: ${metrics.q1Complete}/${metrics.q1Total} (${Math.round(metrics.q1Complete / (metrics.q1Total || 1) * 100) || 0}%)
 Total: ${metrics.completed}/${metrics.total}
 HIGH Priority Remaining: ${metrics.highPriorityRemaining}
 Critical Path Risk: ${metrics.criticalPathRisk}`;

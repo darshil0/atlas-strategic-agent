@@ -1,21 +1,21 @@
 /**
- * ATLAS v3.2.1 - Production Entry Point
+ * ATLAS v3.2.5 - Production Entry Point
  * Glassmorphic MissionControl dashboard with error boundaries + loading states
  * Enterprise-ready React 18 + Vite + Tailwind + TypeScript stack
  */
 
 import React, { Suspense, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { motion } from "framer-motion";
+import { Zap } from "lucide-react";
 import "./index.css";
 import App from "./App";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { Loader } from "./components/Loader";
 import { ENV } from "@config";
 
 // === PRODUCTION ERROR BOUNDARY ===
 const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <ErrorBoundary
+    <LocalErrorBoundary
       fallback={
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-8">
           <div className="glass-card max-w-md w-full mx-auto p-12 text-center rounded-3xl border-2 border-rose-500/20 shadow-2xl shadow-rose-500/10">
@@ -37,14 +37,14 @@ const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children 
               Emergency Reboot
             </button>
             <p className="text-[11px] strat-label mt-6 text-slate-600">
-              ATLAS v{ENV.VERSION || "3.2.1"}
+              ATLAS v{ENV.APP_VERSION || "3.2.5"}
             </p>
           </div>
         </div>
       }
     >
       {children}
-    </ErrorBoundary>
+    </LocalErrorBoundary>
   );
 };
 
@@ -53,11 +53,18 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Initializing neural core...");
+
     // Simulate service health checks
     const checkServices = async () => {
       await new Promise(resolve => setTimeout(resolve, 1200));
+      if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Services health check passed.");
       setIsReady(true);
-      setTimeout(onReady, 800);
+
+      setTimeout(() => {
+        if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Neural core ready.");
+        onReady();
+      }, 800);
     };
     
     checkServices();
@@ -90,7 +97,7 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
           </h1>
           <div className="flex items-center justify-center gap-2 text-sm font-black uppercase tracking-[0.3em] text-blue-400">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            v{ENV.VERSION || "3.2.1"}
+            v{ENV.APP_VERSION || "3.2.5"}
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           </div>
           <p className="text-xs strat-label text-slate-600 font-mono">Neural Core Initializing</p>
@@ -161,6 +168,34 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
 };
 
 // === PRODUCTION RENDERING ===
+const Root: React.FC = () => {
+  const [showLoader, setShowLoader] = useState(true);
+
+  const handleReady = React.useCallback(() => {
+    if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader signaled ready. Transitioning in 600ms...");
+    setTimeout(() => {
+      if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] Hiding BootLoader, mounting App.");
+      setShowLoader(false);
+    }, 600);
+  }, []);
+
+  return (
+    <React.Fragment>
+      {showLoader ? (
+        <Suspense fallback={null}>
+          <BootLoader onReady={handleReady} />
+        </Suspense>
+      ) : (
+        <AtlasErrorBoundary>
+          <Suspense fallback={<LocalLoader />}>
+            <App />
+          </Suspense>
+        </AtlasErrorBoundary>
+      )}
+    </React.Fragment>
+  );
+};
+
 const initAtlas = async () => {
   const rootElement = document.getElementById("root");
   
@@ -170,42 +205,24 @@ const initAtlas = async () => {
 
   const root = createRoot(rootElement);
 
-  const [showLoader, setShowLoader] = React.useState(true);
-
   // Production performance monitoring
   if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.2.1 BOOT SEQUENCE");
+    console.group("🏛️ ATLAS v3.2.5 BOOT SEQUENCE");
     console.log("• React:", React.version);
     console.log("• Environment:", import.meta.env.MODE);
-    console.log("• TaskBank:", ENV.TASKBANK_SIZE || "92+ objectives");
+    console.log("• App Version:", ENV.APP_VERSION || "3.2.5");
     console.groupEnd();
   }
 
   root.render(
     <React.StrictMode>
-      <React.Fragment>
-        {showLoader ? (
-          <Suspense fallback={null}>
-            <BootLoader 
-              onReady={() => {
-                setTimeout(() => setShowLoader(false), 600);
-              }}
-            />
-          </Suspense>
-        ) : (
-          <AtlasErrorBoundary>
-            <Suspense fallback={<Loader />}>
-              <App />
-            </Suspense>
-          </AtlasErrorBoundary>
-        )}
-      </React.Fragment>
+      <Root />
     </React.StrictMode>
   );
 };
 
 // === ERROR BOUNDARY COMPONENT ===
-const ErrorBoundary: React.FC<{
+const LocalErrorBoundary: React.FC<{
   children: React.ReactNode;
   fallback: React.ReactNode;
 }> = ({ children, fallback }) => {
@@ -229,7 +246,7 @@ const ErrorBoundary: React.FC<{
 };
 
 // === LOADER COMPONENT ===
-const Loader: React.FC = () => (
+const LocalLoader: React.FC = () => (
   <div className="min-h-screen flex items-center justify-center p-8">
     <div className="glass-card p-12 rounded-3xl text-center max-w-sm w-full border-2 border-blue-500/20 shadow-2xl shadow-blue-500/20">
       <div className="loader-spinner mb-8" />
@@ -260,7 +277,7 @@ initAtlas().catch((error) => {
 
 // Remove strict mode warnings in production
 if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.2.1 • Production Build");
+  console.groupCollapsed("🏛️ ATLAS v3.2.5 • Production Build");
   console.log("• Status: Neural core online");
   console.log("• Tasks: 92+ enterprise objectives loaded");
   console.log("• Agents: Strategist + Analyst + Critic ready");

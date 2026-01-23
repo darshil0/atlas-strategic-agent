@@ -27,14 +27,15 @@ function cn(...inputs: ClassValue[]) {
 }
 
 /** Custom node typings */
-type TaskNodeData = {
+interface TaskNodeData {
   task: SubTask;
   isActive: boolean;
   isBlocked: boolean;
   onNodeClick: (id: string) => void;
   isWhatIfEnabled: boolean;
   isInCascade: boolean;
-};
+  [key: string]: unknown;
+}
 
 type TaskNodeType = Node<TaskNodeData, "taskNode">;
 
@@ -261,11 +262,11 @@ const DependencyGraph = ({
     onSimulateFailure,
   ]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes as Node[]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   useEffect(() => {
-    setNodes(initialNodes);
+    setNodes(initialNodes as Node[]);
     setEdges(initialEdges);
   }, [initialNodes, initialEdges, setNodes, setEdges]);
 

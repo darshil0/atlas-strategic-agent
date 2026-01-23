@@ -72,49 +72,69 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 // === ATLAS-SPECIFIC MOCKS ===
+const mockState = {
+  plan: null as any,
+  secrets: {} as Record<string, string>,
+};
+
+vi.mock('@config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@config')>();
+  return {
+    ...actual,
+    ENV: {
+      ...actual.ENV,
+      GEMINI_API_KEY: 'test-api-key-12345',
+      DEBUG_MODE: false,
+    },
+  };
+});
+
+// Mock PersistenceService
+vi.mock('@services/persistenceService', () => ({
+  PersistenceService: {
+    getPlan: vi.fn(() => mockState.plan),
+    savePlan: vi.fn((plan) => { mockState.plan = plan; }),
+    getSecret: vi.fn((key) => mockState.secrets[key]),
+    saveSecret: vi.fn((key, val) => { mockState.secrets[key] = val; }),
+    getMessages: vi.fn().mockReturnValue([]),
+    saveMessages: vi.fn(),
+    getSettings: vi.fn().mockReturnValue({}),
+    saveSettings: vi.fn(),
+    getGithubConfig: vi.fn().mockReturnValue(null),
+    saveGithubConfig: vi.fn(),
+    getJiraConfig: vi.fn().mockReturnValue(null),
+    saveJiraConfig: vi.fn(),
+    saveWorkflow: vi.fn(),
+    getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002 }),
+    clearAll: vi.fn(() => { mockState.plan = null; mockState.secrets = {}; }),
+    getGithubApiKey: vi.fn(),
+    getJiraDomain: vi.fn(),
+    getJiraEmail: vi.fn(),
+    getJiraApiKey: vi.fn(),
+    getGithubOwner: vi.fn(),
+    getGithubRepo: vi.fn(),
+  },
+}));
+
+// Mock sync services
+vi.mock('@services', () => ({
+  githubService: {
+    createIssue: vi.fn().mockResolvedValue({ issueNumber: 123, htmlUrl: 'https://github.com/test' }),
+    syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
+  },
+  jiraService: {
+    createTicket: vi.fn().mockResolvedValue({ success: true, issueKey: 'ATLAS-123' }),
+    syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
+  },
+  syncServices: {
+    syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
+    healthCheck: vi.fn().mockResolvedValue([{ service: 'GitHub', healthy: true }, { service: 'Jira', healthy: true }]),
+  },
+}));
+
 beforeEach(() => {
   // Reset localStorage for each test
   localStorageMock.clear();
-
-  // Mock PersistenceService
-  vi.doMock('@/services/persistenceService', () => ({
-    PersistenceService: {
-      getPlan: vi.fn().mockImplementation(() => {
-        const item = localStorageMock.getItem('atlas_current_plan_v3.2');
-        return item ? JSON.parse(item) : null;
-      }),
-      savePlan: vi.fn().mockImplementation((plan: any) => {
-        if (plan) {
-          localStorageMock.setItem('atlas_current_plan_v3.2', JSON.stringify(plan));
-        }
-      }),
-      getMessages: vi.fn().mockReturnValue([]),
-      saveMessages: vi.fn(),
-      getSettings: vi.fn().mockReturnValue({}),
-      saveSettings: vi.fn(),
-      getGithubConfig: vi.fn().mockReturnValue(null),
-      saveGithubConfig: vi.fn(),
-      getJiraConfig: vi.fn().mockReturnValue(null),
-      saveJiraConfig: vi.fn(),
-      saveWorkflow: vi.fn(),
-    },
-  }));
-
-  // Mock sync services
-  vi.doMock('@/services', () => ({
-    githubService: {
-      createIssue: vi.fn().mockResolvedValue({ issueNumber: 123, htmlUrl: 'https://github.com/test' }),
-      syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
-    },
-    jiraService: {
-      createTicket: vi.fn().mockResolvedValue({ success: true, issueKey: 'ATLAS-123' }),
-      syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
-    },
-    syncServices: {
-      syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
-      healthCheck: vi.fn().mockResolvedValue([{ service: 'GitHub', healthy: true }, { service: 'Jira', healthy: true }]),
-    },
-  }));
 
   // Mock IntersectionObserver for ReactFlow
   const IntersectionObserverMock = vi.fn(() => ({
@@ -149,7 +169,7 @@ global.console = {
 } as any;
 
 // === ATLAS-SPECIFIC TEST UTILITIES ===
-(global as any).ATLAS_TEST_UTILS = {
+export const ATLAS_TEST_UTILS = {
   /**
    * Create mock 2026 Q1 plan for testing
    */
@@ -226,3 +246,5 @@ expect.addSnapshotSerializer({
   test: (val: any) => val?.version === '1.1' && Array.isArray(val.elements),
   serialize: (val: any) => `A2UIMessage(v1.1, ${val.elements.length} elements)`,
 });
+
+(global as any).ATLAS_TEST_UTILS = ATLAS_TEST_UTILS;

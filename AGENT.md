@@ -1,8 +1,8 @@
-# 🤖 Atlas Agent Development Kit (ADK) v3.2.4
+# 🤖 Atlas Agent Development Kit (ADK) v3.2.5
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.5 introduces centralized utilities, improved type safety, and production-ready error handling.
 
 ---
 
@@ -58,6 +58,7 @@ src/lib/adk/
 // src/lib/adk/agents.ts
 export class StrategistAgent extends BaseAgent {
   name = "Strategist";
+  persona = AgentPersona.STRATEGIST;
   
   async execute<R = any>(
     prompt: string,
@@ -108,6 +109,7 @@ export class StrategistAgent extends BaseAgent {
 ```typescript
 export class AnalystAgent extends BaseAgent {
   name = "Analyst";
+  persona = AgentPersona.ANALYST;
   
   async execute<R = any>(
     prompt: string,
@@ -146,6 +148,7 @@ export class AnalystAgent extends BaseAgent {
 ```typescript
 export class CriticAgent extends BaseAgent {
   name = "Critic";
+  persona = AgentPersona.CRITIC;
   
   async execute<R = any>(
     prompt: string,
@@ -272,7 +275,7 @@ export type A2UIElement =
 ```typescript
 // src/lib/adk/uiBuilder.ts
 const ui = new UIBuilder(sessionId)
-  .card("🏛️ MissionControl v3.2.4", "Strategic Synthesis Complete")
+  .card("🏛️ MissionControl v3.2.5", "Strategic Synthesis Complete")
   .progress("Plan Quality", 92)
   .text(`Q1 Critical Path: 8 HIGH priority tasks`)
   .glassButton("Visualize in ReactFlow", "visualize")
@@ -292,7 +295,7 @@ const ui = new UIBuilder(sessionId)
       "id": "card-001",
       "type": "card",
       "props": {
-        "title": "🏛️ MissionControl v3.2.4",
+        "title": "🏛️ MissionControl v3.2.5",
         "subtitle": "Strategic Synthesis Complete",
         "className": "glass-1 backdrop-blur-3xl"
       }
@@ -472,7 +475,7 @@ export const PlanExporter = {
 ```typescript
 // src/config/system.ts
 export const ATLAS_SYSTEM_INSTRUCTION = `
-You are **Atlas v3.2.4**, the Autonomous Strategic Intelligence Orchestrator.
+You are **Atlas v3.2.5**, the Autonomous Strategic Intelligence Orchestrator.
 
 MISSION: Transform C-level strategic goals into executable 2026 quarterly plans
 OUTPUT: JSON-first • ReactFlow-ready • Glassmorphic UI
@@ -765,6 +768,6 @@ For agent-specific questions:
 
 *Powered by Google Gemini 2.0 Flash*
 
-Version 3.2.4 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
+Version 3.2.5 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
 
 </div>

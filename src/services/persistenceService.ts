@@ -16,6 +16,7 @@ const ATLAS_STORAGE_KEYS = {
   MESSAGES: "atlas_messages_v3.2",
   SETTINGS: "atlas_settings_v3.2",
   LAST_SYNC: "atlas_last_sync_v3.2",
+  DEBUG_MODE: "atlas_debug_mode_v3.2",
 
   // GitHub integration (encrypted)
   GITHUB_CONFIG: "github_config_v3.2",
@@ -31,7 +32,6 @@ const ATLAS_STORAGE_KEYS = {
   GITHUB_WORKFLOWS: "github_workflows_v3.2",
 } as const;
 
-type AtlasStorageKey = keyof typeof ATLAS_STORAGE_KEYS;
 
 /**
  * Production persistence layer with validation + quota protection
@@ -158,6 +158,16 @@ export class PersistenceService {
     return this.getSecret(ATLAS_STORAGE_KEYS.GITHUB_API_KEY);
   }
 
+  static saveGithubApiKey(apiKey: string): void {
+    const config = this.getGithubConfig() || { apiKey: "", owner: "", repo: "" };
+    this.saveGithubConfig({
+      ...config,
+      apiKey,
+      owner: config.owner || "",
+      repo: config.repo || ""
+    });
+  }
+
   static getGithubOwner(): string | null {
     try {
       const config = this.getGithubConfig();
@@ -219,6 +229,39 @@ export class PersistenceService {
 
   static getJiraApiKey(): string | null {
     return this.getSecret(ATLAS_STORAGE_KEYS.JIRA_API_KEY);
+  }
+
+  static saveJiraApiKey(apiKey: string): void {
+    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    this.saveJiraConfig({
+      ...config,
+      apiKey,
+      domain: config.domain || "",
+      projectKey: config.projectKey || "",
+      email: config.email || ""
+    });
+  }
+
+  static saveJiraDomain(domain: string): void {
+    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    this.saveJiraConfig({
+      ...config,
+      domain,
+      apiKey: config.apiKey || "",
+      projectKey: config.projectKey || "",
+      email: config.email || ""
+    });
+  }
+
+  static saveJiraEmail(email: string): void {
+    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    this.saveJiraConfig({
+      ...config,
+      email,
+      apiKey: config.apiKey || "",
+      domain: config.domain || "",
+      projectKey: config.projectKey || ""
+    });
   }
 
   static getJiraDomain(): string | null {
@@ -338,6 +381,17 @@ export class PersistenceService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Debug Mode persistence
+   */
+  static saveDebugMode(enabled: boolean): void {
+    localStorage.setItem(ATLAS_STORAGE_KEYS.DEBUG_MODE, enabled ? "true" : "false");
+  }
+
+  static getDebugMode(): boolean {
+    return localStorage.getItem(ATLAS_STORAGE_KEYS.DEBUG_MODE) === "true";
   }
 
   /**

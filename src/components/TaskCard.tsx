@@ -296,11 +296,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   disabled={!!exported?.github}
                   className={cn(
                     "glass-2 group flex flex-col items-center gap-2 p-5 rounded-2xl border transition-all text-sm font-mono font-black backdrop-blur-3xl shadow-xl hover:shadow-2xl",
-                    !!exported?.github
+                    exported?.github
                       ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300 cursor-default shadow-emerald/20"
                       : "border-white/20 hover:border-white/40 hover:bg-white/10 text-slate-300 hover:text-white",
                   )}
-                  whileHover={{ scale: !!exported?.github ? 1 : 1.02 }}
+                  whileHover={{ scale: exported?.github ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   aria-label={`Export to ${exported?.github ? 'GitHub (completed)' : 'GitHub'}`}
                 >
@@ -312,11 +312,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   disabled={!!exported?.jira}
                   className={cn(
                     "glass-2 group flex flex-col items-center gap-2 p-5 rounded-2xl border transition-all text-sm font-mono font-black backdrop-blur-3xl shadow-xl hover:shadow-2xl",
-                    !!exported?.jira
+                    exported?.jira
                       ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300 cursor-default shadow-emerald/20"
                       : "border-white/20 hover:border-white/40 hover:bg-white/10 text-slate-300 hover:text-white",
                   )}
-                  whileHover={{ scale: !!exported?.jira ? 1 : 1.02 }}
+                  whileHover={{ scale: exported?.jira ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   aria-label={`Export to ${exported?.jira ? 'Jira (completed)' : 'Jira'}`}
                 >

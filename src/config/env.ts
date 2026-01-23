@@ -4,7 +4,7 @@
  * Integrates with GitHub/Jira settings, Gemini AI, and your glassmorphic design system.
  */
 
-import { PersistenceService } from "@services/storage.service";
+import { PersistenceService } from "../services/persistenceService";
 
 interface EnvConfig {
   /** Gemini API Key - Powers AI task generation & decomposition */
@@ -30,16 +30,16 @@ const getEnvVar = (key: string): string | undefined => {
   
   // Fallback to PersistenceService for GitHub/Jira (user-configurable)
   if (key === "VITE_GITHUB_TOKEN") {
-    return PersistenceService.getGithubToken();
+    return PersistenceService.getGithubApiKey() ?? undefined;
   }
   if (key === "VITE_JIRA_DOMAIN") {
-    return PersistenceService.getJiraDomain();
+    return PersistenceService.getJiraDomain() ?? undefined;
   }
   if (key === "VITE_JIRA_EMAIL") {
-    return PersistenceService.getJiraEmail();
+    return PersistenceService.getJiraEmail() ?? undefined;
   }
   if (key === "VITE_JIRA_TOKEN") {
-    return PersistenceService.getJiraToken();
+    return PersistenceService.getJiraApiKey() ?? undefined;
   }
   
   return undefined;
@@ -55,7 +55,7 @@ export const ENV: EnvConfig = {
   JIRA_EMAIL: getEnvVar("VITE_JIRA_EMAIL"),
   JIRA_TOKEN: getEnvVar("VITE_JIRA_TOKEN"),
   DEBUG_MODE: getEnvVar("VITE_DEBUG_MODE") === "true",
-  APP_VERSION: getEnvVar("VITE_APP_VERSION") ?? "3.2.1",
+  APP_VERSION: getEnvVar("VITE_APP_VERSION") ?? "3.2.4",
   APP_NAME: "Atlas AI Planner",
 } as const;
 
@@ -119,7 +119,7 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 # DEVELOPMENT
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.2.1
+VITE_APP_VERSION=3.2.4
 
 # SECURITY: VITE_* vars visible in browser DevTools
 # Production: Use backend proxy for secrets

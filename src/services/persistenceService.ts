@@ -1,5 +1,5 @@
 /**
- * Atlas Persistence Service (v3.2.3) - Glassmorphic Enterprise Storage
+ * Atlas Persistence Service (v3.2.4) - Glassmorphic Enterprise Storage
  * Type-safe localStorage wrapper with quota management + API key encryption
  * Powers MissionControl state + GitHub/Jira sync + ReactFlow persistence
  * 
@@ -403,11 +403,11 @@ export class PersistenceService {
     }
   }
 
-  private static saveSecret(key: AtlasStorageKey, value: string): void {
+  private static saveSecret(key: string, value: string): void {
     localStorage.setItem(key, this.encrypt(value));
   }
 
-  private static getSecret(key: AtlasStorageKey): string | null {
+  private static getSecret(key: string): string | null {
     try {
       const encrypted = localStorage.getItem(key);
       return encrypted ? this.decrypt(encrypted) : null;

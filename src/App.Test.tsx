@@ -1,5 +1,5 @@
 /**
- * Atlas App Component Tests (v3.2.3) - Glassmorphic E2E Integration
+ * Atlas App Component Tests (v3.2.4) - Glassmorphic E2E Integration
  * Production React Testing Library suite for MissionControl dashboard
  */
 
@@ -60,7 +60,7 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
   it("renders glassmorphic Atlas branding", () => {
     render(<App />);
     expect(screen.getByText(/ATLAS STRATEGIC/i)).toBeInTheDocument();
-    expect(screen.getByText(/V3.2.3/i)).toBeInTheDocument();
+    expect(screen.getByText(/V1\.0\.0/i)).toBeInTheDocument();
   });
 
   it("handles strategic directive input", async () => {

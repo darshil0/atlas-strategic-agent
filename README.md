@@ -24,13 +24,15 @@
 
 ## 🗂️ The Multi-Agent Engine
 
-Atlas facilitates **collaborative synthesis** between specialized AI agents:
+Atlas facilitates **collaborative synthesis** between specialized AI agents. For detailed architecture and API documentation, see **[AGENT.md](./AGENT.md)**.
 
 | Agent | Role | Output |
 |-------|------|--------|
 | **🎙️ The Strategist** | Decomposes "North Star" goals into Q1-Q4 2026 workstreams | Strategic milestones with dependencies |
 | **🔬 The Analyst** | Performs feasibility scoring and TASK_BANK alignment | Risk assessments and capacity analysis |
 | **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
+
+**Learn More**: Read the complete [Agent Development Kit documentation](./AGENT.md) for implementation details, API reference, and customization guides.
 
 ---
 
@@ -282,9 +284,10 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ## 📚 Documentation
 
+- **[Agent Development Kit (ADK)](./AGENT.md)** - Multi-agent architecture and API reference
 - [Changelog](./CHANGELOG.md) - Version history and release notes
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
-- [API Documentation](https://docs.google.dev/gemini-api) - Gemini 2.0 Flash docs
+- [Gemini API Documentation](https://docs.google.dev/gemini-api) - Gemini 2.0 Flash docs
 
 ---
 

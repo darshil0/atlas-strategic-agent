@@ -1,4 +1,4 @@
-# 🧠 Atlas Strategic Agent: A Technical Deep Dive
+# 🧠 Atlas Strategic Agent v3.2.5: A Technical Deep Dive
 
 ## What You're Actually Looking At
 
@@ -11,6 +11,13 @@ It's not just another project management tool. It's an AI-powered reality check 
 - **The Strategist**: The visionary who breaks down your moonshot into digestible chunks
 - **The Analyst**: The pragmatist who asks "but can I actually do this?"
 - **The Critic**: The pessimist who finds every hole in your plan before reality does
+
+## v3.2.5 Update: Hardening the Foundation
+*Added January 2026*
+
+As we moved from prototype to production with v3.2.5, we faced a new challenge: **Code Sprawl**. Our `utility-first` approach with Tailwind led to duplicate logic across 30+ components.
+
+**The Fix**: We introduced a centralized `src/lib/utils.ts` and enforced strict type safety across the Agent Development Kit (ADK). No more `any` types. No more duplicate class mergers. Just clean, predictable, type-safe code.
 
 ## The "Aha!" Moment That Started Everything
 

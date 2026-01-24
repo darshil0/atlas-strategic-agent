@@ -37,6 +37,7 @@ This release focuses on centralized utilities, improved code organization, and a
 
 ### Changed
 - **Branding**: Updated internal versioning to `v3.2.5` across all dashboard elements.
+- **Codebase**: Refactored `App.tsx` by extracting `Sidebar` component to reduce cognitive load and improve maintainability.
 
 ---
 

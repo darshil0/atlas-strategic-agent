@@ -22,6 +22,8 @@ afterEach(() => {
 });
 
 // === BROWSER ENVIRONMENT MOCKS ===
+Element.prototype.scrollIntoView = vi.fn();
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
@@ -202,7 +204,7 @@ export const ATLAS_TEST_UTILS = {
    * Mock MissionControl response
    */
   mockMissionControlResponse: (): any => ({
-    text: '🏛️ ATLAS v1.0.0 SYNTHESIS COMPLETE\nQuality Score: 92/100',
+    text: '🏛️ ATLAS v3.2.5 SYNTHESIS COMPLETE\nQuality Score: 92/100',
     validation: {
       iterations: 2,
       finalScore: 92,

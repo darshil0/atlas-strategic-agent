@@ -404,7 +404,7 @@ const taskBank = {
 
 Vitest is Jest but faster and better integrated with Vite. Our test suite runs in ~2 seconds. Jest used to take 30 seconds.
 
-**The Coverage Requirements**: 80% across all metrics. Not 79%. Not "mostly covered." **80%**.
+**The Coverage Requirements**: 85% across all metrics. Not 79%. Not "mostly covered." **85%**.
 
 ```bash
 npm run coverage

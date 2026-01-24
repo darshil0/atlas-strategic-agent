@@ -595,7 +595,7 @@ describe("🏛️ ATLAS ADK Integration", () => {
 
 ### Coverage Requirements
 
-All ADK modules maintain **80%+ coverage**:
+All ADK modules maintain **85%+ coverage**:
 
 ```bash
 npm run coverage

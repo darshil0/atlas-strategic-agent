@@ -209,12 +209,12 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 
 ### Coverage Requirements
 
-All contributions must maintain or improve the **80% coverage threshold**:
+All contributions must maintain or improve the **85% coverage threshold**:
 
-- **Lines**: 80%
-- **Functions**: 80%
-- **Branches**: 80%
-- **Statements**: 80%
+- **Lines**: 85%
+- **Functions**: 85%
+- **Branches**: 85%
+- **Statements**: 85%
 
 ### Writing Tests
 
@@ -330,7 +330,7 @@ Added troubleshooting section for common setup issues.
 - [ ] Tests pass locally (`npm test`)
 - [ ] Linting passes (`npm run lint`)
 - [ ] Type checking passes (`npm run type-check`)
-- [ ] Coverage meets 80% threshold
+- [ ] Coverage meets 85% threshold
 - [ ] Documentation is updated
 - [ ] Commit messages follow guidelines
 - [ ] Branch is up-to-date with main

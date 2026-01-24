@@ -98,7 +98,7 @@ npm run type-check       # TypeScript strict type checking
 # Testing
 npm test                 # Run test suite with Vitest
 npm run test:ui          # Open Vitest UI dashboard
-npm run coverage         # Generate coverage report (80% threshold)
+npm run coverage         # Generate coverage report (85% threshold)
 ```
 
 ### Code Quality Standards
@@ -106,7 +106,7 @@ npm run coverage         # Generate coverage report (80% threshold)
 - **TypeScript** - Strict mode with comprehensive type safety
 - **ESLint** - Modern flat config with TypeScript integration
 - **Prettier** - Automated formatting (80 char width, 2 space tabs)
-- **Vitest** - 80% coverage requirement across all metrics
+- **Vitest** - 85% coverage requirement across all metrics
 - **React Testing Library** - Component integration tests
 
 ---
@@ -246,7 +246,7 @@ Atlas uses a custom glassmorphic design system:
 
 ## 🧪 Testing
 
-Atlas maintains 80% test coverage across all metrics:
+Atlas maintains 85% test coverage across all metrics:
 
 ```bash
 # Run tests with coverage
@@ -261,10 +261,10 @@ npm run test:ui
 
 ### Test Coverage Requirements
 
-- **Lines**: 80%
-- **Functions**: 80%
-- **Branches**: 80%
-- **Statements**: 80%
+- **Lines**: 85%
+- **Functions**: 85%
+- **Branches**: 85%
+- **Statements**: 85%
 
 ---
 

@@ -122,6 +122,8 @@ atlas-strategic-agent/
 │   │   ├── TimelineView.tsx     # Quarterly timeline
 │   │   ├── TaskBank.tsx         # 90+ objective library
 │   │   ├── SettingsModal.tsx    # GitHub/Jira configuration
+│   │   ├── SettingsModal.tsx    # GitHub/Jira configuration
+│   │   ├── Sidebar.tsx          # Navigation & View Switcher
 │   │   └── a2ui/               # A2UI Protocol renderer
 │   ├── config/                  # Centralized Configuration
 │   │   ├── env.ts              # Environment validation

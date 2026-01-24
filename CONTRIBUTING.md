@@ -500,7 +500,7 @@ atlas-strategic-agent/
 │   └── test/               # Test infrastructure
 │       ├── setup.ts
 │       └── smoke.test.ts
-├── docs/                   # Additional documentation
+├── docs/                   # Project documentation
 ├── public/                 # Static assets
 └── [config files]          # Build and dev configs
 ```

@@ -153,11 +153,11 @@ atlas-strategic-agent/
 │   ├── index.tsx                # React 19 root renderer
 │   └── global.d.ts              # Global type declarations
 ├── public/                      # Static Assets
+├── docs/                        # Project Documentation
 ├── .env.example                 # Environment template
 ├── vite.config.ts               # Vite 7.3 configuration
 ├── vitest.config.ts             # Test configuration
 ├── tsconfig.json                # TypeScript compiler options
-├── tailwind.config.ts           # Tailwind CSS 4.1 customization
 ├── eslint.config.js             # ESLint flat config
 ├── postcss.config.cjs           # PostCSS + Tailwind
 └── package.json                 # Dependencies and scripts

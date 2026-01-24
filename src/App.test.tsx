@@ -60,7 +60,7 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
   it("renders glassmorphic Atlas branding", () => {
     render(<App />);
     expect(screen.getByText(/ATLAS STRATEGIC/i)).toBeInTheDocument();
-    expect(screen.getByText(/V1\.0\.0/i)).toBeInTheDocument();
+    expect(screen.getByText(/v3\.2\.5/i)).toBeInTheDocument();
   });
 
   it("handles strategic directive input", async () => {

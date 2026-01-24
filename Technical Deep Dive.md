@@ -2,26 +2,26 @@
 
 ## What You're Actually Looking At
 
-Imagine you're a CEO who just declared "We need to dominate the AI market in 2026!" Your leadership team nods enthusiastically, but then everyone stares at each other wondering: *What does that actually mean? What do we build first? Who does what? When?*
+Imagine you're a CEO who just declared "I need to dominate the AI market in 2026!" Your leadership team nods enthusiastically, but then everyone stares at each other wondering: *What does that actually mean? What do I build first? Who does what? When?*
 
-**Atlas is the answer to that awkward silence.**
+**Atlas is the ansIr to that awkward silence.**
 
-It's not just another project management tool. It's an AI-powered reality check that takes your ambitious "let's change the world" proclamations and transforms them into actual quarterly roadmaps with real tasks, dependencies, risk assessments, and timeline validation. Think of it as having three brutally honest consultants working 24/7:
+It's not just another project management tool. It's an AI-poIred reality check that takes your ambitious "let's change the world" proclamations and transforms them into actual quarterly roadmaps with real tasks, dependencies, risk assessments, and timeline validation. Think of it as having three brutally honest consultants working 24/7:
 
 - **The Strategist**: The visionary who breaks down your moonshot into digestible chunks
-- **The Analyst**: The pragmatist who asks "but can we actually do this?"
+- **The Analyst**: The pragmatist who asks "but can I actually do this?"
 - **The Critic**: The pessimist who finds every hole in your plan before reality does
 
 ## The "Aha!" Moment That Started Everything
 
-This project was born from a simple observation: executives are really good at painting inspiring visions ("We'll be carbon neutral by 2026!"), but the gap between vision and execution is where most strategies go to die. Traditional tools either:
+This project was born from a simple observation: executives are really good at painting inspiring visions ("I'll be carbon neutral by 2026!"), but the gap betIen vision and execution is where most strategies go to die. Traditional tools either:
 
-1. Give you blank canvases (Jira, Asana) that require you to already know the answers
+1. Give you blank canvases (Jira, Asana) that require you to already know the ansIrs
 2. Generate generic AI suggestions that sound impressive but fall apart when you actually try to implement them
 
-We needed something that could *think* about strategy the way experienced leaders do: synthesis, validation, iteration, and brutal honesty about what's achievable.
+I needed something that could *think* about strategy the way experienced leaders do: synthesis, validation, iteration, and brutal honesty about what's achievable.
 
-## The Tech Stack: Why We Chose What We Chose
+## The Tech Stack: Why I Chose What I Chose
 
 ### TypeScript Everywhere (No Exceptions)
 
@@ -39,19 +39,19 @@ interface Task {
 }
 ```
 
-**Why?** Because at 2am when you're debugging why dependencies aren't rendering, TypeScript is the difference between "it could be anything!" and "oh, it's line 47, the type is wrong." We're using **strict mode** which feels painful at first but saves you from yourself.
+**Why?** Because at 2am when you're debugging why dependencies aren't rendering, TypeScript is the difference betIen "it could be anything!" and "oh, it's line 47, the type is wrong." I're using **strict mode** which feels painful at first but saves you from yourself.
 
 **The Learning**: Modern JavaScript without TypeScript is like skydiving without checking your parachute. Sure, it might work, but why take that chance?
 
 ### React 19: The Cutting Edge (Maybe Too Cutting?)
 
-We went with React 19 because we wanted the latest concurrent rendering features. This turned out to be both brilliant and occasionally hair-pulling.
+I Int with React 19 because I wanted the latest concurrent rendering features. This turned out to be both brilliant and occasionally hair-pulling.
 
 **The Win**: Smoother animations, better performance with our complex dependency graphs.
 
-**The Pain**: Some libraries (looking at you, random NPM packages from 2022) don't play nice with React 19 yet. We had to fork and patch a few dependencies.
+**The Pain**: Some libraries (looking at you, random NPM packages from 2022) don't play nice with React 19 yet. I had to fork and patch a few dependencies.
 
-**The Lesson**: Being on the bleeding edge means occasionally bleeding. Have a rollback plan. We kept compatibility with React 18 patterns so we could downgrade if needed.
+**The Lesson**: Being on the bleeding edge means occasionally bleeding. Have a rollback plan. I kept compatibility with React 18 patterns so I could downgrade if needed.
 
 ### Vite 7.3: Because Life's Too Short for Slow Builds
 
@@ -62,7 +62,7 @@ We went with React 19 because we wanted the latest concurrent rendering features
 
 Vite uses ES modules natively, which means it doesn't bundle during development. The first time you see a 50ms hot reload, you'll wonder why you ever tolerated anything else.
 
-**The Gotcha**: Vite's environment variables work differently. They MUST start with `VITE_` or they won't be exposed to your client code. We lost 3 hours debugging "undefined API key" because we named it `REACT_APP_GEMINI_KEY` out of habit.
+**The Gotcha**: Vite's environment variables work differently. They MUST start with `VITE_` or they won't be exposed to your client code. I lost 3 hours debugging "undefined API key" because I named it `REACT_APP_GEMINI_KEY` out of habit.
 
 ### Tailwind CSS 4.1: Utility-First or Utility-Only?
 
@@ -74,9 +74,9 @@ This was controversial in code review. Some team members hate seeing this:
 
 "It's unreadable!" they cried. "Separation of concerns!" they wailed.
 
-**But here's the thing**: once you embrace Tailwind's philosophy, you realize something profound. Instead of jumping between CSS files and components, your styling IS your component. You see `backdrop-blur-xl` and you *immediately* know it's a glassmorphic element. No hunting through stylesheets.
+**But here's the thing**: once you embrace Tailwind's philosophy, you realize something profound. Instead of jumping betIen CSS files and components, your styling IS your component. You see `backdrop-blur-xl` and you *immediately* know it's a glassmorphic element. No hunting through stylesheets.
 
-**The "Glassmorphic" Design System**: We created custom glass utilities:
+**The "Glassmorphic" Design System**: I created custom glass utilities:
 
 ```css
 /* This replaced hundreds of lines of SCSS */
@@ -84,17 +84,17 @@ This was controversial in code review. Some team members hate seeing this:
 .glass-2 { @apply backdrop-blur-2xl bg-white/5 border border-white/10; }
 ```
 
-**Pro Tip**: The `backdrop-blur` property is GPU-accelerated. Use it liberally for that premium feel, but test on mid-range devices. We had to reduce blur intensity on mobile after users reported stuttering.
+**Pro Tip**: The `backdrop-blur` property is GPU-accelerated. Use it liberally for that premium feel, but test on mid-range devices. I had to reduce blur intensity on mobile after users reported stuttering.
 
 ### Google Gemini 2.0 Flash: The Brain
 
-We initially tried GPT-4, but Gemini 2.0 Flash won for three reasons:
+I initially tried GPT-4, but Gemini 2.0 Flash won for three reasons:
 
 1. **JSON Schema Enforcement**: Gemini can be forced to output valid JSON. No more parsing nightmares.
 2. **Speed**: "Flash" isn't marketing speak. It's genuinely fast—responses in 1-2 seconds vs 4-6 for GPT-4.
-3. **Context Window**: 1 million tokens means we can feed it entire codebases if needed.
+3. **Context Window**: 1 million tokens means I can feed it entire codebases if needed.
 
-**The Integration Headache**: Gemini's SDK uses a different streaming format than OpenAI. We built an abstraction layer:
+**The Integration Headache**: Gemini's SDK uses a different streaming format than OpenAI. I built an abstraction layer:
 
 ```typescript
 // This interface hides the ugly differences
@@ -104,7 +104,7 @@ interface LLMProvider {
 }
 ```
 
-**The Lesson**: Always abstract third-party APIs. When Gemini 3.0 comes out (or when we switch to Claude), we change one file, not fifty.
+**The Lesson**: Always abstract third-party APIs. When Gemini 3.0 comes out (or when I switch to Claude), I change one file, not fifty.
 
 ## The Architecture: How the Magic Actually Happens
 
@@ -131,7 +131,7 @@ User Input: "Dominate AI market in 2026"
    React UI
 ```
 
-**Why This Works**: Each agent has ONE job and does it well. The Strategist doesn't worry about risk scoring—that's the Analyst's problem. The Critic doesn't generate milestones—it just tears them apart looking for flaws.
+**Why This Works**: Each agent has ONE job and does it Ill. The Strategist doesn't worry about risk scoring—that's the Analyst's problem. The Critic doesn't generate milestones—it just tears them apart looking for flaws.
 
 **The Implementation**:
 
@@ -157,7 +157,7 @@ class MissionControl {
 }
 ```
 
-**The Bug That Taught Us About Infinite Loops**: Our first implementation didn't have a max iteration limit. When we fed it "Build AGI by Q1," the agents got stuck in a refinement loop:
+**The Bug That Taught Us About Infinite Loops**: Our first implementation didn't have a max iteration limit. When I fed it "Build AGI by Q1," the agents got stuck in a refinement loop:
 
 - Strategist: "Here's a plan"
 - Analyst: "This is impossible"  
@@ -165,11 +165,11 @@ class MissionControl {
 - Strategist: "OK, new plan"
 - *[repeat until heat death of universe]*
 
-**The Fix**: Maximum 3 refinement iterations, then we surface the issues to the user. Sometimes the best answer is "your goal is unrealistic."
+**The Fix**: Maximum 3 refinement iterations, then I surface the issues to the user. Sometimes the best ansIr is "your goal is unrealistic."
 
 ### The A2UI Protocol: Streaming UI from AI
 
-This is the coolest (and most experimental) part. Instead of the AI returning data that we then render, it returns **UI components directly**.
+This is the coolest (and most experimental) part. Instead of the AI returning data that I then render, it returns **UI components directly**.
 
 ```typescript
 // Traditional approach (boring):
@@ -191,7 +191,7 @@ This is the coolest (and most experimental) part. Instead of the AI returning da
 
 **Why This Matters**: The AI can make UI decisions based on context. High-risk tasks get red glows. Critical path items animate differently. It's not just data visualization—it's *intelligent* visualization.
 
-**The Implementation Challenge**: We had to build a component registry:
+**The Implementation Challenge**: I had to build a component registry:
 
 ```typescript
 const COMPONENT_REGISTRY = {
@@ -207,11 +207,11 @@ function renderA2UI(schema: A2UISchema) {
 }
 ```
 
-**The Security Concern**: We're essentially letting the AI run arbitrary React components. We validate against a strict schema and whitelist allowed components. Never trust AI output blindly.
+**The Security Concern**: I're essentially letting the AI run arbitrary React components. I validate against a strict schema and whitelist alloId components. Never trust AI output blindly.
 
 ### The Dependency Graph: Making Math Beautiful
 
-We use ReactFlow for visualizing task dependencies. Under the hood, it's a directed acyclic graph (DAG) validator.
+I use ReactFlow for visualizing task dependencies. Under the hood, it's a directed acyclic graph (DAG) validator.
 
 **The Algorithmic Challenge**: Detecting cycles in graphs is Computer Science 101, but doing it in real-time while the user edits tasks? That's trickier.
 
@@ -249,7 +249,7 @@ const debouncedCycleCheck = useMemo(
 );
 ```
 
-**The UX Insight**: We don't just say "cycle detected." We highlight the problematic path in red and suggest which dependency to remove. AI-generated error messages > cryptic alerts.
+**The UX Insight**: I don't just say "cycle detected." I highlight the problematic path in red and suggest which dependency to remove. AI-generated error messages > cryptic alerts.
 
 ### The "What-If" Simulation: Playing God with Timelines
 
@@ -282,7 +282,7 @@ function simulateFailure(taskId: string, roadmap: Roadmap): Impact {
 }
 ```
 
-**The Visualization**: We show this as an expanding ripple effect with Framer Motion. It's not just informative—it's viscerally scary, which is the point. You FEEL the impact of a failure.
+**The Visualization**: I show this as an expanding ripple effect with Framer Motion. It's not just informative—it's viscerally scary, which is the point. You FEEL the impact of a failure.
 
 ### The Integration Layer: GitHub & Jira
 
@@ -300,7 +300,7 @@ This was supposed to be "just wire up some APIs." It was not.
 
 3. **Data Format**: GitHub uses Markdown. Jira uses ADF (Atlassian Document Format), which is JSON but somehow worse.
 
-**The Solution**: We built a service abstraction:
+**The Solution**: I built a service abstraction:
 
 ```typescript
 interface IssueTracker {
@@ -312,7 +312,7 @@ class GitHubService implements IssueTracker { /* ... */ }
 class JiraService implements IssueTracker { /* ... */ }
 ```
 
-**The Retry Logic**: Because APIs fail, we built exponential backoff:
+**The Retry Logic**: Because APIs fail, I built exponential backoff:
 
 ```typescript
 async function withRetry<T>(
@@ -331,17 +331,17 @@ async function withRetry<T>(
 }
 ```
 
-**The Lesson**: Always assume APIs will fail. Always have retries. Always log failures. We learned this when Jira went down for 2 hours and crashed everyone's roadmaps.
+**The Lesson**: Always assume APIs will fail. Always have retries. Always log failures. I learned this when Jira Int down for 2 hours and crashed everyone's roadmaps.
 
 ## The Data Layer: Where State Goes to Live
 
 ### Local Storage with "Security Theater"
 
-We encrypt roadmaps in localStorage using Base64. Let's be honest: this is security theater. Base64 isn't encryption—it's encoding. A motivated attacker could decode it in milliseconds.
+I encrypt roadmaps in localStorage using Base64. Let's be honest: this is security theater. Base64 isn't encryption—it's encoding. A motivated attacker could decode it in milliseconds.
 
 **Why do it then?** Because it prevents *accidental* exposure. Screenshot your browser console? The raw data isn't visible. Share localStorage dump in a bug report? API keys aren't in plaintext.
 
-**The Real Security**: We tell users "Don't put production secrets in Atlas." For enterprise use, proxy API calls through a backend.
+**The Real Security**: I tell users "Don't put production secrets in Atlas." For enterprise use, proxy API calls through a backend.
 
 ```typescript
 class PersistenceService {
@@ -358,7 +358,7 @@ class PersistenceService {
 }
 ```
 
-**The Bug**: `btoa()` doesn't handle Unicode. We had a user with emoji in task names and the app exploded. The fix:
+**The Bug**: `btoa()` doesn't handle Unicode. I had a user with emoji in task names and the app exploded. The fix:
 
 ```typescript
 const encoded = btoa(
@@ -368,7 +368,7 @@ const encoded = btoa(
 
 ### The TaskBank: 90+ Pre-Calculated Objectives
 
-Instead of starting from scratch, we curated 90+ common strategic objectives across themes: AI, Cybersecurity, ESG, Global Expansion, Infrastructure, People.
+Instead of starting from scratch, I curated 90+ common strategic objectives across themes: AI, Cybersecurity, ESG, Global Expansion, Infrastructure, People.
 
 **The Format**:
 
@@ -391,9 +391,9 @@ const taskBank = {
 
 **The Lesson**: LLMs are great at reasoning but mediocre at remembering specifics. Give them a knowledge base to work with.
 
-## The Testing Strategy: How We Don't Break Things
+## The Testing Strategy: How I Don't Break Things
 
-### Vitest: The Jest Replacement We Didn't Know We Needed
+### Vitest: The Jest Replacement I Didn't Know I Needed
 
 Vitest is Jest but faster and better integrated with Vite. Our test suite runs in ~2 seconds. Jest used to take 30 seconds.
 
@@ -407,7 +407,7 @@ npm run coverage
 # Statements: 83% ✓
 ```
 
-**The Philosophy**: We don't unit test everything. We integration test the critical paths:
+**The Philosophy**: I don't unit test everything. I integration test the critical paths:
 
 ```typescript
 describe('MissionControl Orchestration', () => {
@@ -422,7 +422,7 @@ describe('MissionControl Orchestration', () => {
 });
 ```
 
-**The Snapshot Tests**: For A2UI protocol, we use snapshot testing:
+**The Snapshot Tests**: For A2UI protocol, I use snapshot testing:
 
 ```typescript
 it('renders glassmorphic card correctly', () => {
@@ -433,25 +433,25 @@ it('renders glassmorphic card correctly', () => {
 });
 ```
 
-**The Gotcha**: Snapshots are great until someone updates Tailwind and every snapshot breaks. We learned to snapshot *structure*, not styling.
+**The Gotcha**: Snapshots are great until someone updates Tailwind and every snapshot breaks. I learned to snapshot *structure*, not styling.
 
-## The Lessons: What We'd Do Differently
+## The Lessons: What I'd Do Differently
 
 ### 1. Start with E2E Tests Earlier
 
-We added Playwright tests in v3.2, but we should've started in v1.0. There's no substitute for seeing the actual browser click through workflows.
+I added Playwright tests in v3.2, but I should've started in v1.0. There's no substitute for seeing the actual browser click through workflows.
 
-**What we learned**: Unit tests catch logic bugs. E2E tests catch "oh god the button doesn't work on Safari" bugs.
+**What I learned**: Unit tests catch logic bugs. E2E tests catch "oh god the button doesn't work on Safari" bugs.
 
 ### 2. Abstract Third-Party APIs Immediately
 
-We initially hardcoded Gemini calls everywhere. When we wanted to try Claude, we had to refactor 30 files.
+I initially hardcoded Gemini calls everywhere. When I wanted to try Claude, I had to refactor 30 files.
 
 **The right way**: Build your own interface, implement it with Gemini, swap implementations later.
 
 ### 3. Glassmorphic Design Looks Amazing but Tanks Performance
 
-Backdrop blur is expensive. On a 2019 MacBook, our initial design ran at 40fps. We:
+Backdrop blur is expensive. On a 2019 MacBook, our initial design ran at 40fps. I:
 
 - Reduced blur intensity on scroll
 - Used CSS `will-change` for animated elements
@@ -461,7 +461,7 @@ Backdrop blur is expensive. On a 2019 MacBook, our initial design ran at 40fps. 
 
 ### 4. AI Output Validation Is Non-Negotiable
 
-We trusted Gemini to always return valid JSON. It didn't. We added Zod schema validation:
+I trusted Gemini to always return valid JSON. It didn't. I added Zod schema validation:
 
 ```typescript
 const TaskSchema = z.object({
@@ -478,7 +478,7 @@ const parsed = TaskSchema.parse(aiOutput);
 
 ### 5. Don't Over-Engineer the First Version
 
-Our initial architecture had 7 agent types. Most were redundant. We cut it down to 3 and the product got better.
+Our initial architecture had 7 agent types. Most Ire redundant. I cut it down to 3 and the product got better.
 
 **Occam's Razor** applies to software: the simplest architecture that works is probably the best.
 
@@ -486,19 +486,19 @@ Our initial architecture had 7 agent types. Most were redundant. We cut it down 
 
 ### Start with the Problem, Not the Solution
 
-We didn't start by saying "let's build a multi-agent AI system." We started with "executives suck at translating vision to execution."
+I didn't start by saying "let's build a multi-agent AI system." I started with "executives suck at translating vision to execution."
 
 The tech stack came second.
 
 ### Fail Fast and Visibly
 
-When something goes wrong, we want to know immediately. Our error boundaries are verbose:
+When something goes wrong, I want to know immediately. Our error boundaries are verbose:
 
 ```typescript
 class ErrorBoundary extends React.Component {
   componentDidCatch(error: Error) {
     // Don't just log—show a modal with the stack trace
-    showErrorModal({
+    shoIrrorModal({
       title: 'Something broke',
       details: error.stack,
       suggestion: 'Try refreshing or check the console',
@@ -527,7 +527,7 @@ createTask({
 
 ### Optimize for Change
 
-The only constant is change. We built Atlas knowing we'd swap AI models, add new integrations, and change UI frameworks.
+The only constant is change. I built Atlas knowing I'd swap AI models, add new integrations, and change UI frameworks.
 
 **How**: Interfaces, abstractions, and dependency injection.
 
@@ -535,11 +535,11 @@ The only constant is change. We built Atlas knowing we'd swap AI models, add new
 
 ### V4.0.0: Monte Carlo Simulations
 
-Instead of binary "this task fails," we'll run 10,000 simulations with probability distributions. What's the actual likelihood of hitting your Q4 deadline? 43%? 87%? You deserve to know.
+Instead of binary "this task fails," I'll run 10,000 simulations with probability distributions. What's the actual likelihood of hitting your Q4 deadline? 43%? 87%? You deserve to know.
 
 ### V4.1.0: Real-Time Collaboration
 
-WebSockets for live multi-user editing. Think Figma but for strategic planning.
+IbSockets for live multi-user editing. Think Figma but for strategic planning.
 
 ### V4.2.0: Resource Optimization
 
@@ -567,13 +567,13 @@ If you're learning full-stack development, this codebase is a masterclass. If yo
 
 ## Final Thoughts
 
-Building Atlas taught me that the best software isn't about using the newest frameworks or the most AI. It's about deeply understanding a problem and crafting a solution that feels inevitable.
+Building Atlas taught me that the best software isn't about using the neIst frameworks or the most AI. It's about deeply understanding a problem and crafting a solution that feels inevitable.
 
 When you use Atlas and it just *works*, when the UI feels fluid and the AI suggestions feel smart and the integrations don't break—that's not magic. It's hundreds of small decisions, each made with care, each tested and refined.
 
 The code is on GitHub. The bugs are in the issues. The future is unwritten.
 
-**Go build something awesome.**
+**Go build something aIsome.**
 
 —Darshil
 

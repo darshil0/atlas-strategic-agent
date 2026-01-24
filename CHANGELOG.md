@@ -21,6 +21,10 @@ This release focuses on centralized utilities, improved code organization, and a
   - Fixed missing `motion` imports in `src/config/ui.tsx`.
   - Corrected versioning inconsistencies in the header and metadata.
 - **Production Safety**: Enhanced `A2UIRenderer` event handling with logging and validation.
+- **Documentation**:
+  - Restored readable text in "Technical Deep Dive" by fixing global find-replace errors.
+  - Updated directory structure in contributing guidelines to match source.
+  - Added navigation links to technical documentation in README.
 
 ### Changed
 - **Branding**: Updated internal versioning to `v3.2.5` across all dashboard elements.

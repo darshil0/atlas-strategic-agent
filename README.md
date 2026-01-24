@@ -137,6 +137,7 @@ atlas-strategic-agent/
 │   │       ├── protocol.ts     # A2UI v1.1 protocol
 │   │       ├── uiBuilder.ts    # Fluent UI builder
 │   │       └── exporter.ts     # Mermaid/JSON export
+│   │   └── utils.ts            # Centralized utilities (cn)
 │   ├── services/                # External Services
 │   │   ├── geminiService.ts    # Gemini 2.0 Flash integration
 │   │   ├── githubService.ts    # GitHub Issues API v3
@@ -289,7 +290,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 - **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post and architectural decisions
 - [Changelog](./CHANGELOG.md) - Version history and release notes
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
-- [Gemini API Documentation](https://docs.google.dev/gemini-api) - Gemini 2.0 Flash docs
+- [Gemini API Documentation](https://ai.google.dev/gemini-api/docs) - Gemini 2.0 Flash docs
 
 ---
 

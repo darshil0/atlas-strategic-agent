@@ -386,9 +386,12 @@ const App: React.FC = () => {
                   "Draft a 6G infrastructure shift for APAC market",
                   "Create sustainable ESG reporting for manufacturing"
                 ].map((prompt, i) => (
-                  <button
+                  <motion.button
                     key={i}
                     onClick={() => handleSend(prompt)}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 * i, type: "spring" }}
                     className="group p-6 glass-2 rounded-3xl border border-white/5 hover:border-white/20 text-left transition-all hover:bg-white/5 active:scale-95 shadow-xl hover:shadow-2xl"
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -398,7 +401,7 @@ const App: React.FC = () => {
                     <span className="text-sm font-medium text-slate-400 group-hover:text-slate-200 transition-colors">
                       {prompt}
                     </span>
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -467,7 +470,13 @@ const App: React.FC = () => {
                     ))}
                   </div>
                   <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-slate-600">
-                    Synthesizing Strategic Response...
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                      Synthesizing Strategic Response...
+                    </motion.span>
                   </span>
                 </div>
               )}
@@ -479,7 +488,7 @@ const App: React.FC = () => {
         <div className="p-12 bg-gradient-to-t from-slate-950 via-slate-950 to-transparent">
           <div className="max-w-4xl mx-auto relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-atlas-blue/20 to-purple-500/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-[3rem]" />
-            <div className="relative glass-2 rounded-[2.5rem] border border-white/10 p-4 flex items-center gap-4 shadow-2xl focus-within:border-atlas-blue/40 transition-all backdrop-blur-3xl">
+            <div className="relative glass-2 rounded-[2.5rem] border border-white/10 p-4 flex items-center gap-4 shadow-2xl focus-within:border-atlas-blue/50 focus-within:ring-2 focus-within:ring-atlas-blue/20 transition-all duration-300 backdrop-blur-3xl">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

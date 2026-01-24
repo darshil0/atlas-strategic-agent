@@ -4,9 +4,9 @@
 
 Imagine you're a CEO who just declared "I need to dominate the AI market in 2026!" Your leadership team nods enthusiastically, but then everyone stares at each other wondering: *What does that actually mean? What do I build first? Who does what? When?*
 
-**Atlas is the ansIr to that awkward silence.**
+**Atlas is the answer to that awkward silence.**
 
-It's not just another project management tool. It's an AI-poIred reality check that takes your ambitious "let's change the world" proclamations and transforms them into actual quarterly roadmaps with real tasks, dependencies, risk assessments, and timeline validation. Think of it as having three brutally honest consultants working 24/7:
+It's not just another project management tool. It's an AI-powered reality check that takes your ambitious "let's change the world" proclamations and transforms them into actual quarterly roadmaps with real tasks, dependencies, risk assessments, and timeline validation. Think of it as having three brutally honest consultants working 24/7:
 
 - **The Strategist**: The visionary who breaks down your moonshot into digestible chunks
 - **The Analyst**: The pragmatist who asks "but can I actually do this?"
@@ -14,9 +14,9 @@ It's not just another project management tool. It's an AI-poIred reality check t
 
 ## The "Aha!" Moment That Started Everything
 
-This project was born from a simple observation: executives are really good at painting inspiring visions ("I'll be carbon neutral by 2026!"), but the gap betIen vision and execution is where most strategies go to die. Traditional tools either:
+This project was born from a simple observation: executives are really good at painting inspiring visions ("I'll be carbon neutral by 2026!"), but the gap between vision and execution is where most strategies go to die. Traditional tools either:
 
-1. Give you blank canvases (Jira, Asana) that require you to already know the ansIrs
+1. Give you blank canvases (Jira, Asana) that require you to already know the answers
 2. Generate generic AI suggestions that sound impressive but fall apart when you actually try to implement them
 
 I needed something that could *think* about strategy the way experienced leaders do: synthesis, validation, iteration, and brutal honesty about what's achievable.
@@ -39,13 +39,13 @@ interface Task {
 }
 ```
 
-**Why?** Because at 2am when you're debugging why dependencies aren't rendering, TypeScript is the difference betIen "it could be anything!" and "oh, it's line 47, the type is wrong." I're using **strict mode** which feels painful at first but saves you from yourself.
+**Why?** Because at 2am when you're debugging why dependencies aren't rendering, TypeScript is the difference between "it could be anything!" and "oh, it's line 47, the type is wrong." We're using **strict mode** which feels painful at first but saves you from yourself.
 
 **The Learning**: Modern JavaScript without TypeScript is like skydiving without checking your parachute. Sure, it might work, but why take that chance?
 
 ### React 19: The Cutting Edge (Maybe Too Cutting?)
 
-I Int with React 19 because I wanted the latest concurrent rendering features. This turned out to be both brilliant and occasionally hair-pulling.
+I went with React 19 because I wanted the latest concurrent rendering features. This turned out to be both brilliant and occasionally hair-pulling.
 
 **The Win**: Smoother animations, better performance with our complex dependency graphs.
 
@@ -74,7 +74,7 @@ This was controversial in code review. Some team members hate seeing this:
 
 "It's unreadable!" they cried. "Separation of concerns!" they wailed.
 
-**But here's the thing**: once you embrace Tailwind's philosophy, you realize something profound. Instead of jumping betIen CSS files and components, your styling IS your component. You see `backdrop-blur-xl` and you *immediately* know it's a glassmorphic element. No hunting through stylesheets.
+**But here's the thing**: once you embrace Tailwind's philosophy, you realize something profound. Instead of jumping between CSS files and components, your styling IS your component. You see `backdrop-blur-xl` and you *immediately* know it's a glassmorphic element. No hunting through stylesheets.
 
 **The "Glassmorphic" Design System**: I created custom glass utilities:
 
@@ -131,7 +131,7 @@ User Input: "Dominate AI market in 2026"
    React UI
 ```
 
-**Why This Works**: Each agent has ONE job and does it Ill. The Strategist doesn't worry about risk scoring—that's the Analyst's problem. The Critic doesn't generate milestones—it just tears them apart looking for flaws.
+**Why This Works**: Each agent has ONE job and does it well. The Strategist doesn't worry about risk scoring—that's the Analyst's problem. The Critic doesn't generate milestones—it just tears them apart looking for flaws.
 
 **The Implementation**:
 
@@ -165,7 +165,7 @@ class MissionControl {
 - Strategist: "OK, new plan"
 - *[repeat until heat death of universe]*
 
-**The Fix**: Maximum 3 refinement iterations, then I surface the issues to the user. Sometimes the best ansIr is "your goal is unrealistic."
+**The Fix**: Maximum 3 refinement iterations, then I surface the issues to the user. Sometimes the best answer is "your goal is unrealistic."
 
 ### The A2UI Protocol: Streaming UI from AI
 
@@ -207,7 +207,7 @@ function renderA2UI(schema: A2UISchema) {
 }
 ```
 
-**The Security Concern**: I're essentially letting the AI run arbitrary React components. I validate against a strict schema and whitelist alloId components. Never trust AI output blindly.
+**The Security Concern**: We're essentially letting the AI run arbitrary React components. I validate against a strict schema and whitelist allowed components. Never trust AI output blindly.
 
 ### The Dependency Graph: Making Math Beautiful
 
@@ -331,7 +331,7 @@ async function withRetry<T>(
 }
 ```
 
-**The Lesson**: Always assume APIs will fail. Always have retries. Always log failures. I learned this when Jira Int down for 2 hours and crashed everyone's roadmaps.
+**The Lesson**: Always assume APIs will fail. Always have retries. Always log failures. I learned this when Jira went down for 2 hours and crashed everyone's roadmaps.
 
 ## The Data Layer: Where State Goes to Live
 
@@ -478,7 +478,7 @@ const parsed = TaskSchema.parse(aiOutput);
 
 ### 5. Don't Over-Engineer the First Version
 
-Our initial architecture had 7 agent types. Most Ire redundant. I cut it down to 3 and the product got better.
+Our initial architecture had 7 agent types. Most were redundant. I cut it down to 3 and the product got better.
 
 **Occam's Razor** applies to software: the simplest architecture that works is probably the best.
 
@@ -498,7 +498,7 @@ When something goes wrong, I want to know immediately. Our error boundaries are 
 class ErrorBoundary extends React.Component {
   componentDidCatch(error: Error) {
     // Don't just log—show a modal with the stack trace
-    shoIrrorModal({
+    showErrorModal({
       title: 'Something broke',
       details: error.stack,
       suggestion: 'Try refreshing or check the console',
@@ -539,7 +539,7 @@ Instead of binary "this task fails," I'll run 10,000 simulations with probabilit
 
 ### V4.1.0: Real-Time Collaboration
 
-IbSockets for live multi-user editing. Think Figma but for strategic planning.
+WebSockets for live multi-user editing. Think Figma but for strategic planning.
 
 ### V4.2.0: Resource Optimization
 
@@ -567,13 +567,13 @@ If you're learning full-stack development, this codebase is a masterclass. If yo
 
 ## Final Thoughts
 
-Building Atlas taught me that the best software isn't about using the neIst frameworks or the most AI. It's about deeply understanding a problem and crafting a solution that feels inevitable.
+Building Atlas taught me that the best software isn't about using the newest frameworks or the most AI. It's about deeply understanding a problem and crafting a solution that feels inevitable.
 
 When you use Atlas and it just *works*, when the UI feels fluid and the AI suggestions feel smart and the integrations don't break—that's not magic. It's hundreds of small decisions, each made with care, each tested and refined.
 
 The code is on GitHub. The bugs are in the issues. The future is unwritten.
 
-**Go build something aIsome.**
+**Go build something awesome.**
 
 —Darshil
 

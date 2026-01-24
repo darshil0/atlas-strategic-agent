@@ -286,6 +286,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 ## 📚 Documentation
 
 - **[Agent Development Kit (ADK)](./AGENT.md)** - Multi-agent architecture and API reference
+- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post and architectural decisions
 - [Changelog](./CHANGELOG.md) - Version history and release notes
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
 - [Gemini API Documentation](https://docs.google.dev/gemini-api) - Gemini 2.0 Flash docs

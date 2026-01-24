@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
-## [3.2.5] - 2026-02-05
+## [3.2.5] - 2026-01-24
 
 ### 🚀 Continuous Improvement & Infrastructure
 

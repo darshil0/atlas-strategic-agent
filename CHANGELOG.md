@@ -25,6 +25,10 @@ This release focuses on centralized utilities, improved code organization, and a
   - Restored readable text in "Technical Deep Dive" by fixing global find-replace errors.
   - Updated directory structure in contributing guidelines to match source.
   - Added navigation links to technical documentation in README.
+- **Type Safety**:
+  - Removed explicit `any` usage in `CriticAgent` by utilizing proper `Plan` type inference.
+  - Eliminated unnecessary type casting in `PersistenceService` validation logic.
+  - Fixed missing `Priority` import in `agents.ts`.
 
 ### Changed
 - **Branding**: Updated internal versioning to `v3.2.5` across all dashboard elements.

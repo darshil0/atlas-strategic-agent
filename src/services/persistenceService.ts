@@ -431,8 +431,8 @@ export class PersistenceService {
       plan.tasks.every(task => 
         task.id?.trim() && 
         task.description?.trim() &&
-        Object.values(TaskStatus).includes(task.status as any) &&
-        Object.values(Priority).includes(task.priority as any)
+        Object.values(TaskStatus).includes(task.status) &&
+        Object.values(Priority).includes(task.priority)
       )
     );
   }

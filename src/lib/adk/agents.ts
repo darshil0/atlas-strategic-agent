@@ -11,6 +11,7 @@ import {
   TaskStatus,
   Priority,
   SubTask,
+  Plan,
   AgentExecutionContext
 } from "@types";
 import { ENV } from "@config";
@@ -176,7 +177,8 @@ export class CriticAgent extends BaseAgent {
     _prompt: string,
     context: AgentExecutionContext = {}
   ): Promise<R> {
-    const q1HighCount = (context.plan as any)?.tasks?.filter((t: any) =>
+    const plan = context.plan;
+    const q1HighCount = plan?.tasks?.filter(t =>
       t.priority === Priority.HIGH && t.category?.includes("Q1")
     )?.length || 0;
 

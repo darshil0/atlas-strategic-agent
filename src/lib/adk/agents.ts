@@ -4,24 +4,27 @@ import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
 import { TaskStatus, Priority } from "../../types";
 import { ENV } from "../../config";
 
+type StrategyTask = {
+  id: string;
+  description: string;
+  status: TaskStatus;
+  priority: Priority;
+  dependencies: string[];
+};
+
 type StrategyContext = {
-  goal?: string;
-  tasks?: Array<{
-    id: string;
-    description: string;
-    status: TaskStatus;
-    priority: Priority;
-    dependencies: string[];
-  }>;
+  goal: string;
+  tasks: StrategyTask[];
   activeTaskId?: string;
 };
 
 /**
  * Strategist Agent - Goal decomposition and roadmap generation
  */
-export class StrategistAgent extends BaseAgent {
+export class StrategistAgent extends BaseAgent<StrategyContext, Partial<StrategyContext>> {
   name = "Strategist";
-  description = "Decomposes complex goals into executable 2026 roadmaps with dependency graphs.";
+  description =
+    "Decomposes complex goals into executable 2026 roadmaps with dependency graphs.";
 
   async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
     switch (event.action) {
@@ -32,7 +35,7 @@ export class StrategistAgent extends BaseAgent {
             value: 75,
           })
           .add(A2UIComponentType.TEXT, {
-            text: `Strategist analyzing task ${event.elementId}`,
+            text: `Strategist analyzing task ${event.elementId ?? "N/A"}`,
           })
           .build();
 
@@ -43,46 +46,50 @@ export class StrategistAgent extends BaseAgent {
           })
           .build();
 
-      default:
+      default: {
+        const actionLabel = event.action ?? "unknown";
         return new UIBuilder()
           .add(A2UIComponentType.TEXT, {
-            text: `Strategist acknowledged: ${event.action}`,
+            text: `Strategist acknowledged: ${actionLabel}`,
           })
           .build();
+      }
     }
   }
 
-  async execute<R = StrategyContext>(
+  async execute(
     prompt: string,
-    context: StrategyContext = {}
-  ): Promise<R> {
-    // Simulate strategic decomposition
+    context: Partial<StrategyContext> = {}
+  ): Promise<StrategyContext> {
     const plan: StrategyContext = {
-      goal: `Strategic execution plan for: ${prompt}`,
-      tasks: [
-        {
-          id: "STRAT-001",
-          description: "Initial goal validation and scope definition",
-          status: TaskStatus.IN_PROGRESS,
-          priority: Priority.HIGH,
-          dependencies: [],
-        },
-        {
-          id: "STRAT-002",
-          description: "Dependency mapping and risk assessment",
-          status: TaskStatus.PENDING,
-          priority: Priority.MEDIUM,
-          dependencies: ["STRAT-001"],
-        },
-      ],
-      ...context,
+      goal: context.goal ?? `Strategic execution plan for: ${prompt}`,
+      tasks:
+        context.tasks ??
+        [
+          {
+            id: "STRAT-001",
+            description: "Initial goal validation and scope definition",
+            status: TaskStatus.IN_PROGRESS,
+            priority: Priority.HIGH,
+            dependencies: [],
+          },
+          {
+            id: "STRAT-002",
+            description: "Dependency mapping and risk assessment",
+            status: TaskStatus.PENDING,
+            priority: Priority.MEDIUM,
+            dependencies: ["STRAT-001"],
+          },
+        ],
+      activeTaskId: context.activeTaskId,
     };
 
-    if (ENV.DEBUG_MODE) {
+    if (ENV && ENV.DEBUG_MODE) {
+      // eslint-disable-next-line no-console
       console.log("[Strategist] Generated plan:", plan);
     }
 
-    return plan as unknown as R;
+    return plan;
   }
 
   getInitialUI(): A2UIMessage {
@@ -90,10 +97,12 @@ export class StrategistAgent extends BaseAgent {
       .add(A2UIComponentType.CARD, {
         title: "Strategist Agent",
         children: [
-          A2UIComponentType.TEXT,
-          {
-            text: "Ready for goal decomposition and roadmap generation.",
-          },
+          [
+            A2UIComponentType.TEXT,
+            {
+              text: "Ready for goal decomposition and roadmap generation.",
+            },
+          ],
         ],
       })
       .build();
@@ -103,16 +112,17 @@ export class StrategistAgent extends BaseAgent {
 /**
  * Analyst Agent - Feasibility scoring and data grounding
  */
-interface AnalystResult {
+export interface AnalystResult {
   feasibility: number; // 0-100 score
-  confidence: number;  // 0-100 confidence
+  confidence: number; // 0-100 confidence
   risks: string[];
   recommendations: string[];
 }
 
-export class AnalystAgent extends BaseAgent {
+export class AnalystAgent extends BaseAgent<AnalystResult, StrategyContext> {
   name = "Analyst";
-  description = "Performs feasibility analysis, risk scoring, and data validation.";
+  description =
+    "Performs feasibility analysis, risk scoring, and data validation.";
 
   async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
@@ -127,15 +137,15 @@ export class AnalystAgent extends BaseAgent {
         maxValue: 100,
       })
       .add(A2UIComponentType.TEXT, {
-        text: `Analysis complete for ${event.elementId}`,
+        text: `Analysis complete for ${event.elementId ?? "N/A"}`,
       })
       .build();
   }
 
-  async execute<R = AnalystResult>(
+  async execute(
     _prompt: string,
     _context: StrategyContext = {}
-  ): Promise<R> {
+  ): Promise<AnalystResult> {
     const analysis: AnalystResult = {
       feasibility: 87,
       confidence: 94,
@@ -149,11 +159,12 @@ export class AnalystAgent extends BaseAgent {
       ],
     };
 
-    if (ENV.DEBUG_MODE) {
+    if (ENV && ENV.DEBUG_MODE) {
+      // eslint-disable-next-line no-console
       console.log("[Analyst] Feasibility score:", analysis);
     }
 
-    return analysis as unknown as R;
+    return analysis;
   }
 
   getInitialUI(): A2UIMessage {
@@ -168,53 +179,71 @@ export class AnalystAgent extends BaseAgent {
 /**
  * Critic Agent - Plan review and optimization
  */
-interface CriticResult {
+export enum CriticIssueType {
+  DEPENDENCY = "dependency",
+  PRIORITY = "priority",
+  TIMELINE = "timeline",
+  RISK = "risk",
+}
+
+export enum CriticSeverity {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+}
+
+export interface CriticIssue {
+  type: CriticIssueType;
+  severity: CriticSeverity;
+  description: string;
+}
+
+export interface CriticResult {
   score: number; // 0-100
-  issues: Array<{
-    type: "dependency" | "priority" | "timeline" | "risk";
-    severity: "low" | "medium" | "high";
-    description: string;
-  }>;
+  issues: CriticIssue[];
   optimizations: string[];
 }
 
-export class CriticAgent extends BaseAgent {
+export class CriticAgent extends BaseAgent<CriticResult, StrategyContext> {
   name = "Critic";
-  description = "Identifies plan gaps, circular dependencies, and optimization opportunities.";
+  description =
+    "Identifies plan gaps, circular dependencies, and optimization opportunities.";
 
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
       .add(A2UIComponentType.CARD, {
         title: "Critic Review",
         children: [
-          A2UIComponentType.LIST,
-          {
-            items: [
-              { label: "No circular dependencies detected", icon: "✅" },
-              { label: "Q1 overload: 18 critical tasks", icon: "⚠️" },
-              { label: "CY-26-005 QKD blocked by vendor", icon: "🚫" },
-            ],
-          },
+          [
+            A2UIComponentType.LIST,
+            {
+              items: [
+                { label: "No circular dependencies detected", icon: "✅" },
+                { label: "Q1 overload: 18 critical tasks", icon: "⚠️" },
+                { label: "CY-26-005 QKD blocked by vendor", icon: "🚫" },
+              ],
+            },
+          ],
         ],
       })
       .build();
   }
 
-  async execute<R = CriticResult>(
+  async execute(
     _prompt: string,
     _context: StrategyContext = {}
-  ): Promise<R> {
+  ): Promise<CriticResult> {
     const review: CriticResult = {
       score: 88,
       issues: [
         {
-          type: "timeline",
-          severity: "medium",
+          type: CriticIssueType.TIMELINE,
+          severity: CriticSeverity.MEDIUM,
           description: "Q1 overloaded (18 HIGH priority tasks)",
         },
         {
-          type: "dependency",
-          severity: "high",
+          type: CriticIssueType.DEPENDENCY,
+          severity: CriticSeverity.HIGH,
           description: "CY-26-005 blocked by unlisted vendor contract",
         },
       ],
@@ -224,11 +253,12 @@ export class CriticAgent extends BaseAgent {
       ],
     };
 
-    if (ENV.DEBUG_MODE) {
+    if (ENV && ENV.DEBUG_MODE) {
+      // eslint-disable-next-line no-console
       console.log("[Critic] Plan review score:", review.score);
     }
 
-    return review as unknown as R;
+    return review;
   }
 
   getInitialUI(): A2UIMessage {

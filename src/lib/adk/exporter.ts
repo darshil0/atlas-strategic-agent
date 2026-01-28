@@ -2,16 +2,17 @@ import { Plan, TaskStatus, Priority } from "../../types";
 
 /**
  * Escapes special characters for safe Mermaid label rendering
- * Handles quotes, brackets, parentheses, and newlines
+ * Handles quotes, backticks, brackets, parentheses, and newlines
  */
 function escapeMermaidLabel(text: string): string {
   return text
-    .replace(/"/g, '"')      // Double quotes → escaped
-    .replace(/`/g, "&#96;")  // Backticks → HTML entity
-    .replace(/\[/g, "(")     // [ → (
-    .replace(/\]/g, ")")     // ] → )
-    .replace(/[\r\n]+/g, " ") // Newlines → spaces
-    .replace(/ {2,}/g, " "); // Collapse multiple spaces
+    .replace(/"/g, '\\"')
+    .replace(/`/g, "&#96;")
+    .replace(/\[/g, "(")
+    .replace(/\]/g, ")")
+    .replace(/[\r\n]+/g, " ")
+    .replace(/ {2,}/g, " ")
+    .trim();
 }
 
 interface MermaidStyle {
@@ -31,113 +32,117 @@ export const PlanExporter = {
    * Generates production-ready Mermaid flowchart from Plan
    */
   toMermaid(plan: Plan): string {
-    if (!plan.tasks?.length) {
-      return "graph TD\n  A[No tasks in plan]";
+    if (!plan.tasks || plan.tasks.length === 0) {
+      return [
+        "```mermaid",
+        "graph TD",
+        "  A[No tasks in plan]",
+        "```",
+      ].join("\n");
     }
 
     let mermaid = "```mermaid\ngraph TD\n";
 
-    // Define comprehensive Tailwind-inspired styles
-    const styles: Record<TaskStatus | Priority, Partial<MermaidStyle>> = {
-      [TaskStatus.PENDING]: {
+    // Tailwind-inspired styles (string keys to avoid enum-number issues)
+    const styles: Record<string, Partial<MermaidStyle>> = {
+      pending: {
         fill: "#0f172a",
         stroke: "#475569",
         strokeWidth: "2px",
         color: "#94a3b8",
       },
-      [TaskStatus.IN_PROGRESS]: {
+      in_progress: {
         fill: "#1e293b",
         stroke: "#3b82f6",
         strokeWidth: "3px",
         color: "#ffffff",
         strokeDasharray: "5 5",
       },
-      [TaskStatus.COMPLETED]: {
+      completed: {
         fill: "#064e3b",
         stroke: "#10b981",
         strokeWidth: "2px",
         color: "#ffffff",
       },
-      [TaskStatus.FAILED]: {
+      failed: {
         fill: "#450a0a",
         stroke: "#ef4444",
         strokeWidth: "2px",
         color: "#ffffff",
       },
-      [TaskStatus.BLOCKED]: {
+      blocked: {
         fill: "#1e1b4b",
         stroke: "#64748b",
         strokeWidth: "2px",
         color: "#94a3b8",
       },
-      [TaskStatus.WAITING]: {
+      waiting: {
         fill: "#451a03",
         stroke: "#f59e0b",
         strokeWidth: "2px",
         color: "#ffffff",
       },
-      [Priority.HIGH]: { stroke: "#ef4444", strokeWidth: "3px" },
-      [Priority.MEDIUM]: { stroke: "#f59e0b", strokeWidth: "2px" },
-      [Priority.LOW]: { stroke: "#3b82f6", strokeWidth: "2px" },
+      high: { stroke: "#ef4444", strokeWidth: "3px" },
+      medium: { stroke: "#f59e0b", strokeWidth: "2px" },
+      low: { stroke: "#3b82f6", strokeWidth: "2px" },
     };
 
     // Generate style definitions
-    Object.entries(styles).forEach(([key, style]) => {
-      if (typeof key === "string") {
-        mermaid += `  classDef ${key.toLowerCase()} `;
-        Object.entries(style).forEach(([prop, value]) => {
-          mermaid += `${prop}:${value},`;
-        });
-        mermaid = mermaid.slice(0, -1) + "\n"; // Remove trailing comma
+    for (const [key, style] of Object.entries(styles)) {
+      mermaid += `  classDef ${key} `;
+      for (const [prop, value] of Object.entries(style)) {
+        mermaid += `${prop}:${value},`;
       }
-    });
+      // Remove trailing comma
+      mermaid = mermaid.slice(0, -1) + "\n";
+    }
+
+    const allIds = new Set(plan.tasks.map((t) => t.id));
 
     // Generate nodes and edges
-    plan.tasks.forEach((task) => {
-      const escapedDesc = escapeMermaidLabel(task.description);
-      const displayId = task.id.slice(-4); // Short ID for display
+    for (const task of plan.tasks) {
+      const escapedDesc = escapeMermaidLabel(task.description ?? "");
+      const displayId = task.id.slice(-4);
 
-      // Node with status + priority styling
       mermaid += `  ${task.id}[#${displayId}\\n${escapedDesc}]`;
 
-      // Apply status styling (primary)
-      mermaid += `:::${task.status.toLowerCase()}`;
+      // Status class (normalize to lower-case string)
+      const statusClass = String(task.status).toLowerCase();
+      mermaid += `:::${statusClass}`;
 
-      // Apply priority border styling (secondary)
-      if (task.priority) {
-        mermaid += `:::${task.priority.toLowerCase()}`;
+      // Priority class if present
+      if (task.priority != null) {
+        const priorityClass = String(task.priority).toLowerCase();
+        mermaid += `:::${priorityClass}`;
       }
 
       mermaid += "\n";
 
-      // Generate dependency edges
-      if (task.dependencies?.length) {
-        task.dependencies.forEach((depId) => {
+      if (task.dependencies && task.dependencies.length > 0) {
+        for (const depId of task.dependencies) {
+          if (!allIds.has(depId)) continue;
           mermaid += `  ${depId} --> ${task.id}`;
-
-          // Color-code edges by status
-          const edgeStyle = task.status === TaskStatus.COMPLETED
-            ? ":::edge-completed"
-            : task.status === TaskStatus.IN_PROGRESS
-              ? ":::edge-progress"
-              : "";
-
+          const edgeStyle =
+            task.status === TaskStatus.COMPLETED
+              ? ":::edge-completed"
+              : task.status === TaskStatus.IN_PROGRESS
+                ? ":::edge-progress"
+                : "";
           if (edgeStyle) mermaid += edgeStyle;
           mermaid += "\n";
-        });
+        }
       }
-    });
+    }
 
     // Edge styling
-    mermaid += `
-  classDef edge-completed stroke:#10b981,stroke-width:2px,stroke-dasharray: 0 0;
-  classDef edge-progress stroke:#3b82f6,stroke-width:3px,stroke-dasharray: 10 5;
-`;
+    mermaid +=
+      "  classDef edge-completed stroke:#10b981,stroke-width:2px,stroke-dasharray:0 0;\n" +
+      "  classDef edge-progress stroke:#3b82f6,stroke-width:3px,stroke-dasharray:10 5;\n";
 
-    // Plan title
-    mermaid += `  classDef title fill:#1e293b,stroke:#3b82f6,stroke-width:0px,color:#ffffff,font-weight:bold;
-  class ${plan.tasks.map(t => t.id).join(" ")} title;
-`;
+    // Plan title style and assignment
+    mermaid +=
+      "  classDef title fill:#1e293b,stroke:#3b82f6,stroke-width:0px,color:#ffffff,font-weight:bold;\n";
+    mermaid += `  class ${plan.tasks.map((t) => t.id).join(" ")} title;\n`;
 
     mermaid += "```";
     return mermaid;
@@ -147,14 +152,25 @@ export const PlanExporter = {
    * Generates GitHub-flavored markdown table from Plan
    */
   toMarkdownTable(plan: Plan): string {
-    if (!plan.tasks?.length) return "| No tasks |\n|----------|";
+    if (!plan.tasks || plan.tasks.length === 0) {
+      return "| No tasks |\n|----------|";
+    }
 
     const headers = "| ID | Priority | Status | Category | Dependencies |";
     const separator = "|----|----------|--------|----------|--------------|";
 
-    const rows = plan.tasks.map(task =>
-      `| #${task.id.slice(-4)} | ${task.priority} | ${task.status} | ${task.category} | ${task.dependencies?.join(", ") || "-"} |`
-    );
+    const rows = plan.tasks.map((task) => {
+      const deps =
+        task.dependencies && task.dependencies.length > 0
+          ? task.dependencies.join(", ")
+          : "-";
+      const category =
+        (task as any).category != null && (task as any).category !== ""
+          ? (task as any).category
+          : "-"; // adjust typing if Plan has category
+      return `| #${task.id.slice(-4)} | ${task.priority ?? "-"} | ${task.status
+        } | ${category} | ${deps} |`;
+    });
 
     return [headers, separator, ...rows].join("\n");
   },

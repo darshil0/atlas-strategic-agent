@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { AnimatePresence } from "framer-motion";
 import {
   Settings,
   Database,
@@ -142,7 +142,7 @@ export const Sidebar: React.FC<SidebarProps> =({
           <div className="h-full min-h-[600px] rounded-3xl border border-white/10 overflow-hidden relative group">
             <DependencyGraph
               tasks={currentPlan.tasks}
-              activeTaskId={activeTaskId || undefined}
+              activeTaskId={activeTaskId}
               onTaskSelect={onTaskClick}
               isTaskBlocked={(t, all) => isTaskBlocked(t, all)}
               onConnect={onLinkDependency}

@@ -78,7 +78,7 @@ export class UIBuilder {
   }
 
   /** Chart with data array */
-  chart(title: string, data: Array<{ label: string; value: number }>, props: ComponentProps = {}): this {
+  chart(title: string, data: { label: string; value: number }[], props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.CHART, {
       title,
       data,

@@ -3,13 +3,14 @@ import { BaseAgent, AgentPersona, AgentExecutionContext } from "./types";
 import type { Plan, SubTask } from "../../types";
 import { AgentFactory } from "./factory";
 import { ENV } from "../../config";
+import type { AnalystResult, CriticResult } from "./agents";
 
 /**
  * MissionControl: Multi-agent orchestrator for collaborative strategic synthesis
  * Coordinates Strategist → Analyst → Critic workflow for robust plan generation
  */
 export class MissionControl {
-  private agents: Map<AgentPersona, BaseAgent> = new Map();
+  private agents = new Map<AgentPersona, BaseAgent>();
   private readonly maxIterations = 3;
   private readonly scoreThreshold = 85;
 
@@ -77,10 +78,10 @@ export class MissionControl {
 
     // Phase 3: Analyst validation
     const analyst = this.getAgent(AgentPersona.ANALYST);
-    const analysis = await analyst.execute("Final feasibility check", {
+    const analysis = (await analyst.execute("Final feasibility check", {
       ...context,
-      plan: proposal
-    }) as { feasibility?: number; notes?: string[] };
+      plan: proposal,
+    })) as AnalystResult;
 
     // Phase 4: Return coordinated result
     const result = {
@@ -136,12 +137,15 @@ export class MissionControl {
   private async evaluatePlan(plan: unknown): Promise<{ score: number; feedback: string[] }> {
     const critic = this.getAgent(AgentPersona.CRITIC);
     try {
-      const result = await critic.execute<{ score: number; feedback: string[] }>("Evaluate strategic plan", {
+      const result = (await critic.execute("Evaluate strategic plan", {
         plan,
-      });
+      })) as CriticResult;
+
       return {
-        score: Math.max(0, Math.min(100, (result as any).score ?? 50)),
-        feedback: ((result as any).feedback as string[]) ?? ["No feedback available"],
+        score: Math.max(0, Math.min(100, result.score ?? 50)),
+        feedback: result.issues.map((i) => `${i.type.toUpperCase()}: ${i.description}`) ?? [
+          "No feedback available",
+        ],
       };
     } catch (error) {
       console.error("[MissionControl] Critic evaluation failed:", error);
@@ -155,11 +159,11 @@ export class MissionControl {
   private formatSynthesisSummary(
     goal: string,
     iterations: number,
-    analysis: { feasibility?: number; notes?: string[] },
+    analysis: AnalystResult,
     _plan: unknown
   ): string {
-    const feasibility = (analysis as any).feasibility ?? 85;
-    const notes = ((analysis as any).notes as string[])?.slice(0, 2) ?? ["Analysis complete"];
+    const feasibility = analysis.feasibility ?? 85;
+    const notes = analysis.recommendations?.slice(0, 2) ?? ["Analysis complete"];
 
     return [
       `🎯 **Strategic Synthesis Complete**`,

@@ -262,7 +262,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   disabled={!!exported?.github}
                   className={cn(
                     "group flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-bold h-full",
-                    !!exported?.github
+                    exported?.github
                       ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 cursor-default"
                       : "bg-slate-900/50 border-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
                   )}
@@ -277,7 +277,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   disabled={!!exported?.jira}
                   className={cn(
                     "group flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-bold h-full",
-                    !!exported?.jira
+                    exported?.jira
                       ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 cursor-default"
                       : "bg-slate-900/50 border-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-950",
                   )}

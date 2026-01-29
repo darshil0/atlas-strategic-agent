@@ -5,7 +5,7 @@ import { A2UIMessage, AGUIEvent } from "./protocol";
  */
 export enum AgentPersona {
   STRATEGIST = "Strategist",
-  ANALYST = "Analyst", 
+  ANALYST = "Analyst",
   CRITIC = "Critic",
 }
 
@@ -33,7 +33,7 @@ export interface AgentRuntimeContext extends AgentExecutionContext {
  * Base agent contract for Atlas Strategic Agent system
  * Defines core interface for all specialized agents
  */
-export abstract class BaseAgent {
+export abstract class BaseAgent<TResult = unknown, TContext = AgentExecutionContext> {
   /**
    * Unique agent identifier
    */
@@ -55,10 +55,10 @@ export abstract class BaseAgent {
    * @param context Execution context with session data
    * @returns Agent-specific result type
    */
-  abstract execute<R = unknown>(
+  abstract execute(
     prompt: string,
-    context?: AgentExecutionContext
-  ): Promise<R>;
+    context?: TContext
+  ): Promise<TResult>;
 
   /**
    * Get initial UI state when agent is activated

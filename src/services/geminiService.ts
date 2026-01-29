@@ -115,7 +115,7 @@ export class AtlasService {
   static async executeSubtask(
     subtask: SubTask,
     plan: Plan,
-    history: string = "",
+    history = "",
     onChunk?: (chunk: string) => void
   ): Promise<{ text: string; a2ui?: A2UIMessage }> {
     const model = this.getModel(true);
@@ -134,7 +134,7 @@ History: ${history.slice(-1000)}`;
     });
 
     let fullText = "";
-    let a2uiCandidates: string[] = [];
+    const a2uiCandidates: string[] = [];
 
     for await (const chunk of result.stream) {
       const text = chunk.text();
@@ -195,8 +195,6 @@ History: ${history.slice(-1000)}`;
   private static parseResponse<T>(text: string): T {
     const cleanText = text
       .replace(/```(?:json)?\n?|\n?```/g, "")
-      .replace(/^\s*[\[\{]/, "")  // Remove leading [
-      .replace(/[\]\}]\s*$/, "")  // Remove trailing ]
       .trim();
 
     try {

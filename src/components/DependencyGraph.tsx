@@ -27,14 +27,14 @@ function cn(...inputs: ClassValue[]) {
 
 /** Custom node typings */
 
-type TaskNodeData = {
+interface TaskNodeData {
   task: SubTask;
   isActive: boolean;
   isBlocked: boolean;
   onNodeClick: (id: string) => void;
   isWhatIfEnabled: boolean;
   isInCascade: boolean;
-};
+}
 
 type TaskNodeType = Node<TaskNodeData, "taskNode">;
 

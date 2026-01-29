@@ -1,4 +1,4 @@
-import { Plan, TaskStatus, Priority } from "../../types";
+import { Plan, TaskStatus } from "../../types";
 
 /**
  * Escapes special characters for safe Mermaid label rendering

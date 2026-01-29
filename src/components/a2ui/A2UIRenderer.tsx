@@ -10,8 +10,8 @@ interface A2UIRendererProps {
   onEvent: (event: AGUIEvent) => void;
 }
 type Props = Record<string, unknown>;
-type ListItem = { icon?: string; label?: string };
-type ChartData = { value: number; label: string };
+interface ListItem { icon?: string; label?: string }
+interface ChartData { value: number; label: string }
 
 export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
   elements,

@@ -61,12 +61,12 @@ export interface InputProps extends BaseProps {
 
 export interface ChartProps extends BaseProps {
   title: string;
-  data: Array<{ label: string; value: number }>;
+  data: { label: string; value: number }[];
   maxValue?: number;
 }
 
 export interface ListProps extends BaseProps {
-  items: Array<{ label: string; value?: string; icon?: string }>;
+  items: { label: string; value?: string; icon?: string }[];
 }
 
 // === CORE INTERFACES ===

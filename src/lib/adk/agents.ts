@@ -4,19 +4,19 @@ import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
 import { TaskStatus, Priority } from "../../types";
 import { ENV } from "../../config";
 
-type StrategyTask = {
+interface StrategyTask {
   id: string;
   description: string;
   status: TaskStatus;
   priority: Priority;
   dependencies: string[];
-};
+}
 
-type StrategyContext = {
+interface StrategyContext {
   goal: string;
   tasks: StrategyTask[];
   activeTaskId?: string;
-};
+}
 
 /**
  * Strategist Agent - Goal decomposition and roadmap generation
@@ -85,7 +85,6 @@ export class StrategistAgent extends BaseAgent<StrategyContext, Partial<Strategy
     };
 
     if (ENV && ENV.DEBUG_MODE) {
-      // eslint-disable-next-line no-console
       console.log("[Strategist] Generated plan:", plan);
     }
 
@@ -119,7 +118,7 @@ export interface AnalystResult {
   recommendations: string[];
 }
 
-export class AnalystAgent extends BaseAgent<AnalystResult, StrategyContext> {
+export class AnalystAgent extends BaseAgent<AnalystResult, Partial<StrategyContext>> {
   name = "Analyst";
   description =
     "Performs feasibility analysis, risk scoring, and data validation.";
@@ -144,7 +143,7 @@ export class AnalystAgent extends BaseAgent<AnalystResult, StrategyContext> {
 
   async execute(
     _prompt: string,
-    _context: StrategyContext = {}
+    _context: Partial<StrategyContext> = {}
   ): Promise<AnalystResult> {
     const analysis: AnalystResult = {
       feasibility: 87,
@@ -160,7 +159,6 @@ export class AnalystAgent extends BaseAgent<AnalystResult, StrategyContext> {
     };
 
     if (ENV && ENV.DEBUG_MODE) {
-      // eslint-disable-next-line no-console
       console.log("[Analyst] Feasibility score:", analysis);
     }
 
@@ -204,7 +202,7 @@ export interface CriticResult {
   optimizations: string[];
 }
 
-export class CriticAgent extends BaseAgent<CriticResult, StrategyContext> {
+export class CriticAgent extends BaseAgent<CriticResult, Partial<StrategyContext>> {
   name = "Critic";
   description =
     "Identifies plan gaps, circular dependencies, and optimization opportunities.";
@@ -231,7 +229,7 @@ export class CriticAgent extends BaseAgent<CriticResult, StrategyContext> {
 
   async execute(
     _prompt: string,
-    _context: StrategyContext = {}
+    _context: Partial<StrategyContext> = {}
   ): Promise<CriticResult> {
     const review: CriticResult = {
       score: 88,
@@ -254,7 +252,6 @@ export class CriticAgent extends BaseAgent<CriticResult, StrategyContext> {
     };
 
     if (ENV && ENV.DEBUG_MODE) {
-      // eslint-disable-next-line no-console
       console.log("[Critic] Plan review score:", review.score);
     }
 

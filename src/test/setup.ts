@@ -17,24 +17,33 @@ Object.defineProperty(window, 'localStorage', {
 
 // Mock IntersectionObserver
 class IntersectionObserverMock {
-  constructor() { }
-  observe() { }
-  disconnect() { }
-  unobserve() { }
+  constructor() {
+    // Mock constructor
+  }
+  observe() {
+    // Mock observe
+  }
+  disconnect() {
+    // Mock disconnect
+  }
+  unobserve() {
+    // Mock unobserve
+  }
 }
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 
 // Mock console methods for cleaner test output
 const originalConsole = console;
 beforeAll(() => {
-  // @ts-ignore
-  vi.spyOn(console, 'warn').mockImplementation(() => { });
-  // @ts-ignore
-  vi.spyOn(console, 'error').mockImplementation(() => { });
+  vi.spyOn(console, 'warn').mockImplementation(() => {
+    // mock implementation
+  });
+  vi.spyOn(console, 'error').mockImplementation(() => {
+    // mock implementation
+  });
 });
 
 afterAll(() => {
-  // @ts-ignore
   vi.restoreAllMocks();
   console.warn = originalConsole.warn.bind(originalConsole);
   console.error = originalConsole.error.bind(originalConsole);

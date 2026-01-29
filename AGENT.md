@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.6 introduces strongly-typed agent results, an enhanced iterative refinement loop, and hardened JSON parsing logic for Gemini 2.0.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.7 introduces dependency modernization, formalized identity sync between code and reasoning, and strictly enforced result interfaces for the agent swarm.
 
 ---
 
@@ -11,18 +11,16 @@ The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orch
 ### Multi-Agent Synthesis Pipeline
 
 ```mermaid
-graph LR
-    A[User Input] --> B[MissionControl]
-    B --> C[Strategist Agent]
-    B --> D[Analyst Agent]
-    B --> E[Critic Agent]
-    C --> F[Initial Plan]
-    F --> D
-    D --> G[Analysis Report]
-    G --> E
-    E --> H[Optimized Roadmap]
-    H --> I[A2UI Renderer]
-    I --> J[Glassmorphic UI]
+graph TD
+    A[User Goal] --> B[MissionControl]
+    B --> C[Phase 1: Strategist]
+    C --> D[Initial Proposal]
+    D --> B
+    B --> E[Phase 2: Critic Loop]
+    E -- Feedback --> C
+    E -- Score >= 85 --> F[Phase 3: Analyst]
+    F --> G[Validated Roadmap]
+    G --> H[Glassmorphic UI]
 ```
 
 ### Core Components
@@ -239,15 +237,21 @@ User Input: "Build 2026 AI readiness roadmap"
 MissionControl.processCollaborativeInput()
      ↓
 ┌────────────────────────────────────────────┐
-│ STRATEGIST: Generate initial plan          │
-│ - 20 tasks across Q1-Q4                    │
-│ - AI/Cyber/Infra themes                    │
-│ - Dependency graph constructed             │
+│ 1. STRATEGIST: Initial Synthesis           │
+│ - Goal decomposition into 20+ tasks        │
+│ - Dependency graph construction            │
 └────────────────────────────────────────────┘
      ↓
 ┌────────────────────────────────────────────┐
-│ ANALYST: Feasibility assessment            │
-│ - Score: 87/100                            │
+│ 2. CRITIC loop: Iterative Optimization     │
+│ - Detect circular dependencies             │
+│ - Scoring (Target >= 85/100)               │
+│ - Recursive feedback to Strategist         │
+└────────────────────────────────────────────┘
+     ↓
+┌────────────────────────────────────────────┐
+│ 3. ANALYST: Final Feasibility Guard        │
+│ - Score: 87/100 feasibility                │
 │ - Risks: Q1 overload, dependency gaps      │
 │ - Recommendations: Prioritize Zero-Trust   │
 └────────────────────────────────────────────┘
@@ -580,9 +584,17 @@ const strategist2 = AgentFactory.getOrCreate(AgentPersona.STRATEGIST);  // <1ms
 - **Timeout**: 45 seconds with retry logic (3 attempts)
 - **JSON Schema**: Enforced structure reduces parsing errors by 95%
 
+### Identity Sync & Versioned Reasoning
+
+As of **v3.2.7**, the ADK enforces a strict "Identity Sync" between the host environment and the agent's internal reasoning core.
+
+- **System Instruction Sync**: The `ATLAS_SYSTEM_INSTRUCTION` in `src/config/system.ts` is electronically tied to the application version. This ensures that the agent *knows* it is functioning under the v3.2.7 protocol.
+- **Protocol Awareness**: Agents are injected with real-time awareness of their current library capabilities (e.g., React 19 concurrent features, Gemini 2.0 Flash context windows).
+- **Deterministic Validation**: Rather than relying on "vibe-checks," agents utilize version-specific deterministic schemas for task validation.
+
 ---
 
-## 🧪 Testing the ADK
+## 🧪 Testing Strategies
 
 ### Unit Tests
 

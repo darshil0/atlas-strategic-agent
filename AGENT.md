@@ -1,8 +1,8 @@
-# 🤖 Atlas Agent Development Kit (ADK) v3.2.5
+# 🤖 Atlas Agent Development Kit (ADK) v3.2.6
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.5 introduces centralized utilities, improved type safety, and production-ready error handling.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.6 introduces strongly-typed agent results, an enhanced iterative refinement loop, and hardened JSON parsing logic for Gemini 2.0.
 
 ---
 
@@ -106,24 +106,29 @@ export class StrategistAgent extends BaseAgent {
 - Assesses Q1 capacity overload (max 12 HIGH priority tasks)
 
 **Implementation**:
-```typescript
-export class AnalystAgent extends BaseAgent {
+// src/lib/adk/agents.ts
+export interface AnalystResult {
+  feasibility: number; // 0-100 score
+  confidence: number; // 0-100 confidence
+  risks: string[];
+  recommendations: string[];
+}
+
+export class AnalystAgent extends BaseAgent<AnalystResult, Partial<StrategyContext>> {
   name = "Analyst";
-  persona = AgentPersona.ANALYST;
   
-  async execute<R = any>(
-    prompt: string,
-    context: AgentExecutionContext = {}
-  ): Promise<R> {
+  async execute(
+    _prompt: string,
+    _context: Partial<StrategyContext> = {}
+  ): Promise<AnalystResult> {
     return {
       feasibility: 87,
       confidence: 94,
-      risks: ["Q1 capacity warning", "Cross-theme gap"],
-      recommendations: ["Prioritize Zero-Trust", "Parallelize Infra"]
+      risks: ["Moderate dependency on Q2 vendor delivery"],
+      recommendations: ["Prioritize Zero-Trust implementation first"]
     };
   }
 }
-```
 
 **Scoring Criteria**:
 - **Resource Availability**: 30%
@@ -145,26 +150,33 @@ export class AnalystAgent extends BaseAgent {
 - Suggests consolidation of redundant objectives
 
 **Implementation**:
-```typescript
-export class CriticAgent extends BaseAgent {
+// src/lib/adk/agents.ts
+export interface CriticResult {
+  score: number; // 0-100
+  issues: CriticIssue[];
+  optimizations: string[];
+}
+
+export class CriticAgent extends BaseAgent<CriticResult, Partial<StrategyContext>> {
   name = "Critic";
-  persona = AgentPersona.CRITIC;
   
-  async execute<R = any>(
-    prompt: string,
-    context: AgentExecutionContext = {}
-  ): Promise<R> {
-    const plan = context.plan as Plan;
-    
+  async execute(
+    _prompt: string,
+    _context: Partial<StrategyContext> = {}
+  ): Promise<CriticResult> {
     return {
       score: 88,
-      graphValid: true,
-      issues: this.detectCapacityIssues(plan),
-      optimizations: ["Combine security audits", "Offload docs to Q2"]
+      issues: [
+        {
+          type: CriticIssueType.TIMELINE,
+          severity: CriticSeverity.MEDIUM,
+          description: "Q1 overloaded (18 HIGH priority tasks)"
+        }
+      ],
+      optimizations: ["Parallelize AI-26-001 and IN-26-002"]
     };
   }
 }
-```
 
 **Validation Rules**:
 - ✅ All dependencies must exist in task list
@@ -179,39 +191,45 @@ export class CriticAgent extends BaseAgent {
 
 **MissionControl** coordinates the collaborative synthesis pipeline:
 
-```typescript
 // src/lib/adk/orchestrator.ts
 export class MissionControl {
   /**
-   * Collaborative Synthesis: Strategist → Analyst → Critic
+   * Orchestrates full multi-agent planning cycle:
+   * Strategist → Iterative Critic Feedback → Analyst Validation
    */
   async processCollaborativeInput(
     goal: string,
     context: AgentExecutionContext = {}
-  ): Promise<MissionResult> {
-    // Step 1: Strategist generates initial plan
-    const strategist = AgentFactory.getOrCreate(AgentPersona.STRATEGIST);
-    const initialPlan = await strategist.execute<Plan>(goal, context);
+  ): Promise<{ text: string; a2ui?: A2UIMessage; plan?: Plan }> {
+    // Phase 1: Strategist generates initial plan
+    const strategist = this.getAgent(AgentPersona.STRATEGIST);
+    let proposal = await strategist.execute(goal, context);
 
-    // Step 2: Analyst performs feasibility review
-    const analyst = AgentFactory.getOrCreate(AgentPersona.ANALYST);
-    const analysis = await analyst.execute(goal, { ...context, plan: initialPlan });
+    // Phase 2: Iterative refinement via Critic feedback (up to 3 iterations)
+    let iterations = 0;
+    while (iterations < this.maxIterations) {
+      const criticResult = await this.evaluatePlan(proposal);
+      if (criticResult.score >= this.scoreThreshold) break;
+      
+      iterations++;
+      // Feed feedback back to strategist for refinement
+      proposal = await strategist.execute(feedbackPrompt, { ...context, plan: proposal });
+    }
 
-    // Step 3: Critic validates and optimizes
-    const critic = AgentFactory.getOrCreate(AgentPersona.CRITIC);
-    const review = await critic.execute(goal, { ...context, plan: initialPlan, analysis });
+    // Phase 3: Analyst validation
+    const analyst = this.getAgent(AgentPersona.ANALYST);
+    const analysis = await analyst.execute("Final feasibility check", {
+      ...context,
+      plan: proposal
+    }) as AnalystResult;
 
     return {
-      text: `Strategic plan synthesized for: ${goal}`,
-      plan: initialPlan,
-      validation: {
-        finalScore: review.score,
-        graphReady: review.graphValid
-      }
+      text: this.formatSynthesisSummary(goal, iterations, analysis, proposal),
+      plan: proposal as Plan,
+      a2ui: strategist.getInitialUI()
     };
   }
 }
-```
 
 ### Execution Flow
 
@@ -768,6 +786,6 @@ For agent-specific questions:
 
 *Powered by Google Gemini 2.0 Flash*
 
-Version 3.2.5 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
+Version 3.2.6 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
 
 </div>

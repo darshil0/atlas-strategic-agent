@@ -1,6 +1,6 @@
 # 🤝 Contributing to Atlas Strategic Agent
 
-Thank you for your interest in contributing to Atlas! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Atlas! We welcome contributions from developers of all experience levels and backgrounds.
 
 ---
 
@@ -15,7 +15,8 @@ Thank you for your interest in contributing to Atlas! This document provides gui
 - [Pull Request Process](#pull-request-process)
 - [Issue Guidelines](#issue-guidelines)
 - [Project Structure](#project-structure)
-- [Contact](#contact)
+- [Recognition](#recognition)
+- [Getting Help](#getting-help)
 
 ---
 
@@ -40,6 +41,10 @@ We are committed to providing a welcoming and inclusive environment for all cont
 - Publishing others' private information without permission
 - Any conduct that could reasonably be considered inappropriate
 
+### Enforcement
+
+Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues, and other contributions that are not aligned with this Code of Conduct. Instances of unacceptable behavior may be reported by contacting the project team at contact@darshilshah.com. All complaints will be reviewed and investigated promptly and fairly.
+
 ---
 
 ## Getting Started
@@ -48,14 +53,14 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 Before you begin contributing, ensure you have the following installed:
 
-- **Node.js** 20+ (LTS recommended)
-- **npm** 10+ or **yarn** 1.22+
-- **Git** 2.40+
+- **Node.js** 20 or higher (LTS recommended)
+- **npm** 10 or higher, or **yarn** 1.22 or higher
+- **Git** 2.40 or higher
 - **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
 
 ### Fork and Clone
 
-1. Fork the repository on GitHub
+1. Fork the repository on GitHub by clicking the "Fork" button at the top right of the repository page
 2. Clone your fork locally:
 
 ```bash
@@ -63,7 +68,7 @@ git clone https://github.com/YOUR_USERNAME/atlas-strategic-agent.git
 cd atlas-strategic-agent
 ```
 
-3. Add the upstream repository:
+3. Add the upstream repository as a remote:
 
 ```bash
 git remote add upstream https://github.com/darshil0/atlas-strategic-agent.git
@@ -82,12 +87,14 @@ cp .env.example .env
 # Edit .env and add your VITE_GEMINI_API_KEY
 ```
 
-6. Verify the setup:
+6. Verify the setup by running the development server and tests:
 
 ```bash
 npm run dev
 npm test
 ```
+
+If everything is set up correctly, the development server should start on `http://localhost:5173` and all tests should pass.
 
 ---
 
@@ -95,7 +102,7 @@ npm test
 
 ### Branch Strategy
 
-We follow a simple branching model:
+We use a straightforward branching model:
 
 - `main` - Production-ready code
 - `feature/*` - New features
@@ -113,7 +120,7 @@ git checkout main
 git merge upstream/main
 
 # Create your feature branch
-git checkout -b feature/amazing-feature
+git checkout -b feature/your-feature-name
 ```
 
 ### Making Changes
@@ -133,6 +140,8 @@ git fetch upstream
 git rebase upstream/main
 ```
 
+If you encounter conflicts during the rebase, resolve them carefully and continue the rebase with `git rebase --continue`.
+
 ---
 
 ## Coding Standards
@@ -145,7 +154,7 @@ git rebase upstream/main
 - Avoid `any` type - use `unknown` if type is truly unknown
 - Use const assertions where appropriate
 
-**Good:**
+**Example:**
 ```typescript
 interface TaskProps {
   id: string;
@@ -159,7 +168,7 @@ function createTask(props: TaskProps): Task {
 }
 ```
 
-**Bad:**
+**Avoid:**
 ```typescript
 function createTask(props: any) {
   // Implementation
@@ -170,11 +179,11 @@ function createTask(props: any) {
 
 - Use functional components with hooks
 - Extract custom hooks for reusable logic
-- Keep components small and focused (< 200 lines)
+- Keep components small and focused (under 200 lines)
 - Use proper prop typing with interfaces
-- Implement proper error boundaries
+- Implement proper error boundaries where appropriate
 
-**Good:**
+**Example:**
 ```typescript
 interface TaskCardProps {
   task: Task;
@@ -191,14 +200,14 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 
 - Use Tailwind utility classes for styling
 - Follow the existing glassmorphic design system
-- Ensure responsive design (mobile-first)
-- Maintain WCAG AA contrast ratios (minimum standard)
-- Use semantic HTML elements
+- Ensure responsive design with mobile-first approach
+- Maintain WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
+- Use semantic HTML elements (e.g., `<nav>`, `<main>`, `<article>`)
 
 ### Code Organization
 
 - One component per file
-- Group related functionality
+- Group related functionality together
 - Use barrel exports (index.ts) for clean imports
 - Keep functions pure where possible
 - Separate business logic from UI logic
@@ -209,14 +218,14 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 
 ### Coverage Requirements
 
-All contributions must maintain or improve the **85% coverage threshold**:
+All contributions must maintain or improve the 85% coverage threshold across all metrics:
 
 - **Lines**: 85%
 - **Functions**: 85%
 - **Branches**: 85%
 - **Statements**: 85%
 
-### Writing Tests
+### Running Tests
 
 ```bash
 # Run tests in watch mode
@@ -237,13 +246,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { TaskCard } from './TaskCard';
 
 describe('TaskCard', () => {
-  it('should render task title', () => {
+  it('renders task title', () => {
     const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={vi.fn()} />);
     expect(screen.getByText('Test Task')).toBeInTheDocument();
   });
 
-  it('should call onUpdate when edited', () => {
+  it('calls onUpdate when edited', () => {
     const onUpdate = vi.fn();
     const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={onUpdate} />);
@@ -255,10 +264,10 @@ describe('TaskCard', () => {
 ### Testing Best Practices
 
 - Test user behavior, not implementation details
-- Use meaningful test descriptions
-- Keep tests focused and isolated
-- Mock external dependencies
-- Test error cases and edge cases
+- Use meaningful test descriptions that explain what is being tested
+- Keep tests focused and isolated from each other
+- Mock external dependencies appropriately
+- Test error cases and edge cases thoroughly
 
 ---
 
@@ -282,9 +291,9 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `fix` - Bug fix
 - `docs` - Documentation changes
 - `style` - Code style changes (formatting, missing semicolons, etc.)
-- `refactor` - Code refactoring
+- `refactor` - Code refactoring without changing functionality
 - `test` - Adding or updating tests
-- `chore` - Maintenance tasks
+- `chore` - Maintenance tasks (dependency updates, build configuration, etc.)
 
 ### Examples
 
@@ -316,9 +325,9 @@ Added troubleshooting section for common setup issues.
 
 - Use present tense ("add feature" not "added feature")
 - Use imperative mood ("move cursor to..." not "moves cursor to...")
-- Limit first line to 72 characters
+- Limit first line to 72 characters or less
 - Reference issues and pull requests when relevant
-- Keep commits atomic and focused
+- Keep commits atomic and focused on a single change
 
 ---
 
@@ -326,12 +335,14 @@ Added troubleshooting section for common setup issues.
 
 ### Before Submitting
 
+Ensure your PR meets these requirements:
+
 - [ ] Code follows project style guidelines
 - [ ] Tests pass locally (`npm test`)
 - [ ] Linting passes (`npm run lint`)
 - [ ] Type checking passes (`npm run type-check`)
 - [ ] Coverage meets 85% threshold
-- [ ] Documentation is updated
+- [ ] Documentation is updated (if applicable)
 - [ ] Commit messages follow guidelines
 - [ ] Branch is up-to-date with main
 
@@ -340,21 +351,23 @@ Added troubleshooting section for common setup issues.
 1. Push your branch to your fork:
 
 ```bash
-git push origin feature/amazing-feature
+git push origin feature/your-feature-name
 ```
 
 2. Go to the repository on GitHub and click "New Pull Request"
 
-3. Fill out the PR template with:
+3. Fill out the PR description with:
    - Clear description of changes
    - Link to related issues
-   - Screenshots (for UI changes)
+   - Screenshots for UI changes
    - Testing performed
    - Breaking changes (if any)
 
-4. Request review from maintainers
+4. Wait for maintainer review (typically within 48 hours)
 
 ### PR Template
+
+When creating a PR, please use this template:
 
 ```markdown
 ## Description
@@ -392,7 +405,7 @@ Add screenshots here
 ### Review Process
 
 - Maintainers will review your PR within 48 hours
-- Address feedback and push updates to your branch
+- Address feedback by pushing updates to your branch
 - Once approved, a maintainer will merge your PR
 - Your contribution will be included in the next release
 
@@ -403,19 +416,32 @@ Add screenshots here
 ### Before Creating an Issue
 
 - Search existing issues to avoid duplicates
-- Check if it's already fixed in the main branch
-- Gather relevant information (browser, OS, versions)
+- Check if the issue is already fixed in the main branch
+- Gather relevant information (browser version, OS, package versions)
+
+### Asking Questions
+
+If you have a question about using Atlas, please check the following resources first:
+
+- Read the [README.md](README.md) and available documentation
+- Search [existing issues](https://github.com/darshil0/atlas-strategic-agent/issues) for similar questions
+- Search the internet for answers
+
+If you still need clarification after checking these resources, feel free to [open an issue](https://github.com/darshil0/atlas-strategic-agent/issues/new) with the following information:
+
+- Provide as much context as you can about what you're trying to accomplish
+- Include project and platform versions (Node.js, npm, browser, OS) where relevant
 
 ### Bug Reports
 
 Use the bug report template and include:
 
 - Clear, descriptive title
-- Steps to reproduce
+- Steps to reproduce the issue
 - Expected behavior
 - Actual behavior
-- Screenshots or error messages
-- Environment details
+- Screenshots or error messages (if applicable)
+- Environment details (browser, OS, Atlas version)
 
 **Example:**
 
@@ -432,10 +458,14 @@ Dependency graph crashes when loading large roadmaps (100+ tasks)
 **Expected Behavior**
 Graph should render smoothly with proper virtualization
 
+**Actual Behavior**
+Browser tab crashes with "Out of memory" error
+
 **Environment**
 - Browser: Chrome 120.0.6099.109
 - OS: macOS 14.2
 - Atlas Version: 3.2.2
+- Node.js: 20.10.0
 ```
 
 ### Feature Requests
@@ -469,6 +499,18 @@ migrate them to Atlas without manual entry.
 - Improves enterprise adoption
 ```
 
+### Issue Labels
+
+Once filed, the project team will label issues accordingly:
+
+- `bug` - Something isn't working
+- `enhancement` - New feature or request
+- `documentation` - Improvements or additions to documentation
+- `good first issue` - Good for newcomers
+- `help wanted` - Extra attention is needed
+- `needs-repro` - Bug reports that need reproduction steps
+- `needs-fix` - Confirmed bugs ready to be fixed
+
 ---
 
 ## Project Structure
@@ -484,7 +526,7 @@ atlas-strategic-agent/
 │   ├── config/              # Configuration files
 │   │   ├── env.ts
 │   │   └── prompts.ts
-│   ├── data/                # Static Data & Templates
+│   ├── data/                # Static data & templates
 │   │   └── taskBank.ts
 │   ├── lib/
 │   │   └── adk/            # Agent Development Kit
@@ -507,25 +549,11 @@ atlas-strategic-agent/
 
 ### Key Directories
 
-- **components/** - Reusable React components with tests
-- **lib/adk/** - Core agent system logic
-- **services/** - External API integrations
-- **types/** - Shared TypeScript interfaces
-- **test/** - Test infrastructure and utilities
-
----
-
-## Contact
-
-### Getting Help
-
-- **GitHub Discussions** - [Start a discussion](https://github.com/darshil0/atlas-strategic-agent/discussions)
-- **GitHub Issues** - [Report bugs or request features](https://github.com/darshil0/atlas-strategic-agent/issues)
-- **Email** - contact@darshilshah.com
-
-### Maintainers
-
-- **Darshil Shah** ([@darshil0](https://github.com/darshil0)) - Project Lead & Architecture
+- **components/** - Reusable React components with co-located tests
+- **lib/adk/** - Core agent system logic and protocols
+- **services/** - External API integrations (Gemini, GitHub, Jira)
+- **types/** - Shared TypeScript interfaces and type definitions
+- **test/** - Test infrastructure and test utilities
 
 ---
 
@@ -537,17 +565,41 @@ All contributors will be recognized in:
 
 - The project README
 - Release notes for their contributions
-- The project's contributor graph
+- The project's contributor graph on GitHub
 
 ### First-Time Contributors
 
-We especially welcome first-time contributors! Look for issues labeled `good first issue` or `help wanted` to get started.
+We especially welcome first-time contributors! Look for issues labeled `good first issue` or `help wanted` to get started. These issues are specifically chosen to be approachable for developers new to the project.
+
+---
+
+## Getting Help
+
+### Communication Channels
+
+- **GitHub Discussions** - [Ask questions and discuss ideas](https://github.com/darshil0/atlas-strategic-agent/discussions)
+- **GitHub Issues** - [Report bugs or request features](https://github.com/darshil0/atlas-strategic-agent/issues)
+- **Email** - contact@darshilshah.com
+
+### Maintainers
+
+- **Darshil Shah** ([@darshil0](https://github.com/darshil0)) - Project Lead & Architecture
+
+### Response Times
+
+We strive to respond to:
+
+- **Pull requests**: Within 48 hours
+- **Issues**: Within 72 hours
+- **Questions**: Within 1 week
+
+Please be patient with us as we're maintaining this project in our free time.
 
 ---
 
 ## License
 
-By contributing to Atlas Strategic Agent, you agree that your contributions will be licensed under the same license as the project.
+By contributing to Atlas Strategic Agent, you agree that your contributions will be licensed under the same license as the project (MIT License).
 
 ---
 

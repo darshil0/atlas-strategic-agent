@@ -39,7 +39,7 @@ export abstract class BaseAgent {
    * Execute core agent reasoning with full context
    * @returns ReactFlow-ready Plan or analysis result
    */
-  abstract execute<R = any>(
+  abstract execute<R = unknown>(
     prompt: string,
     context?: AgentExecutionContext
   ): Promise<R>;

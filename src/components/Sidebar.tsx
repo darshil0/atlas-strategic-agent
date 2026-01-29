@@ -48,7 +48,7 @@ interface SidebarProps {
     riskScore: number;
     impactedHighPriority: number;
   } | null;
-  setSimulationResult: (result: any) => void;
+  setSimulationResult: (result: SidebarProps["simulationResult"]) => void;
   onSimulateFailure: (taskId: string) => Promise<void>;
   
   // Refs
@@ -121,8 +121,8 @@ export const Sidebar: React.FC<SidebarProps> =({
       <main className="flex-1 overflow-y-auto px-6 py-8 space-y-8 scroll-smooth scrollbar-hide">
         {sidebarView === "list" && currentPlan && (
           <AnimatePresence mode="popLayout">
-            {currentPlan.tasks.map((task) => (
-              <div key={task.id} ref={(el) => { if (taskRefs.current) taskRefs.current[task.id] = el; }}>
+            {currentPlan.tasks.map((task: SubTask) => (
+              <div key={task.id} ref={(el: HTMLDivElement | null) => { if (taskRefs.current) taskRefs.current[task.id] = el; }}>
                 <TaskCard
                   task={task}
                   isActive={activeTaskId === task.id}

@@ -294,7 +294,7 @@ export class PersistenceService {
   /**
    * MissionControl session persistence
    */
-  static saveAgentSession(sessionId: string, data: any): void {
+  static saveAgentSession(sessionId: string, data: Record<string, unknown>): void {
     try {
       const sessions = this.getAgentSessions();
       sessions[sessionId] = { ...data, updated: Date.now() };
@@ -307,7 +307,7 @@ export class PersistenceService {
     }
   }
 
-  static getAgentSessions(): Record<string, any> {
+  static getAgentSessions(): Record<string, Record<string, unknown>> {
     try {
       const data = localStorage.getItem(ATLAS_STORAGE_KEYS.AGENT_SESSIONS);
       return data ? JSON.parse(data) : {};

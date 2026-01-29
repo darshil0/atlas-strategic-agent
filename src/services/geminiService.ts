@@ -278,7 +278,7 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
 
     try {
       return JSON.parse(cleanText) as T;
-    } catch (error) {
+    } catch {
       console.error("[AtlasService] JSON parse failed:", cleanText.slice(0, 200));
       throw new Error("Failed to parse structured Gemini response");
     }

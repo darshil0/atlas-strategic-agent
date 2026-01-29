@@ -4,7 +4,7 @@
  * Perfect sync for MissionControl → ReactFlow → GitHub Actions pipeline
  */
 
-import { SubTask, TaskStatus, Priority } from "@types";
+import { SubTask, TaskStatus, Priority, GithubSyncResult, GithubIssueResult } from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 import { ENV } from "@config";
@@ -113,13 +113,13 @@ export class GithubService {
    * Bulk sync entire 2026 roadmap to GitHub Issues + Projects
    * Creates milestones for Q1-Q4 + theme labels from TASK_BANK
    */
-  async syncPlan(tasks: SubTask[], dryRun = false): Promise<any> {
+  async syncPlan(tasks: SubTask[], dryRun = false): Promise<GithubSyncResult> {
     const config = this.getValidatedConfig();
-    const results = {
+    const results: GithubSyncResult = {
       created: 0,
       skipped: 0,
-      failed: [] as any[],
-      milestones: new Map<string, number>(),
+      failed: [] as GithubIssueResult[],
+      epics: {},
     };
 
     if (dryRun) {
@@ -145,7 +145,7 @@ export class GithubService {
         // Link to GitHub Project (Atlas 2026 Roadmap)
         await this.addToProject(config, issue.issueNumber);
       } catch (error) {
-        results.failed.push({ taskId: task.id, error: error as Error });
+        results.failed.push({ success: false, taskId: task.id, error: (error as Error).message });
         console.warn(`[GitHubService] Failed to sync ${task.id}:`, error);
       }
     }
@@ -300,7 +300,7 @@ ${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.descript
       id: taskId,
       description: issue.title.replace(/^\[.*?\]\s*/, "").trim(),
       status: issue.state === "closed" ? TaskStatus.COMPLETED : TaskStatus.PENDING,
-      priority: (issue.labels.find(l => l.startsWith("priority-")) as string)?.replace("priority-", Priority.HIGH as any) as Priority || Priority.MEDIUM,
+      priority: (issue.labels.find(l => l.startsWith("priority-")) as string)?.replace("priority-", "").toUpperCase() as Priority || Priority.MEDIUM,
       category: issue.labels.find(l => l.includes("q")) || "2026 Q1",
       theme: issue.labels.find(l => ["ai", "cyber", "esg", "global", "infra", "people"].some(t => l.includes(t))) || undefined,
       dependencies: [],

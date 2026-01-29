@@ -4,7 +4,7 @@
  * Centralized types for @types/plan.types → @lib/adk/* → @services/*
  */
 
-import type React from "react";
+
 import type {
   SubTask,
   Plan,
@@ -43,43 +43,6 @@ declare namespace ADK {
       finalScore: number;
       graphReady: boolean;
       q1HighCount: number;
-    };
-  }
-}
-
-// === CUSTOM JSX ELEMENTS (Glassmorphic A2UI) ===
-declare namespace JSX {
-  interface IntrinsicElements {
-    "a2ui-panel": React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    > & {
-      title?: string;
-    };
-
-    "a2ui-card": React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    > & {
-      title?: string;
-      subtitle?: string;
-    };
-
-    "a2ui-button": React.DetailedHTMLProps<
-      React.ButtonHTMLAttributes<HTMLButtonElement>,
-      HTMLButtonElement
-    > & {
-      actionData?: string;
-      variant?: "primary" | "secondary" | "danger" | "ghost";
-    };
-
-    "a2ui-progress": React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    > & {
-      value: number;
-      max?: number;
-      label?: string;
     };
   }
 }

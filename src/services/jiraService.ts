@@ -3,7 +3,7 @@
  * Bidirectional sync: SubTasks ↔ Jira Issues with Q1-Q4 epics + priority mapping
  */
 
-import { SubTask, Priority, TaskStatus } from "@types";
+import { SubTask, Priority, TaskStatus, JiraTicketResult, JiraSyncResult } from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 
@@ -83,13 +83,13 @@ export class JiraService {
   /**
    * Bulk sync 2026 roadmap to Jira Epics + Stories
    */
-  async syncPlan(tasks: SubTask[], dryRun = false): Promise<any> {
+  async syncPlan(tasks: SubTask[], dryRun = false): Promise<JiraSyncResult> {
     const config = this.getValidatedConfig();
-    const results = {
+    const results: JiraSyncResult = {
       created: 0,
       skipped: 0,
-      failed: [] as any[],
-      epics: new Map<string, string>(),
+      failed: [] as JiraTicketResult[],
+      epics: {},
     };
 
     if (dryRun) {
@@ -121,7 +121,7 @@ export class JiraService {
           results.failed.push(result);
         }
       } catch (error) {
-        results.failed.push({ taskId: task.id, error: error as Error });
+        results.failed.push({ success: false, taskId: task.id, error: (error as Error).message });
       }
     }
 
@@ -144,7 +144,7 @@ export class JiraService {
     if (!response.ok) throw new Error("Failed to fetch Jira issues");
 
     const searchResult = await response.json();
-    return (searchResult.issues || []).map((issue: any) => this.parseJiraIssue(issue));
+    return (searchResult.issues || []).map((issue: { key: string; fields: Record<string, any> }) => this.parseJiraIssue(issue));
   }
 
   // === PRIVATE IMPLEMENTATION ===

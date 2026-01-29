@@ -6,7 +6,7 @@
 import { A2UIMessage, A2UIElement, A2UIComponentType, AgentPersona } from "@types";
 import { GLASSMORPHIC_DEFAULTS, validateA2UIMessage } from "./protocol";
 
-type ComponentProps = Record<string, any>;
+type ComponentProps = Record<string, unknown>;
 
 export class UIBuilder {
   private elements: A2UIElement[] = [];
@@ -44,7 +44,7 @@ export class UIBuilder {
   }
 
   /** Primary button */
-  button(label: string, actionData?: any, props: ComponentProps = {}): this {
+  button(label: string, actionData?: unknown, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "primary",
@@ -54,7 +54,7 @@ export class UIBuilder {
   }
 
   /** Glassmorphic secondary button */
-  glassButton(label: string, actionData?: any, props: ComponentProps = {}): this {
+  glassButton(label: string, actionData?: unknown, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "glass",
@@ -64,7 +64,7 @@ export class UIBuilder {
   }
 
   /** Danger button */
-  dangerButton(label: string, actionData?: any, props: ComponentProps = {}): this {
+  dangerButton(label: string, actionData?: unknown, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "danger",

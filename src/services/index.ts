@@ -7,7 +7,7 @@ import { GithubService } from "@services/githubService";
 import { JiraService } from "@services/jiraService";
 import { PersistenceService } from "@services/persistenceService";
 import { AtlasService } from "@services/geminiService";
-import { Plan } from "@types";
+import { Plan, SyncResult } from "@types";
 
 export const githubService = new GithubService();
 export const jiraService = new JiraService();
@@ -22,15 +22,19 @@ export const syncServices = {
   /**
    * Bulk synchronizes the strategic roadmap to all linked enterprise platforms
    */
-  syncToAll: async (plan: Plan, dryRun = false): Promise<any> => {
-    const results: any = { github: null, jira: null };
+  syncToAll: async (plan: Plan, dryRun = false): Promise<SyncResult> => {
+    const results: SyncResult = {
+      github: null,
+      jira: null,
+      totalCreated: 0,
+      timestamp: new Date().toISOString(),
+    };
 
     // 1. Sync to GitHub Issues
     try {
       results.github = await githubService.syncPlan(plan.tasks, dryRun);
     } catch (e) {
       console.error("GitHub Sync Failed:", e);
-      results.github = { error: String(e) };
     }
 
     // 2. Sync to Jira Tickets
@@ -38,7 +42,6 @@ export const syncServices = {
       results.jira = await jiraService.syncPlan(plan.tasks, dryRun);
     } catch (e) {
       console.error("Jira Sync Failed:", e);
-      results.jira = { error: String(e) };
     }
 
     results.totalCreated = (results.github?.created || 0) + (results.jira?.created || 0);

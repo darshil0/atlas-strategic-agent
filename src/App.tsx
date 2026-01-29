@@ -113,7 +113,7 @@ const App: React.FC = () => {
         );
         addMessage("assistant", response.text, response.a2ui);
       }
-    } catch (error) {
+    } catch {
       addMessage("assistant", "⚠️ Error generating strategic synthesis.");
     } finally {
       setIsThinking(false);
@@ -152,7 +152,7 @@ const App: React.FC = () => {
       addMessage("assistant",
         `⚠️ Risk Analysis: ${taskId} failure impacts ${result.cascade.length} tasks (${result.riskScore.toFixed(1)}% risk)`
       );
-    } catch (error) {
+    } catch {
       addMessage("assistant", "⚠️ Simulation failed");
     }
   };
@@ -184,7 +184,7 @@ const App: React.FC = () => {
         [taskId]: { ...prev[taskId], [type]: "https://github.com" }
       }));
       addMessage("assistant", `🚀 Successfully exported ${taskId} to ${type}`);
-    } catch (error) {
+    } catch {
       setExportedTasks((prev: Record<string, { github?: string; jira?: string }>) => {
         const next = { ...prev };
         if (next[taskId]) {
@@ -204,7 +204,7 @@ const App: React.FC = () => {
     try {
       await AtlasService.summarizeMission(currentPlan, "Initiating global sync");
       addMessage("assistant", "🏛️ Roadmap synchronized across enterprise hubs.");
-    } catch (error) {
+    } catch {
       addMessage("assistant", "⚠️ Sync failed.");
     } finally {
       setIsThinking(false);

@@ -11,7 +11,10 @@ import {
   TaskStatus,
   Priority,
   SubTask,
-  AgentExecutionContext
+  Plan,
+  AgentExecutionContext,
+  AnalystResult,
+  CriticResult
 } from "@types";
 import { ENV } from "@config";
 import { TASK_BANK } from "@data/taskBank";
@@ -46,13 +49,13 @@ export class StrategistAgent extends BaseAgent {
     }
   }
 
-  async execute<R = any>(
+  async execute<R = Plan>(
     _prompt: string,
-    context: AgentExecutionContext = {}
+    _context: AgentExecutionContext = {}
   ): Promise<R> {
-    const plan = {
+    const plan: Plan = {
       projectName: "Atlas Strategic 2026",
-      goal: prompt,
+      goal: _prompt,
       tasks: TASK_BANK
         .filter(task => task.priority === Priority.HIGH && task.category === "2026 Q1")
         .slice(0, 8)
@@ -65,11 +68,10 @@ export class StrategistAgent extends BaseAgent {
           theme: task.theme,
           dependencies: [],
         })) as SubTask[],
-      ...context,
     };
 
     if (ENV.DEBUG_MODE) {
-      console.log(`🧠 [Strategist] Generated roadmap for: ${prompt}`);
+      console.log(`🧠 [Strategist] Generated roadmap for: ${_prompt}`);
     }
 
     return plan as unknown as R;
@@ -97,7 +99,7 @@ export class ArchitectAgent extends BaseAgent {
       .build();
   }
 
-  async execute<R = any>(
+  async execute<R = unknown>(
     _prompt: string,
     _context: AgentExecutionContext = {}
   ): Promise<R> {
@@ -130,11 +132,11 @@ export class AnalystAgent extends BaseAgent {
       .build();
   }
 
-  async execute<R = any>(
+  async execute<R = AnalystResult>(
     _prompt: string,
     _context: AgentExecutionContext = {}
   ): Promise<R> {
-    const analysis = {
+    const analysis: AnalystResult = {
       feasibility: 87,
       confidence: 94,
       risks: [
@@ -172,7 +174,7 @@ export class CriticAgent extends BaseAgent {
       .build();
   }
 
-  async execute<R = any>(
+  async execute<R = CriticResult>(
     _prompt: string,
     context: AgentExecutionContext = {}
   ): Promise<R> {
@@ -181,7 +183,7 @@ export class CriticAgent extends BaseAgent {
       t.priority === Priority.HIGH && t.category?.includes("Q1")
     )?.length || 0;
 
-    const review = {
+    const review: CriticResult = {
       score: 88,
       graphValid: true,
       issues: q1HighCount > 10 ? [{

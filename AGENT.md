@@ -58,7 +58,7 @@ export class StrategistAgent extends BaseAgent {
   name = "Strategist";
   persona = AgentPersona.STRATEGIST;
   
-  async execute<R = any>(
+  async execute<R = Plan>(
     prompt: string,
     context: AgentExecutionContext = {}
   ): Promise<R> {
@@ -658,7 +658,7 @@ export class ArchitectAgent extends BaseAgent {
   name = "Architect";
   description = "Technical architecture design for strategic objectives";
 
-  async execute<R = any>(prompt: string, context: AgentExecutionContext): Promise<R> {
+  async execute<R = unknown>(prompt: string, context: AgentExecutionContext): Promise<R> {
     // Custom logic here
   }
 

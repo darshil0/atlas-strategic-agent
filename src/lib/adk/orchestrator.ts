@@ -10,7 +10,9 @@ import {
   AgentExecutionContext,
   MissionResult,
   A2UIMessage,
-  SubTask
+  SubTask,
+  AnalystResult,
+  CriticResult
 } from "@types";
 import { AgentFactory } from "./factory";
 import { UIBuilder } from "./uiBuilder";
@@ -35,11 +37,11 @@ export class MissionControl {
 
     // Step 2: Analyst Feasibility Review
     const analyst = AgentFactory.getOrCreate(AgentPersona.ANALYST);
-    const analysis = await analyst.execute(goal, { ...context, plan: initialPlan });
+    const analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: initialPlan });
 
     // Step 3: Critic Validation + Graph Hardening
     const critic = AgentFactory.getOrCreate(AgentPersona.CRITIC);
-    const review = await critic.execute(goal, { ...context, plan: initialPlan, analysis });
+    const review = await critic.execute<CriticResult>(goal, { ...context, plan: initialPlan, analysis });
 
     // Final Synthesis
     const q1HighCount = initialPlan.tasks.filter(t =>

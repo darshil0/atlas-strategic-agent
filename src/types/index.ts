@@ -66,6 +66,26 @@ export interface Plan {
   };
 }
 
+export interface AnalystResult {
+  feasibility: number;
+  confidence: number;
+  risks: string[];
+  recommendations: string[];
+}
+
+export interface CriticIssue {
+  type: string;
+  severity: "low" | "medium" | "high";
+  description: string;
+}
+
+export interface CriticResult {
+  score: number;
+  graphValid: boolean;
+  issues: CriticIssue[];
+  optimizations: string[];
+}
+
 export type MessageRole = "user" | "assistant" | "system" | "agent";
 
 export interface Message {
@@ -94,19 +114,19 @@ export enum AgentMode {
 
 export interface AgentExecutionContext {
   sessionId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   goal?: string;                    // C-level strategic objective
   activeTaskId?: string;            // DependencyGraph focus
   plan?: Plan | null;               // Current roadmap state
   previousPlan?: Plan | null;       // Iteration history
-  criticFeedback?: any;             // Refinement input
+  criticFeedback?: CriticResult;    // Refinement input
   taskBank?: BankTask[];            // 90+ enterprise objectives
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface AgentRuntimeContext extends AgentExecutionContext {
   sessionId: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface AgentResponse {
@@ -178,7 +198,7 @@ interface A2UIElementBase {
   type: A2UIComponentType | string;
   id: string;
   className?: string;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   children?: A2UIElement[];
 }
 
@@ -204,7 +224,7 @@ export interface A2UICard extends A2UIElementBase {
 export interface A2UIButton extends A2UIElementBase {
   type: A2UIComponentType.BUTTON;
   label: string;
-  actionData: any;
+  actionData: unknown;
   variant?: "primary" | "secondary" | "danger" | "ghost" | "glass";
   disabled?: boolean;
 }
@@ -322,9 +342,9 @@ export interface BankTask {
 export interface AGUIEvent {
   action: AGUIAction | string;
   elementId: string;
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
   timestamp: number;
-  data?: any;
+  data?: unknown;
 }
 
 export type AGUIAction =

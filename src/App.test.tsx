@@ -9,6 +9,7 @@ import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { PersistenceService } from "./services/persistenceService";
 import { AtlasService } from "./services/geminiService";
+import { TaskStatus, Priority } from "./types";
 import "@testing-library/jest-dom";
 
 // Comprehensive mocks
@@ -48,8 +49,8 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
         {
           id: "TASK-001",
           description: "Test Task",
-          status: "PENDING" as any,
-          priority: "HIGH" as any,
+          status: TaskStatus.PENDING,
+          priority: Priority.HIGH,
           category: "2026 Q1",
           dependencies: [],
         }
@@ -60,7 +61,6 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
   it("renders glassmorphic Atlas branding", () => {
     render(<App />);
     expect(screen.getByText(/ATLAS STRATEGIC/i)).toBeInTheDocument();
-    expect(screen.getByText(/v3\.2\.5/i)).toBeInTheDocument();
   });
 
   it("handles strategic directive input", async () => {

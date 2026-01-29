@@ -62,15 +62,16 @@ function validateElement(el: unknown): el is Partial<A2UIElement> {
 }
 
 function sanitizeElement(el: Partial<A2UIElement>): A2UIElement {
+  const props = el.props as Record<string, unknown> | undefined;
   return {
     id: el.id || `a2ui-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    type: el.type as any,
+    type: el.type as A2UIComponentType,
     props: {
-      ...el.props,
-      className: (el.props as any)?.className || GLASSMORPHIC_DEFAULTS.className,
-      variant: (el.props as any)?.variant || GLASSMORPHIC_DEFAULTS.variant,
+      ...props,
+      className: (props?.className as string) || GLASSMORPHIC_DEFAULTS.className,
+      variant: (props?.variant as string) || GLASSMORPHIC_DEFAULTS.variant,
     },
-    children: (el as any).children?.filter(validateElement).map(sanitizeElement) || [],
+    children: (el as { children?: unknown[] }).children?.filter(validateElement).map(sanitizeElement) || [],
   } as A2UIElement;
 }
 

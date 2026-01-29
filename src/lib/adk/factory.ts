@@ -3,7 +3,7 @@
  * TypeScript exhaustiveness + production agent lifecycle management
  */
 
-import { AgentPersona } from "@types";
+import { AgentPersona, Plan, AnalystResult, CriticResult } from "@types";
 import { BaseAgent } from "./types";
 import { StrategistAgent, AnalystAgent, CriticAgent, ArchitectAgent } from "./agents";
 
@@ -79,12 +79,18 @@ export class AgentFactory {
  * Convenience swarm execution utility
  */
 export const AgentSwarm = {
-  async execute(goal: string): Promise<any> {
+  async execute(goal: string): Promise<{
+    roadmap: Plan;
+    analysis: AnalystResult;
+    review: CriticResult;
+    finalScore: number;
+    readyForVisualization: boolean;
+  }> {
     const [strategist, analyst, critic] = await AgentFactory.createSwarmPipeline();
 
-    const roadmap = await strategist.execute(goal);
-    const analysis = await analyst.execute(goal, roadmap);
-    const review = await critic.execute(goal, { ...roadmap, analysis });
+    const roadmap = await strategist.execute<Plan>(goal);
+    const analysis = await analyst.execute<AnalystResult>(goal, { plan: roadmap });
+    const review = await critic.execute<CriticResult>(goal, { plan: roadmap, analysis });
 
     return {
       roadmap,

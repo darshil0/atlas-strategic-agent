@@ -75,7 +75,7 @@ Object.defineProperty(window, 'localStorage', {
 
 // === ATLAS-SPECIFIC MOCKS ===
 const mockState = {
-  plan: null as any,
+  plan: null as Plan | null,
   secrets: {} as Record<string, string>,
 };
 
@@ -168,7 +168,7 @@ global.console = {
   },
   warn: vi.fn(), // Suppress warnings in tests
   log: vi.fn(),  // Optional: suppress logs
-} as any;
+} as unknown as Console;
 
 // === ATLAS-SPECIFIC TEST UTILITIES ===
 export const ATLAS_TEST_UTILS = {
@@ -203,7 +203,7 @@ export const ATLAS_TEST_UTILS = {
   /**
    * Mock MissionControl response
    */
-  mockMissionControlResponse: (): any => ({
+  mockMissionControlResponse: (): unknown => ({
     text: '🏛️ ATLAS v3.2.7 SYNTHESIS COMPLETE\nQuality Score: 92/100',
     validation: {
       iterations: 2,
@@ -211,7 +211,7 @@ export const ATLAS_TEST_UTILS = {
       graphReady: true,
       q1HighCount: 8,
     },
-    plan: (global as any).ATLAS_TEST_UTILS.createMockPlan(),
+    plan: ATLAS_TEST_UTILS.createMockPlan(),
   }),
 
   /**
@@ -245,8 +245,14 @@ vi.stubGlobal('crypto', {
 
 // Vitest snapshot serializer for A2UI messages
 expect.addSnapshotSerializer({
-  test: (val: any) => val?.version === '1.1' && Array.isArray(val.elements),
-  serialize: (val: any) => `A2UIMessage(v1.1, ${val.elements.length} elements)`,
+  test: (val: unknown) => {
+    const v = val as { version?: string; elements?: unknown[] };
+    return v?.version === '1.1' && Array.isArray(v.elements);
+  },
+  serialize: (val: unknown) => {
+    const v = val as { elements: unknown[] };
+    return `A2UIMessage(v1.1, ${v.elements.length} elements)`;
+  },
 });
 
-(global as any).ATLAS_TEST_UTILS = ATLAS_TEST_UTILS;
+(globalThis as Record<string, unknown>).ATLAS_TEST_UTILS = ATLAS_TEST_UTILS;

@@ -47,16 +47,8 @@ declare namespace ADK {
   }
 }
 
-// === VITE ENV TYPING ===
-interface ImportMetaEnv {
-  readonly VITE_GEMINI_API_KEY?: string;
-  readonly VITE_APP_VERSION: string;
-  readonly VITE_TASKBANK_SIZE: string;
-}
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+
 
 // === GLOBAL TEST UTILITIES ===
 declare global {

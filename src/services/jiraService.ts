@@ -144,7 +144,7 @@ export class JiraService {
     if (!response.ok) throw new Error("Failed to fetch Jira issues");
 
     const searchResult = await response.json();
-    return (searchResult.issues || []).map((issue: { key: string; fields: Record<string, any> }) => this.parseJiraIssue(issue));
+    return (searchResult.issues || []).map((issue: { key: string; fields: JiraIssueFields }) => this.parseJiraIssue(issue));
   }
 
   // === PRIVATE IMPLEMENTATION ===
@@ -189,7 +189,7 @@ export class JiraService {
     return searchResult.issues?.[0]?.key || null;
   }
 
-  private buildGlassmorphicJiraPayload(task: SubTask, projectKey: string): any {
+  private buildGlassmorphicJiraPayload(task: SubTask, projectKey: string): unknown {
     const themeComponent = this.getTaskBankComponent(task);
 
     return {
@@ -225,8 +225,8 @@ export class JiraService {
     return matchingTask?.theme;
   }
 
-  private buildFieldUpdate(updates: Partial<SubTask>): any {
-    const fields: any = {};
+  private buildFieldUpdate(updates: Partial<SubTask>): Record<string, unknown> {
+    const fields: Record<string, unknown> = {};
     if (updates.priority) fields.priority = { name: this.mapPriority(updates.priority) };
     if (updates.category) fields.labels = [updates.category.replace(/\s+/g, "-"), "atlas-updated"];
     return fields;
@@ -252,8 +252,8 @@ export class JiraService {
       { headers: this.getHeaders(config) }
     );
     if (!response.ok) return null;
-    const data = await response.json();
-    const transition = data.transitions?.find((t: any) => t.name.toLowerCase().includes(status.toLowerCase()));
+    const data = (await response.json()) as { transitions: { id: string; name: string }[] };
+    const transition = data.transitions?.find((t) => t.name.toLowerCase().includes(status.toLowerCase()));
     return transition?.id || null;
   }
 
@@ -309,14 +309,14 @@ export class JiraService {
     return config as JiraConfig;
   }
 
-  private parseJiraIssue(issue: any): SubTask {
+  private parseJiraIssue(issue: { fields: JiraIssueFields; key: string }): SubTask {
     const taskIdMatch = issue.fields.summary.match(/\[([A-Z]+-\d+-\d+)\]/);
     return {
       id: taskIdMatch?.[1] || issue.key,
       description: issue.fields.summary.replace(/^\[.*?\]\s*/, "").trim(),
       status: this.mapJiraStatus(issue.fields.status?.name || "To Do"),
       priority: this.mapJiraPriority(issue.fields.priority?.name || "Medium"),
-      category: issue.fields.labels?.find((l: string) => l.includes("2026")) || "2026 Q1",
+      category: (issue.fields.labels?.find((l: string) => l.includes("2026")) as string) || "2026 Q1",
       theme: issue.fields.components?.[0]?.name || undefined,
       dependencies: [],
     };
@@ -334,13 +334,21 @@ export class JiraService {
     return Priority.MEDIUM;
   }
 
-  private async parseJiraError(response: Response): Promise<any> {
+  private async parseJiraError(response: Response): Promise<{ errorMessages?: string[] }> {
     try {
       return await response.json();
     } catch {
       return { errorMessages: ["Jira API error"] };
     }
   }
+}
+
+interface JiraIssueFields {
+  summary: string;
+  status?: { name: string };
+  priority?: { name: string };
+  labels?: string[];
+  components?: { name: string }[];
 }
 
 interface JiraConfig {

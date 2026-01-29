@@ -4,7 +4,7 @@
  * Perfect sync for MissionControl → ReactFlow → GitHub Actions pipeline
  */
 
-import { SubTask, TaskStatus, Priority, GithubSyncResult, GithubIssueResult } from "@types";
+import { SubTask, TaskStatus, Priority, GithubSyncResult } from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 import { ENV } from "@config";
@@ -118,7 +118,7 @@ export class GithubService {
     const results: GithubSyncResult = {
       created: 0,
       skipped: 0,
-      failed: [] as GithubIssueResult[],
+      failed: [],
       epics: {},
     };
 

@@ -4,11 +4,11 @@
  * Validates full ADK stack + GitHub/Jira sync + ReactFlow data flow
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AgentFactory, MissionControl } from "@adk/index";
-import { AgentPersona } from "@adk/types";
-import { PersistenceService } from "@services/persistenceService";
-import { syncServices } from "@services/index";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { AgentFactory, MissionControl } from "../lib/adk";
+import { AgentPersona } from "../types";
+import { PersistenceService } from "../services/persistenceService";
+import { syncServices } from "../services";
 import { ATLAS_TEST_UTILS } from "../test/setup";
 
 // Integration tests for full Atlas ADK stack
@@ -73,7 +73,7 @@ describe("🏛️ ATLAS v3.2.7 - Production Integration Tests", () => {
   });
 
   it("📊 UIBuilder generates valid A2UI v1.1 glassmorphic messages", async () => {
-    const { ui } = await import("@lib/adk/uiBuilder");
+    const { ui } = await import("../lib/adk/uiBuilder");
     const message = ui()
       .card("Test Dashboard")
       .progress("Q1 Capacity", 87)
@@ -118,16 +118,16 @@ describe("🏛️ ATLAS v3.2.7 - Production Integration Tests", () => {
 
   describe("📈 TaskBank Integration Tests", () => {
     it("TASK_BANK has correct structure", async () => {
-      const { TASK_BANK } = await import("@data/taskBank");
+      const { TASK_BANK } = await import("../data/taskBank");
       expect(TASK_BANK).toBeDefined();
       expect(TASK_BANK.length).toBeGreaterThan(20);
       
-      const aiTasks = TASK_BANK.filter((t: any) => t.theme === "AI");
+      const aiTasks = TASK_BANK.filter((t: { theme: string }) => t.theme === "AI");
       expect(aiTasks.length).toBeGreaterThan(5);
     });
 
     it("getTaskBankStats computes correctly", async () => {
-      const { TASK_BANK, getTaskBankStats } = await import("@data/taskBank");
+      const { TASK_BANK, getTaskBankStats } = await import("../data/taskBank");
       const stats = getTaskBankStats();
       
       expect(stats.total).toBe(TASK_BANK.length);
@@ -140,8 +140,8 @@ describe("🏛️ ATLAS v3.2.7 - Production Integration Tests", () => {
     it("API keys are properly encrypted", () => {
       const testKey = "ghp_test1234567890abcdef";
       
-      PersistenceService.saveSecret("test_key", testKey);
-      const retrieved = PersistenceService.getSecret("test_key");
+      PersistenceService.saveGithubApiKey(testKey);
+      const retrieved = PersistenceService.getGithubApiKey();
       
       expect(retrieved).toBe(testKey);
     });
@@ -157,9 +157,9 @@ describe("🏛️ ATLAS v3.2.7 - Production Integration Tests", () => {
 
   describe("🎨 Glassmorphic A2UI Protocol Tests", () => {
     it("generates valid A2UI v1.1 messages", async () => {
-      const { ui } = await import("@lib/adk/uiBuilder");
+      const { ui } = await import("../lib/adk/uiBuilder");
       const message = ui()
-        .missionControlStatus("Test Goal", 92, 2, 8)
+        .missionControlStatus(92, 2, 8)
         .build();
       
       expect(message.elements).toHaveLength(6);

@@ -1,4 +1,4 @@
-# 🧠 Atlas Strategic Agent v3.2.5: A Technical Deep Dive
+# 🧠 Atlas Strategic Agent v3.2.7: A Technical Deep Dive
 
 ## What You're Actually Looking At
 
@@ -12,12 +12,20 @@ It's not just another project management tool. It's an AI-powered reality check 
 - **The Analyst**: The pragmatist who asks "but can I actually do this?"
 - **The Critic**: The pessimist who finds every hole in your plan before reality does
 
-## v3.2.5 Update: Hardening the Foundation
+## v3.2.7 Update: Dependency Modernization & Protocol Finalization
 *Added January 2026*
 
-As we moved from prototype to production with v3.2.5, we faced a new challenge: **Code Sprawl**. Our `utility-first` approach with Tailwind led to duplicate logic across 30+ components.
+The transition from v3.2.5 to v3.2.7 was driven by two core imperatives: **Library Stability** and **Contract Enforcement**. 
 
-**The Fix**: We introduced a centralized `src/lib/utils.ts` and enforced strict type safety across the Agent Development Kit (ADK). No more `any` types. No more duplicate class mergers. Just clean, predictable, type-safe code.
+1. **Dependency Modernization**: We updated 25+ packages (React 19.2.4, Vitest 4.0.18, Vite 7.3.1). This wasn't just "version bumping"—it involved reconciling breaking changes in Vite types and ensuring our custom PostCSS pipeline played nice with Tailwind 4.1.18.
+2. **Strongly-Typed Contracts**: The ADK (Agent Development Kit) moved away from `any` results. We introduced `AnalystResult` and `CriticResult` interfaces. Now, when the Analyst scores a plan, the Orchestrator doesn't "hope" the property is named `feasibilityScore`; the compiler *guarantees* it.
+
+## v3.2.6 Update: The Orchestration Hardening
+*Added January 2026*
+
+This version addressed the "Ghost in the Machine"—intermittent JSON parsing failures from LLM outputs.
+
+**The Fix**: We discovered that Gemini 2.0 occasionally wraps JSON in triple backticks but omits the `json` tag, or appends trailing whitespace that confuses standard `JSON.parse`. We hardened the `AtlasService.parseResponse` method to be bulletproof against these LLM quirks.
 
 ## The "Aha!" Moment That Started Everything
 
@@ -111,7 +119,7 @@ interface LLMProvider {
 }
 ```
 
-**The Lesson**: Always abstract third-party APIs. When Gemini 3.0 comes out (or when I switch to Claude), I change one file, not fifty.
+**The Lesson**: Always abstract third-party APIs. When Gemini 3.0 comes out (or when I switch to Claude), I change one file, not fifty. In v3.2.6, this abstraction allowed us to fix a critical JSON parsing bug in `AtlasService` without touching a single prompt or agent implementation.
 
 ## The Architecture: How the Magic Actually Happens
 
@@ -143,23 +151,28 @@ User Input: "Dominate AI market in 2026"
 **The Implementation**:
 
 ```typescript
+// src/lib/adk/orchestrator.ts (v3.2.7)
 class MissionControl {
   async orchestrate(input: ExecutiveInput): Promise<Roadmap> {
-    // Step 1: Strategist generates initial plan
-    const rawPlan = await this.strategist.decompose(input);
-    
-    // Step 2: Analyst validates feasibility
-    const analyzed = await this.analyst.assess(rawPlan);
-    
-    // Step 3: Critic stress-tests for issues
-    const validated = await this.critic.validate(analyzed);
-    
-    // Step 4: If Critic finds issues, loop back
-    if (validated.hasIssues) {
-      return this.orchestrate(validated.refinedInput);
+    // Phase 1: Strategist generates initial plan
+    const strategist = this.getAgent(AgentPersona.STRATEGIST);
+    let proposal = await strategist.execute(goal);
+
+    // Phase 2: Iterative refinement via Critic feedback (Max 3 cycles)
+    let iterations = 0;
+    while (iterations < 3) {
+      const criticResult = await this.critic.execute(goal, { plan: proposal });
+      if (criticResult.score >= 85) break; 
+      
+      iterations++;
+      // Feed "the bad news" back into the Strategist for a better attempt
+      proposal = await strategist.execute(criticResult.feedback, { plan: proposal });
     }
+
+    // Phase 3: Analyst Final Feasibility Guard
+    const analysis = await this.analyst.execute(goal, { plan: proposal });
     
-    return validated.roadmap;
+    return { ...proposal, analysis };
   }
 }
 ```

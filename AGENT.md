@@ -297,7 +297,7 @@ export type A2UIElement =
 ```typescript
 // src/lib/adk/uiBuilder.ts
 const ui = new UIBuilder(sessionId)
-  .card("🏛️ MissionControl v3.2.5", "Strategic Synthesis Complete")
+  .card("🏛️ MissionControl v3.2.7", "Strategic Synthesis Complete")
   .progress("Plan Quality", 92)
   .text(`Q1 Critical Path: 8 HIGH priority tasks`)
   .glassButton("Visualize in ReactFlow", "visualize")
@@ -317,7 +317,7 @@ const ui = new UIBuilder(sessionId)
       "id": "card-001",
       "type": "card",
       "props": {
-        "title": "🏛️ MissionControl v3.2.5",
+        "title": "🏛️ MissionControl v3.2.7",
         "subtitle": "Strategic Synthesis Complete",
         "className": "glass-1 backdrop-blur-3xl"
       }
@@ -497,7 +497,7 @@ export const PlanExporter = {
 ```typescript
 // src/config/system.ts
 export const ATLAS_SYSTEM_INSTRUCTION = `
-You are **Atlas v3.2.5**, the Autonomous Strategic Intelligence Orchestrator.
+You are **Atlas v3.2.7**, the Autonomous Strategic Intelligence Orchestrator.
 
 MISSION: Transform C-level strategic goals into executable 2026 quarterly plans
 OUTPUT: JSON-first • ReactFlow-ready • Glassmorphic UI

@@ -206,7 +206,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.2.5
+VITE_APP_VERSION=3.2.7
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.

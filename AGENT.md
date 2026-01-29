@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.7 introduces dependency modernization, formalized identity sync between code and reasoning, and strictly enforced result interfaces for the agent swarm.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.7 eliminates legacy technical debt with a **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
 
 ---
 
@@ -112,13 +112,13 @@ export interface AnalystResult {
   recommendations: string[];
 }
 
-export class AnalystAgent extends BaseAgent<AnalystResult, Partial<StrategyContext>> {
+export class AnalystAgent extends BaseAgent {
   name = "Analyst";
   
-  async execute(
+  async execute<R = AnalystResult>(
     _prompt: string,
-    _context: Partial<StrategyContext> = {}
-  ): Promise<AnalystResult> {
+    _context: AgentExecutionContext = {}
+  ): Promise<R> {
     return {
       feasibility: 87,
       confidence: 94,
@@ -155,13 +155,13 @@ export interface CriticResult {
   optimizations: string[];
 }
 
-export class CriticAgent extends BaseAgent<CriticResult, Partial<StrategyContext>> {
+export class CriticAgent extends BaseAgent {
   name = "Critic";
   
-  async execute(
+  async execute<R = CriticResult>(
     _prompt: string,
-    _context: Partial<StrategyContext> = {}
-  ): Promise<CriticResult> {
+    _context: AgentExecutionContext = {}
+  ): Promise<R> {
     return {
       score: 88,
       issues: [

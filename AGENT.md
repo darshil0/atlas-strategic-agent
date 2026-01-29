@@ -798,6 +798,6 @@ For agent-specific questions:
 
 *Powered by Google Gemini 2.0 Flash*
 
-Version 3.2.6 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
+Version 3.2.7 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
 
 </div>

@@ -1,16 +1,23 @@
-import { A2UIMessage, A2UIElement, A2UIComponentType } from "./protocol";
-
 /**
- * Fluent UIBuilder for creating type-safe A2UI payloads
- * Usage: new UIBuilder().card().text("Hello").button("Click").build()
+ * Glassmorphic UIBuilder v3.2.3 - Atlas A2UI Fluent API (v3.2.0)
+ * Production-ready fluent interface for Strategist/Analyst/Critic glassmorphic UIs
  */
-type ComponentProps = Record<string, unknown>;
+
+import { A2UIMessage, A2UIElement, A2UIComponentType, AgentPersona } from "@types";
+import { GLASSMORPHIC_DEFAULTS, validateA2UIMessage } from "./protocol";
+
+type ComponentProps = Record<string, any>;
 
 export class UIBuilder {
   private elements: A2UIElement[] = [];
+  private sessionId?: string;
+
+  constructor(sessionId?: string) {
+    this.sessionId = sessionId;
+  }
 
   /**
-   * Add any component type with auto-generated ID
+   * Core fluent API
    */
   add(
     type: A2UIComponentType,
@@ -18,22 +25,26 @@ export class UIBuilder {
     id?: string
   ): this {
     this.elements.push({
-      id: id ?? crypto.randomUUID(),
+      id: id || `a2ui-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
       type,
-      props: { ...props }, // Defensive copy
-    });
+      props: {
+        ...GLASSMORPHIC_DEFAULTS,
+        ...props,
+      },
+    } as A2UIElement);
     return this;
   }
 
-  // === COMMON PATTERNS ===
-
-  /** Quick text addition */
+  /** Glassmorphic text */
   text(content: string, props: ComponentProps = {}): this {
-    return this.add(A2UIComponentType.TEXT, { text: content, ...props });
+    return this.add(A2UIComponentType.TEXT, {
+      text: content,
+      ...props,
+    });
   }
 
-  /** Primary action button */
-  button(label: string, actionData?: unknown, props: ComponentProps = {}): this {
+  /** Primary button */
+  button(label: string, actionData?: any, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "primary",
@@ -42,24 +53,37 @@ export class UIBuilder {
     });
   }
 
-  /** Secondary/ghost button */
-  secondaryButton(label: string, actionData?: unknown, props: ComponentProps = {}): this {
+  /** Glassmorphic secondary button */
+  glassButton(label: string, actionData?: any, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
-      variant: "secondary",
+      variant: "glass",
       actionData,
       ...props,
     });
   }
 
-  /** Card container with title */
-  card(title?: string, props: ComponentProps = {}): this {
-    const cardProps: ComponentProps = title ? { title, ...props } : props;
-    this.add(A2UIComponentType.CARD, cardProps);
+  /** Danger button */
+  dangerButton(label: string, actionData?: any, props: ComponentProps = {}): this {
+    return this.add(A2UIComponentType.BUTTON, {
+      label,
+      variant: "danger",
+      actionData,
+      ...props,
+    });
+  }
+
+  /** Glassmorphic card */
+  card(title?: string, subtitle?: string, props: ComponentProps = {}): this {
+    this.add(A2UIComponentType.CARD, {
+      title,
+      subtitle,
+      ...props,
+    });
     return this;
   }
 
-  /** Progress bar with percentage */
+  /** Progress bar */
   progress(label: string, value: number, props: ComponentProps = {}): this {
     return this.add(A2UIComponentType.PROGRESS, {
       label,
@@ -68,104 +92,46 @@ export class UIBuilder {
     });
   }
 
-  /** Input field */
-  input(label: string, props: ComponentProps = {}): this {
-    return this.add(A2UIComponentType.INPUT, {
-      label,
-      inputType: "text",
-      ...props,
-    });
-  }
-
-  /** Chart with data array */
-  chart(title: string, data: { label: string; value: number }[], props: ComponentProps = {}): this {
-    return this.add(A2UIComponentType.CHART, {
-      title,
-      data,
-      maxValue: Math.max(...data.map(d => d.value)),
-      ...props,
-    });
-  }
-
-  // === COMPOSITION HELPERS ===
-
-  /** Add header with title and status */
-  header(title: string, subtitle?: string): this {
+  /** MissionControl status dashboard */
+  missionControlStatus(
+    score: number,
+    iterations: number,
+    q1Count: number
+  ): this {
     return this
-      .text(title, { className: "text-xl font-bold text-slate-100 mb-2" })
-      .text(subtitle || "", { className: "text-sm text-slate-400" });
+      .card("🏛️ MissionControl v1.0.0", "Strategic Synthesis Pipeline")
+      .progress("Plan Quality", score)
+      .text(`Q1 Critical Path: ${q1Count} HIGH priority`, { size: "sm" })
+      .text(`Refinement Cycles: ${iterations + 1}`, { size: "sm" })
+      .glassButton("Visualize in ReactFlow", "visualize")
+      .glassButton("Export to GitHub", "sync_github");
   }
 
-  /** Two-column layout */
-  row(left: A2UIElement, right: A2UIElement): this {
-    const rowId = crypto.randomUUID();
+  /** Agent selector */
+  agentSelector(selectedPersona?: AgentPersona): this {
     return this
-      .add(A2UIComponentType.CARD, {
-        id: rowId,
-        className: "grid grid-cols-2 gap-4 p-0",
-        children: [left, right],
+      .card("🤖 Agent Swarm Switched")
+      .add(A2UIComponentType.LIST, {
+        items: [
+          { label: "Strategist", value: "STRATEGIST", icon: "🧠", selected: selectedPersona === AgentPersona.STRATEGIST },
+          { label: "Analyst", value: "ANALYST", icon: "📊", selected: selectedPersona === AgentPersona.ANALYST },
+          { label: "Critic", value: "CRITIC", icon: "🔍", selected: selectedPersona === AgentPersona.CRITIC },
+        ],
       });
   }
 
-  /** Loading state */
-  loading(message = "Processing..."): this {
-    return this
-      .text(message, { className: "text-blue-400 font-medium flex items-center gap-2" })
-      .add(A2UIComponentType.PROGRESS, { label: "Progress", value: 50 });
-  }
-
-  /** Success message */
-  success(message: string): this {
-    return this.text(message, {
-      className: "text-emerald-400 font-bold bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30"
-    });
-  }
-
-  /** Error message */
-  error(message: string): this {
-    return this.text(message, {
-      className: "text-rose-400 font-bold bg-rose-500/10 p-4 rounded-xl border border-rose-500/30"
-    });
-  }
-
-  /** Clear all elements */
-  clear(): this {
-    this.elements = [];
-    return this;
-  }
-
-  /** Build final message with immutability */
-  build(version: "1.0" = "1.0"): A2UIMessage {
-    return {
-      version,
+  /** Build A2UI v1.1 message */
+  build(): A2UIMessage {
+    const message: A2UIMessage = {
+      version: "1.1",
       timestamp: Date.now(),
-      elements: [...this.elements], // Immutable copy
+      sessionId: this.sessionId,
+      elements: [...this.elements],
     };
-  }
 
-  /** Debug: Log current builder state */
-  debug(): this {
-    if (import.meta.env.DEV) {
-      console.log("[UIBuilder]", { elements: this.elements });
-    }
-    return this;
+    const validated = validateA2UIMessage(message);
+    return validated || message;
   }
 }
 
-// === STATIC FACTORY METHODS ===
-export const ui = () => new UIBuilder();
-
-/**
- * Usage Examples:
- * 
- * // Simple
- * ui().text("Hello").button("Click").build();
- * 
- * // Complex layout
- * ui()
- *   .card("Dashboard")
- *   .header("Q1 Progress", "18/25 tasks complete")
- *   .progress("Strategic Alignment", 72)
- *   .button("Generate Plan")
- *   .build();
- */
+export const ui = (sessionId?: string) => new UIBuilder(sessionId);

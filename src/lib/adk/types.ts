@@ -1,67 +1,52 @@
-import { A2UIMessage, AGUIEvent } from "./protocol";
+/**
+ * Atlas ADK Core (v3.2.3) - Glassmorphic Agent Foundations
+ * Re-exports core types and defines BaseAgent contract
+ */
+
+import {
+  AgentPersona,
+  AgentExecutionContext,
+  A2UIMessage,
+  AGUIEvent,
+  MissionResult,
+  FailureCascadeResult
+} from "@types";
+
+export { AgentPersona };
+export type { AgentExecutionContext, MissionResult, FailureCascadeResult };
 
 /**
- * Agent Personas for multi-agent orchestration
+ * Production BaseAgent - Glassmorphic agent contract
  */
-export enum AgentPersona {
-  STRATEGIST = "Strategist",
-  ANALYST = "Analyst",
-  CRITIC = "Critic",
-}
-
-/**
- * Shared execution context across all agents
- */
-export interface AgentExecutionContext {
-  sessionId?: string;
-  metadata?: Record<string, unknown>;
-  goal?: string;
-  activeTaskId?: string;
-  plan?: unknown;
-  [key: string]: unknown;
-}
-
-/**
- * Runtime agent context (required fields)
- */
-export interface AgentRuntimeContext extends AgentExecutionContext {
-  sessionId: string;
-  metadata: Record<string, unknown>;
-}
-
-/**
- * Base agent contract for Atlas Strategic Agent system
- * Defines core interface for all specialized agents
- */
-export abstract class BaseAgent<TResult = unknown, TContext = AgentExecutionContext> {
+export abstract class BaseAgent {
   /**
-   * Unique agent identifier
+   * Unique agent identifier for MissionControl routing
    */
   abstract readonly name: string;
 
   /**
-   * Human-readable description of agent capabilities
+   * Capabilities description for A2UI agent selector
    */
   abstract readonly description: string;
 
   /**
-   * Handle UI interaction events from A2UIRenderer
+   * Handle glassmorphic UI events from A2UIRenderer
+   * task_select → decompose → export_github workflow
    */
   abstract handleEvent(event: AGUIEvent): Promise<A2UIMessage>;
 
   /**
-   * Execute agent-specific logic with prompt and context
-   * @param prompt User input or goal
-   * @param context Execution context with session data
-   * @returns Agent-specific result type
+   * Execute core agent reasoning with full context
+   * @returns ReactFlow-ready Plan or analysis result
    */
-  abstract execute(
+  abstract execute<R = any>(
     prompt: string,
-    context?: TContext
-  ): Promise<TResult>;
+    context?: AgentExecutionContext
+  ): Promise<R>;
 
   /**
-   * Get initial UI state when agent is activated
+   * Initial glassmorphic UI for agent activation
+   * Renders in A2UIRenderer with glass-1/2 containers
    */
   abstract getInitialUI(): A2UIMessage;
 }

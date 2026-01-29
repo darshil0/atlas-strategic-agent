@@ -9,7 +9,39 @@
     "strings": true
   },
   "tailwindCSS.experimental.classRegex": [
-    ["cva\\\\(([^)]*)\\)", "[\"'`]([^\\"'`]*).*?[\"'`]"],
-    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ]
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\\\\\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["twMerge\\(([^)]*)\\)", "\"([^\"]*)\""],
+    ["clsx\\(([^)]*)\\)", "\"([^\"]*)\""]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html",
+    "javascript": "html",
+    "javascriptreact": "html"
+  },
+  "tailwindCSS.experimental.configFile": [
+    "**/tailwind.config.{js,ts}",
+    "**/tailwind.config.js",
+    "**/tailwind.config.ts"
+  ],
+  "editor.inlineSuggest.enabled": true,
+  "typescript.suggest.enabled": true,
+  "typescript.suggest.autoImports.enabled": true,
+  "emmet.includeLanguages": {
+    "typescriptreact": "html",
+    "javascriptreact": "html"
+  },
+  "eslint.format.enable": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

@@ -1,91 +1,145 @@
 /**
- * Environment Configuration
- * Centralizes environment variable access, validation, and type safety for Vite.
- * Only VITE_ prefixed variables are exposed to client-side code.
+ * Environment Configuration - Atlas Edition
+ * TypeScript-first, glassmorphic-ready environment management for your AI planning app.
+ * Integrates with GitHub/Jira settings, Gemini AI, and your glassmorphic design system.
  */
+
+import { PersistenceService } from "../services/persistenceService";
 
 interface EnvConfig {
-  /** Gemini API Key - Required for AI operations */
+  /** Gemini API Key - Powers AI task generation & decomposition */
   GEMINI_API_KEY: string;
-  /** Debug mode - Enable verbose logging */
+  /** GitHub integration - PAT for issue creation */
+  GITHUB_TOKEN?: string;
+  /** Jira integration - Domain, email, token */
+  JIRA_DOMAIN?: string;
+  JIRA_EMAIL?: string;
+  JIRA_TOKEN?: string;
+  /** Debug mode - Verbose logging + dev overlays */
   DEBUG_MODE: boolean;
-  /** App version override */
-  APP_VERSION?: string;
+  /** App metadata */
+  APP_VERSION: string;
+  APP_NAME: string;
+  TASKBANK_SIZE: string;
 }
 
-/**
- * Safely extracts environment variables with Vite client-side compatibility
- * Only VITE_ prefixed vars are available in browser via import.meta.env
- */
 const getEnvVar = (key: string): string | undefined => {
-  // Vite client-side (import.meta.env)
+  // Vite client-side (import.meta.env.VITE_*)
   if (typeof import.meta !== "undefined" && import.meta.env?.[key]) {
     return import.meta.env[key] as string;
   }
   
-  // Node.js / SSR / Vitest (process.env) - only during build/test
-  if (typeof process !== "undefined" && process.env?.[key]) {
-    return process.env[key];
+  // Fallback to PersistenceService for GitHub/Jira (user-configurable)
+  if (key === "VITE_GITHUB_TOKEN") {
+    return PersistenceService.getGithubApiKey() ?? undefined;
+  }
+  if (key === "VITE_JIRA_DOMAIN") {
+    return PersistenceService.getJiraDomain() ?? undefined;
+  }
+  if (key === "VITE_JIRA_EMAIL") {
+    return PersistenceService.getJiraEmail() ?? undefined;
+  }
+  if (key === "VITE_JIRA_TOKEN") {
+    return PersistenceService.getJiraApiKey() ?? undefined;
   }
   
   return undefined;
 };
 
 /**
- * Typed environment configuration with fallbacks
+ * Production-ready typed environment with smart fallbacks
  */
 export const ENV: EnvConfig = {
   GEMINI_API_KEY: getEnvVar("VITE_GEMINI_API_KEY") ?? "",
+  GITHUB_TOKEN: getEnvVar("VITE_GITHUB_TOKEN"),
+  JIRA_DOMAIN: getEnvVar("VITE_JIRA_DOMAIN"),
+  JIRA_EMAIL: getEnvVar("VITE_JIRA_EMAIL"),
+  JIRA_TOKEN: getEnvVar("VITE_JIRA_TOKEN"),
   DEBUG_MODE: getEnvVar("VITE_DEBUG_MODE") === "true",
-  APP_VERSION: getEnvVar("VITE_APP_VERSION"),
+  APP_VERSION: getEnvVar("VITE_APP_VERSION") ?? "3.2.5",
+  APP_NAME: "Atlas AI Planner",
+  TASKBANK_SIZE: "92",
 } as const;
 
 /**
- * Validates critical environment variables and provides actionable feedback
+ * Comprehensive environment validation with actionable feedback
  */
 export const validateEnv = (): boolean => {
   const issues: string[] = [];
   
-  if (!ENV.GEMINI_API_KEY) {
-    issues.push("❌ VITE_GEMINI_API_KEY is required. Add to .env file.");
+  // Critical: AI operations
+  if (!ENV.GEMINI_API_KEY.trim()) {
+    issues.push("❌ VITE_GEMINI_API_KEY required for AI task generation");
   }
-  
+
+  // Optional but recommended: GitHub/Jira
+  if (!ENV.GITHUB_TOKEN && !ENV.JIRA_DOMAIN) {
+    console.warn("⚠️  No GitHub/Jira integration configured. Use Settings modal.");
+  }
+
   if (issues.length > 0) {
-    console.error("🚨 Environment Validation Failed:");
-    issues.forEach(issue => console.error(issue));
-    console.error("\n📝 Create .env file in project root:");
-    console.error("VITE_GEMINI_API_KEY=your_gemini_api_key_here");
-    console.error("\n⚠️  Add .env* to .gitignore - never commit secrets!");
+    console.error("\n🚨 ATLAS ENV VALIDATION FAILED:");
+    console.error("═══════════════════════════════════════");
+    issues.forEach((issue, i) => console.error(`${i + 1}. ${issue}`));
+    console.error("\n📝 Quick Fix - Create .env in project root:");
+    console.error(`VITE_GEMINI_API_KEY=your_gemini_key_here`);
+    console.error(`VITE_DEBUG_MODE=true  # for dev`);
+    console.error("\n🛡️  Or use Settings → GitHub/Jira for optional integrations");
+    console.error("⚠️  Add .env* to .gitignore - NEVER commit secrets!");
     return false;
   }
-  
+
   if (ENV.DEBUG_MODE) {
-    console.log("✅ Environment validated successfully");
-    console.log("ENV:", { 
-      GEMINI_API_KEY: ENV.GEMINI_API_KEY ? "[SET]" : "[MISSING]", 
-      DEBUG_MODE: ENV.DEBUG_MODE 
-    });
+    console.log("\n✅ ATLAS ENVIRONMENT READY");
+    console.log("═══════════════════════════════════════");
+    console.log("🎯 AI:", ENV.GEMINI_API_KEY ? "✅ Ready" : "❌ Missing");
+    console.log("🐙 GitHub:", ENV.GITHUB_TOKEN ? "✅ Configured" : "⚪ Optional");
+    console.log("🎫 Jira:", ENV.JIRA_DOMAIN ? "✅ Configured" : "⚪ Optional");
+    console.log("🔧 Debug:", ENV.DEBUG_MODE ? "ON" : "OFF");
+    console.log(`📱 v${ENV.APP_VERSION}`);
   }
   
   return true;
 };
 
 /**
- * Required .env template (create .env.example for git)
+ * Complete .env template for your Atlas project
  */
-export const ENV_TEMPLATE = `
-# .env.example - Copy to .env and fill in your values
-# NEVER commit .env files - they're in .gitignore!
+export const ENV_TEMPLATE = `# Atlas AI Planner - .env.example
+# Copy to .env and NEVER commit! (.env* in .gitignore)
 
+# REQUIRED: Gemini AI (powers task generation)
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
-VITE_DEBUG_MODE=false
-VITE_APP_VERSION=3.2.0
+
+# OPTIONAL: GitHub Issues integration (Settings modal)
+# VITE_GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# OPTIONAL: Jira Cloud integration (Settings modal)
+# VITE_JIRA_DOMAIN=yourcompany.atlassian.net
+# VITE_JIRA_EMAIL=user@company.com  
+# VITE_JIRA_TOKEN=ATATT3xAaGF...
+
+# DEVELOPMENT
+VITE_DEBUG_MODE=true
+VITE_APP_VERSION=3.2.5
+
+# SECURITY: VITE_* vars visible in browser DevTools
+# Production: Use backend proxy for secrets
 `;
 
 /**
- * Security reminder - displayed in dev mode
+ * Initialize environment on app load
  */
-if (ENV.DEBUG_MODE && import.meta.env.DEV) {
-  console.warn("🔒 SECURITY: API keys in VITE_* vars are visible in browser dev tools!");
-  console.warn("For production secrets, use backend proxy endpoints.");
-}
+export const initializeEnv = async (): Promise<boolean> => {
+  const isValid = validateEnv();
+  
+  if (ENV.DEBUG_MODE && import.meta.env?.DEV) {
+    console.warn("\n🔒 ATLAS SECURITY NOTICE:");
+    console.warn("• VITE_* vars visible in browser DevTools");
+    console.warn("• GitHub/Jira tokens stored in localStorage (Settings)");
+    console.warn("• Production: Use /api proxy endpoints");
+    console.warn("• Secrets never committed (.env* → .gitignore)\n");
+  }
+  
+  return isValid;
+};

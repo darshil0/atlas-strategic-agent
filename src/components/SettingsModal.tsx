@@ -1,5 +1,9 @@
+// src/components/SettingsModal.tsx
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { PersistenceService } from "../services/persistenceService";
+import { motion } from "framer-motion";
+import { PersistenceService } from "@services/persistenceService";
+import { Settings, X } from "lucide-react";
+import { cn } from "@lib/utils";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -7,16 +11,15 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
-  // Use refs to avoid re-renders on every keystroke
-  const githubApiKeyRef = useRef(PersistenceService.getGithubApiKey() || "");
-  const jiraApiKeyRef = useRef(PersistenceService.getJiraApiKey() || "");
-  const githubOwnerRef = useRef(PersistenceService.getGithubOwner() || "");
-  const githubRepoRef = useRef(PersistenceService.getGithubRepo() || "");
-  const jiraDomainRef = useRef(PersistenceService.getJiraDomain() || "");
-  const jiraProjectKeyRef = useRef(PersistenceService.getJiraProjectKey() || "");
-  const jiraEmailRef = useRef(PersistenceService.getJiraEmail() || "");
+  // Use refs for input elements to avoid re-renders on every keystroke
+  const githubTokenInputRef = useRef<HTMLInputElement>(null);
+  const jiraDomainInputRef = useRef<HTMLInputElement>(null);
+  const jiraEmailInputRef = useRef<HTMLInputElement>(null);
+  const jiraTokenInputRef = useRef<HTMLInputElement>(null);
+  const [debugMode, setDebugMode] = useState(PersistenceService.getDebugMode());
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Trap focus within modal for accessibility
@@ -69,214 +72,269 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
 
-    if (!githubOwnerRef.current.trim()) newErrors.githubOwner = "Required";
-    if (!githubRepoRef.current.trim()) newErrors.githubRepo = "Required";
-    if (!jiraDomainRef.current.trim()) newErrors.jiraDomain = "Required";
-    if (!jiraProjectKeyRef.current.trim()) newErrors.jiraProjectKey = "Required";
-    if (!jiraEmailRef.current.trim()) newErrors.jiraEmail = "Valid email required";
+    const githubToken = githubTokenInputRef.current?.value || "";
+    const jiraDomain = jiraDomainInputRef.current?.value || "";
+    const jiraEmail = jiraEmailInputRef.current?.value || "";
+    const jiraToken = jiraTokenInputRef.current?.value || "";
+
+    // Required GitHub fields
+    if (!githubToken.trim()) newErrors.githubToken = "GitHub token required";
+    
+    // Required Jira fields (if any Jira field is filled, all are required)
+    const hasJiraConfig = jiraDomain.trim() || jiraEmail.trim() || jiraToken.trim();
+    if (hasJiraConfig) {
+      if (!jiraDomain.trim()) newErrors.jiraDomain = "Jira domain required";
+      if (!jiraEmail.trim()) newErrors.jiraEmail = "Email required";
+      if (!jiraToken.trim()) newErrors.jiraToken = "Jira token required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, []);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!validateForm()) return;
 
-    PersistenceService.saveGithubApiKey(githubApiKeyRef.current);
-    PersistenceService.saveJiraApiKey(jiraApiKeyRef.current);
-    PersistenceService.saveGithubOwner(githubOwnerRef.current);
-    PersistenceService.saveGithubRepo(githubRepoRef.current);
-    PersistenceService.saveJiraDomain(jiraDomainRef.current);
-    PersistenceService.saveJiraProjectKey(jiraProjectKeyRef.current);
-    PersistenceService.saveJiraEmail(jiraEmailRef.current);
-    
-    onClose();
+    setIsLoading(true);
+    try {
+      // Save all settings
+      PersistenceService.saveGithubApiKey(githubTokenInputRef.current?.value || "");
+      PersistenceService.saveJiraDomain(jiraDomainInputRef.current?.value || "");
+      PersistenceService.saveJiraEmail(jiraEmailInputRef.current?.value || "");
+      PersistenceService.saveJiraApiKey(jiraTokenInputRef.current?.value || "");
+      PersistenceService.saveDebugMode(debugMode);
+      
+      // Show success feedback
+      onClose();
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [validateForm, onClose]);
 
   if (!isOpen) return null;
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 glass-2 backdrop-blur-3xl"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-modal-title"
     >
-      <div 
+      <motion.div 
         ref={modalRef}
-        className="bg-slate-800/95 border border-slate-700 p-8 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="glass-1 border border-white/10 p-8 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-6">
-          <h2 
-            id="settings-modal-title"
-            className="text-2xl font-bold text-slate-100"
-          >
-            Settings
-          </h2>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-atlas-blue/20 rounded-2xl border border-atlas-blue/30">
+              <Settings className="h-6 w-6 text-atlas-blue" />
+            </div>
+            <div>
+              <h2 
+                id="settings-modal-title"
+                className="text-2xl font-display font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent"
+              >
+                Integration Settings
+              </h2>
+              <p className="text-sm text-slate-400">Configure GitHub and Jira sync</p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-700 rounded-xl transition-colors"
+            className="p-2 hover:bg-white/10 rounded-2xl transition-all backdrop-blur-sm hover:scale-105"
             aria-label="Close settings"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="h-5 w-5 text-slate-400" />
           </button>
         </div>
 
+        {/* Security Warning */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-2 border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5 text-yellow-200 px-5 py-4 rounded-2xl mb-8"
+        >
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex-shrink-0">
+              <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-1">Security Notice</h4>
+              <p className="text-xs leading-relaxed">Keys stored locally with Base64 obfuscation. Use backend proxy for production.</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Form Fields */}
         <div className="space-y-6">
-          <div className="bg-yellow-900/90 border border-yellow-700/50 text-yellow-100 px-4 py-3 rounded-xl backdrop-blur-sm">
-            <h3 className="font-bold text-sm mb-1">⚠️ Security Warning</h3>
-            <p className="text-xs leading-relaxed">
-              API keys stored in localStorage are insecure. Consider using a backend proxy or environment variables for production.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                GitHub Owner <span className="text-red-400">*</span>
-              </label>
-              <input
-                ref={(el) => el?.focus()}
-                type="text"
-                value={githubOwnerRef.current}
-                onChange={(e) => (githubOwnerRef.current = e.target.value)}
-                className={`w-full bg-slate-900/50 border rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 ${
-                  errors.githubOwner 
-                    ? "border-red-500 focus:ring-red-500" 
-                    : "border-slate-700 focus:ring-blue-500 focus:border-blue-500"
-                }`}
-              />
-              {errors.githubOwner && (
-                <p className="mt-1 text-xs text-red-400">{errors.githubOwner}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                GitHub Repository <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text"
-                value={githubRepoRef.current}
-                onChange={(e) => (githubRepoRef.current = e.target.value)}
-                className={`w-full bg-slate-900/50 border rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 ${
-                  errors.githubRepo 
-                    ? "border-red-500 focus:ring-red-500" 
-                    : "border-slate-700 focus:ring-blue-500 focus:border-blue-500"
-                }`}
-              />
-              {errors.githubRepo && (
-                <p className="mt-1 text-xs text-red-400">{errors.githubRepo}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                GitHub API Key (Optional)
-              </label>
-              <input
-                type="password"
-                value={githubApiKeyRef.current}
-                onChange={(e) => (githubApiKeyRef.current = e.target.value)}
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          {/* GitHub Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            <h3 className="font-display text-lg font-semibold text-white flex items-center gap-2">
+              <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full" />
+              GitHub
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <InputField
+                ref={githubTokenInputRef}
+                label="Personal Access Token"
+                placeholder="ghp_..."
+                defaultValue={PersistenceService.getGithubApiKey() || ""}
+                error={errors.githubToken}
+                required
               />
             </div>
+          </motion.div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Jira Domain <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="url"
+          {/* Jira Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-4"
+          >
+            <h3 className="font-display text-lg font-semibold text-white flex items-center gap-2">
+              <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full" />
+              Jira Cloud
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                ref={jiraDomainInputRef}
+                label="Domain"
                 placeholder="yourcompany.atlassian.net"
-                value={jiraDomainRef.current}
-                onChange={(e) => (jiraDomainRef.current = e.target.value)}
-                className={`w-full bg-slate-900/50 border rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 ${
-                  errors.jiraDomain 
-                    ? "border-red-500 focus:ring-red-500" 
-                    : "border-slate-700 focus:ring-blue-500 focus:border-blue-500"
-                }`}
+                defaultValue={PersistenceService.getJiraDomain() || ""}
+                error={errors.jiraDomain}
+                type="url"
               />
-              {errors.jiraDomain && (
-                <p className="mt-1 text-xs text-red-400">{errors.jiraDomain}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Jira Project Key <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={jiraProjectKeyRef.current}
-                  onChange={(e) => (jiraProjectKeyRef.current = e.target.value)}
-                  className={`w-full bg-slate-900/50 border rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 ${
-                    errors.jiraProjectKey 
-                      ? "border-red-500 focus:ring-red-500" 
-                      : "border-slate-700 focus:ring-blue-500 focus:border-blue-500"
-                  }`}
-                />
-                {errors.jiraProjectKey && (
-                  <p className="mt-1 text-xs text-red-400">{errors.jiraProjectKey}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Jira Email <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="email"
-                  value={jiraEmailRef.current}
-                  onChange={(e) => (jiraEmailRef.current = e.target.value)}
-                  className={`w-full bg-slate-900/50 border rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm transition-all focus:outline-none focus:ring-2 ${
-                    errors.jiraEmail 
-                      ? "border-red-500 focus:ring-red-500" 
-                      : "border-slate-700 focus:ring-blue-500 focus:border-blue-500"
-                  }`}
-                />
-                {errors.jiraEmail && (
-                  <p className="mt-1 text-xs text-red-400">{errors.jiraEmail}</p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Jira API Key (Optional)
-              </label>
-              <input
+              <InputField
+                ref={jiraEmailInputRef}
+                label="Email"
+                placeholder="user@company.com"
+                defaultValue={PersistenceService.getJiraEmail() || ""}
+                error={errors.jiraEmail}
+                type="email"
+              />
+              <InputField
+                ref={jiraTokenInputRef}
+                label="API Token"
+                placeholder="ATATT3x..."
+                defaultValue={PersistenceService.getJiraApiKey() || ""}
+                error={errors.jiraToken}
                 type="password"
-                value={jiraApiKeyRef.current}
-                onChange={(e) => (jiraApiKeyRef.current = e.target.value)}
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-          </div>
+          </motion.div>
+
+          {/* Debug Toggle */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <label className="flex items-center gap-3 p-4 glass-2 rounded-2xl border border-white/10 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={debugMode}
+                onChange={(e) => setDebugMode(e.target.checked)}
+                className="w-5 h-5 rounded-lg bg-slate-800 border-slate-700 text-atlas-blue focus:ring-atlas-blue/50 transition-all duration-200"
+              />
+              <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
+                Enable Debug Mode
+              </span>
+              <span className="ml-auto text-xs text-slate-500 font-mono bg-slate-900/50 px-2 py-1 rounded-lg">
+                {debugMode ? "ON" : "OFF"}
+              </span>
+            </label>
+          </motion.div>
         </div>
 
-        <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-700">
+        {/* Action Buttons */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-10 flex justify-end gap-3 pt-6 border-t border-white/10"
+        >
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-slate-700/50 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-600 transition-all duration-200 font-medium"
+            disabled={isLoading}
+            className="px-6 py-3 glass-2 border border-white/20 text-slate-300 hover:border-white/40 hover:bg-white/10 rounded-2xl font-medium transition-all duration-200 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            disabled={Object.keys(errors).length > 0}
-            className="px-6 py-2.5 bg-blue-600/90 hover:bg-blue-600 text-white rounded-xl border border-blue-500 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            disabled={isLoading || Object.keys(errors).length > 0}
+            className={cn(
+              "px-6 py-3 bg-gradient-to-r from-atlas-blue to-atlas-indigo text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl active:shadow-lg border border-atlas-blue/50 transition-all duration-200 flex items-center gap-2",
+              isLoading ? "opacity-70 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
+            )}
           >
-            Save Settings
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Settings"
+            )}
           </button>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
+
+// Reusable InputField component
+const InputField = React.forwardRef<
+  HTMLInputElement,
+  {
+    label: string;
+    placeholder?: string;
+    defaultValue?: string;
+    error?: string;
+    required?: boolean;
+    type?: string;
+  }
+>(({ label, placeholder, defaultValue, error, required, type = "text" }, ref) => (
+  <div className="space-y-2">
+    <label className="block text-sm font-medium text-slate-300 mb-2">
+      {label} {required && <span className="text-rose-400">*</span>}
+    </label>
+    <input
+      ref={ref}
+      type={type}
+      placeholder={placeholder}
+      defaultValue={defaultValue || ""}
+      className={cn(
+        "w-full glass-2 border rounded-2xl px-4 py-3 text-sm text-white backdrop-blur-3xl transition-all duration-200 focus:outline-none focus:ring-2",
+        error 
+          ? "border-rose-500/50 ring-rose-500/30 bg-rose-500/5" 
+          : "border-white/20 hover:border-white/40 focus:ring-atlas-blue/50 focus:border-atlas-blue/50"
+      )}
+    />
+    {error && (
+      <p className="text-xs text-rose-400 font-mono mt-1 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 bg-rose-400 rounded-full animate-pulse" />
+        {error}
+      </p>
+    )}
+  </div>
+));
+
+InputField.displayName = "InputField";
 
 export default SettingsModal;

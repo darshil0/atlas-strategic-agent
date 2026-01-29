@@ -1,110 +1,21 @@
-import { AgentPersona } from "./types";
-
 /**
- * A2UI (Agent-to-User Interface) Protocol Specification v1.0
- * Type-safe contract between Atlas agents and React renderer.
- * Powers Strategist/Analyst/Critic agent UIs.
+ * A2UI (Agent-to-User Interface) Protocol v3.2.3 - Glassmorphic Edition
+ * Type-safe contract for Atlas agent swarm ↔ React glassmorphic renderer
  */
 
-export enum A2UIComponentType {
-  CONTAINER = "container",
-  TEXT = "text",
-  BUTTON = "button",
-  INPUT = "input",
-  CARD = "card",
-  LIST = "list",
-  CHART = "chart",
-  PROGRESS = "progress",
-  CHECKBOX = "checkbox",
-  SELECT = "select",
-}
+import { A2UIMessage, A2UIElement, A2UIComponentType, AGUIEvent, AGUIAction } from "@types";
 
 /**
- * Component-specific props with common fields
+ * Protocol constants matching your glassmorphic system
  */
-export interface BaseProps {
-  id?: string;
-  className?: string;
-  ariaLabel?: string;
-  disabled?: boolean;
-  children?: A2UIElement[];
-}
-
-export type A2UIProps = Record<string, unknown> & BaseProps;
-
-// === COMPONENT PROPS INTERFACES ===
-export interface TextProps extends BaseProps {
-  text: string;
-}
-
-export interface ButtonProps extends BaseProps {
-  label: string;
-  variant?: "primary" | "secondary" | "ghost";
-  actionData?: unknown;
-}
-
-export interface CardProps extends BaseProps {
-  title?: string;
-}
-
-export interface ProgressProps extends BaseProps {
-  label: string;
-  value: number; // 0-100
-}
-
-export interface InputProps extends BaseProps {
-  label?: string;
-  placeholder?: string;
-  inputType?: string;
-  value?: string;
-}
-
-export interface ChartProps extends BaseProps {
-  title: string;
-  data: { label: string; value: number }[];
-  maxValue?: number;
-}
-
-export interface ListProps extends BaseProps {
-  items: { label: string; value?: string; icon?: string }[];
-}
-
-// === CORE INTERFACES ===
-export interface A2UIMessage {
-  version: "1.0";
-  timestamp: number;
-  elements: A2UIElement[];
-}
-
-export interface A2UIElement {
-  id: string;
-  type: A2UIComponentType;
-  props: A2UIProps;
-  children?: A2UIElement[];
-}
+export const A2UI_PROTOCOL_VERSION = "1.1" as const;
+export const GLASSMORPHIC_DEFAULTS = {
+  className: "glass-2 backdrop-blur-3xl",
+  variant: "glass" as const,
+} as const;
 
 /**
- * AGUI (Agent-GUI Interaction) Events
- * Standardized events from A2UIRenderer → Agents
- */
-export interface AGUIEvent {
-  elementId: string;
-  action: string; // "click", "input_blur", "input_submit", "item_click", etc.
-  data?: unknown;
-  timestamp: number;
-  sessionId?: string;
-}
-
-export interface AGUISession {
-  id: string;
-  agentId: string | AgentPersona;
-  history: A2UIMessage[];
-  createdAt: number;
-  updatedAt: number;
-}
-
-/**
- * Production-grade message validation and sanitization
+ * Production-grade validation + sanitization
  */
 export function validateA2UIMessage(data: unknown): A2UIMessage | null {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
@@ -113,86 +24,75 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
 
   const msg = data as Partial<A2UIMessage>;
 
-  // Version check
-  if (msg.version !== "1.0") {
-    console.warn(`[A2UI] Version mismatch: expected "1.0", got "${msg.version}"`);
+  // Protocol version (glassmorphic edition)
+  if (msg.version !== "1.1") {
+    console.warn(`[A2UI] Version mismatch: expected "1.1", got "${msg.version}"`);
     return null;
   }
 
-  // Elements validation
-  if (!Array.isArray(msg.elements)) {
+  // Elements array validation
+  if (!Array.isArray(msg.elements) || msg.elements.length === 0) {
     return null;
   }
 
   const validElements: A2UIElement[] = msg.elements
-    .filter((el) => {
-      if (!el || typeof el !== "object" || Array.isArray(el)) return false;
-
-      const element = el as Partial<A2UIElement>;
-      return (
-        typeof element.id === "string" &&
-        element.id.length > 0 &&
-        typeof element.type === "string" &&
-        Object.values(A2UIComponentType).includes(element.type as A2UIComponentType) &&
-        typeof element.props === "object" &&
-        element.props !== null
-      );
-    })
-    .map((el: A2UIElement) => ({
-      id: el.id,
-      type: el.type,
-      props: { ...el.props }, // Defensive copy
-      children: el.children || [],
-    }))
-    .filter((el) => el.children?.every(isValidElement));
+    .filter(validateElement)
+    .map(sanitizeElement);
 
   if (validElements.length === 0) {
     return null;
   }
 
   return {
-    version: "1.0",
-    timestamp: Date.now(),
+    version: "1.1",
+    timestamp: msg.timestamp || Date.now(),
     elements: validElements,
+    sessionId: msg.sessionId
   };
 }
 
-/**
- * Recursive element validation helper
- */
-function isValidElement(el: unknown): el is A2UIElement {
+function validateElement(el: unknown): el is Partial<A2UIElement> {
   if (!el || typeof el !== "object" || Array.isArray(el)) return false;
 
   const element = el as Partial<A2UIElement>;
-  if (
-    typeof element.id !== "string" ||
-    !element.id ||
-    typeof element.type !== "string" ||
-    !Object.values(A2UIComponentType).includes(element.type as A2UIComponentType)
-  ) {
-    return false;
-  }
+  return (
+    typeof element.id === "string" && element.id.length > 0 &&
+    typeof element.type === "string"
+  );
+}
 
-  if (!element.props || typeof element.props !== "object") {
-    return false;
-  }
-
-  // Validate children recursively
-  if (Array.isArray(element.children)) {
-    return element.children.every(isValidElement);
-  }
-
-  return true;
+function sanitizeElement(el: Partial<A2UIElement>): A2UIElement {
+  return {
+    id: el.id || `a2ui-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    type: el.type as any,
+    props: {
+      ...el.props,
+      className: (el.props as any)?.className || GLASSMORPHIC_DEFAULTS.className,
+      variant: (el.props as any)?.variant || GLASSMORPHIC_DEFAULTS.variant,
+    },
+    children: (el as any).children?.filter(validateElement).map(sanitizeElement) || [],
+  } as A2UIElement;
 }
 
 /**
- * Type guard for safe element access
+ * Type guards for safe runtime access
  */
 export function isValidA2UIElement(el: unknown): el is A2UIElement {
-  return isValidElement(el);
+  return validateElement(el);
+}
+
+export function isValidA2UIMessage(msg: unknown): msg is A2UIMessage {
+  return !!validateA2UIMessage(msg);
 }
 
 /**
- * Protocol version constants
+ * Quick glassmorphic message builder (convenience)
  */
-export const A2UI_PROTOCOL_VERSION = "1.0" as const;
+export const createGlassMessage = (elements: A2UIElement[]): A2UIMessage => ({
+  version: A2UI_PROTOCOL_VERSION,
+  timestamp: Date.now(),
+  elements,
+});
+
+export { A2UIComponentType };
+export type { A2UIMessage, A2UIElement, AGUIEvent, AGUIAction };

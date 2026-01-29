@@ -1,5 +1,347 @@
-import { SubTask, Priority, TaskStatus } from "../types";
-import { PersistenceService } from "./persistenceService";
+/**
+ * Atlas Jira Service (v3.2.4) - Glassmorphic Jira Cloud REST API v3 Integration
+ * Bidirectional sync: SubTasks ↔ Jira Issues with Q1-Q4 epics + priority mapping
+ */
+
+import { SubTask, Priority, TaskStatus } from "@types";
+import { PersistenceService } from "@services/persistenceService";
+import { TASK_BANK } from "@data/taskBank";
+
+/**
+ * Jira Cloud REST API v3 - Production enterprise integration
+ */
+export class JiraService {
+  private static readonly API_VERSION = "3";
+  private static readonly USER_AGENT = "Atlas-Strategic-Agent/1.0.0";
+
+  /**
+   * Create Jira Issue from Atlas SubTask with glassmorphic epic linking
+   */
+  async createTicket(task: SubTask): Promise<JiraIssueResult> {
+    try {
+      const config = this.getValidatedConfig();
+      const issueData = this.buildGlassmorphicJiraPayload(task, config.projectKey);
+
+      const response = await fetch(
+        `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
+        {
+          method: "POST",
+          headers: this.getHeaders(config),
+          body: JSON.stringify(issueData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await this.parseJiraError(response);
+        throw new Error(`Jira API [${response.status}]: ${errorData.errorMessages?.[0] || response.statusText}`);
+      }
+
+      const issue = await response.json();
+
+      return {
+        success: true,
+        issueKey: issue.key,
+        issueId: issue.id,
+        webUrl: `https://${config.domain}.atlassian.net/browse/${issue.key}`,
+        taskId: task.id,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        taskId: task.id,
+        error: error instanceof Error ? error.message : "Unknown Jira error",
+      };
+    }
+  }
+
+  /**
+   * Update Jira Issue with Atlas status/priority changes + transition
+   */
+  async updateTicket(issueKey: string, updates: Partial<SubTask>): Promise<void> {
+    const config = this.getValidatedConfig();
+
+    const fieldUpdate = this.buildFieldUpdate(updates);
+
+    const fieldResponse = await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}`,
+      {
+        method: "PUT",
+        headers: this.getHeaders(config),
+        body: JSON.stringify({ fields: fieldUpdate }),
+      }
+    );
+
+    if (!fieldResponse.ok) {
+      throw new Error(`Failed to update Jira fields for ${issueKey}`);
+    }
+
+    if (updates.status) {
+      await this.transitionIssue(config, issueKey, updates.status);
+    }
+  }
+
+  /**
+   * Bulk sync 2026 roadmap to Jira Epics + Stories
+   */
+  async syncPlan(tasks: SubTask[], dryRun = false): Promise<any> {
+    const config = this.getValidatedConfig();
+    const results = {
+      created: 0,
+      skipped: 0,
+      failed: [] as any[],
+      epics: new Map<string, string>(),
+    };
+
+    if (dryRun) {
+      console.log(`[JiraService] Dry-run: Would sync ${tasks.length} tasks to ${config.projectKey}`);
+      return results;
+    }
+
+    await this.ensureQuarterlyEpics(config);
+
+    for (const task of tasks) {
+      try {
+        const existing = await this.findExistingTicket(config, task.id);
+        if (existing) {
+          results.skipped++;
+          continue;
+        }
+
+        const result = await this.createTicket(task);
+        if (result.success) {
+          results.created++;
+
+          if (task.priority === Priority.HIGH && task.category) {
+            const epicKey = await this.getEpicKey(config, task.category);
+            if (epicKey) {
+              await this.linkToEpic(config, result.issueKey!, epicKey);
+            }
+          }
+        } else {
+          results.failed.push(result);
+        }
+      } catch (error) {
+        results.failed.push({ taskId: task.id, error: error as Error });
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Import Jira Issues → Atlas SubTasks (reverse sync)
+   */
+  async importPlan(): Promise<SubTask[]> {
+    const config = this.getValidatedConfig();
+
+    const response = await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/search?jql=labels=atlas-strategic`,
+      {
+        headers: this.getHeaders(config),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch Jira issues");
+
+    const searchResult = await response.json();
+    return (searchResult.issues || []).map((issue: any) => this.parseJiraIssue(issue));
+  }
+
+  // === PRIVATE IMPLEMENTATION ===
+
+  private async ensureQuarterlyEpics(config: JiraConfig): Promise<void> {
+    const quarters = ["2026 Q1", "2026 Q2", "2026 Q3", "2026 Q4"];
+
+    for (const quarter of quarters) {
+      try {
+        const epicPayload = {
+          fields: {
+            project: { key: config.projectKey },
+            summary: `Epic: ${quarter} Strategic Roadmap`,
+            issuetype: { name: "Epic" },
+            labels: ["atlas-strategic", "roadmap", quarter.replace(/\s+/g, "-")],
+          }
+        };
+
+        await fetch(
+          `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
+          {
+            method: "POST",
+            headers: this.getHeaders(config),
+            body: JSON.stringify(epicPayload),
+          }
+        );
+      } catch (error) {
+        console.warn(`Failed to create epic for ${quarter}:`, error);
+      }
+    }
+  }
+
+  private async findExistingTicket(config: JiraConfig, taskId: string): Promise<string | null> {
+    const response = await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/search?jql=summary~"${taskId}"`,
+      { headers: this.getHeaders(config) }
+    );
+
+    if (!response.ok) return null;
+
+    const searchResult = await response.json();
+    return searchResult.issues?.[0]?.key || null;
+  }
+
+  private buildGlassmorphicJiraPayload(task: SubTask, projectKey: string): any {
+    const themeComponent = this.getTaskBankComponent(task);
+
+    return {
+      fields: {
+        project: { key: projectKey },
+        summary: `[${task.id}] ${task.description.substring(0, 80)}${task.description.length > 80 ? "..." : ""}`,
+        issuetype: { name: task.priority === Priority.HIGH ? "Story" : "Task" },
+        priority: { name: this.mapPriority(task.priority || Priority.MEDIUM) },
+        labels: [
+          "atlas-strategic",
+          "glassmorphic-roadmap",
+          task.category?.replace(/\s+/g, "-"),
+          `priority-${task.priority?.toLowerCase()}`,
+          ...(themeComponent ? [`theme-${themeComponent.toLowerCase()}`] : []),
+        ].filter(Boolean),
+        components: themeComponent ? [{ name: themeComponent }] : [],
+        description: {
+          type: "doc",
+          version: 1,
+          content: [
+            {
+              type: "paragraph",
+              content: [{ type: "text", text: task.description }]
+            }
+          ]
+        }
+      }
+    };
+  }
+
+  private getTaskBankComponent(task: SubTask): string | undefined {
+    const matchingTask = TASK_BANK.find(t => t.id === task.id);
+    return matchingTask?.theme;
+  }
+
+  private buildFieldUpdate(updates: Partial<SubTask>): any {
+    const fields: any = {};
+    if (updates.priority) fields.priority = { name: this.mapPriority(updates.priority) };
+    if (updates.category) fields.labels = [updates.category.replace(/\s+/g, "-"), "atlas-updated"];
+    return fields;
+  }
+
+  private async transitionIssue(config: JiraConfig, issueKey: string, status: TaskStatus): Promise<void> {
+    const transitionId = await this.findTransitionId(config, issueKey, status);
+    if (transitionId) {
+      await fetch(
+        `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}/transitions`,
+        {
+          method: "POST",
+          headers: this.getHeaders(config),
+          body: JSON.stringify({ transition: { id: transitionId } }),
+        }
+      );
+    }
+  }
+
+  private async findTransitionId(config: JiraConfig, issueKey: string, status: TaskStatus): Promise<string | null> {
+    const response = await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}/transitions`,
+      { headers: this.getHeaders(config) }
+    );
+    if (!response.ok) return null;
+    const data = await response.json();
+    const transition = data.transitions?.find((t: any) => t.name.toLowerCase().includes(status.toLowerCase()));
+    return transition?.id || null;
+  }
+
+  private async getEpicKey(config: JiraConfig, quarter: string): Promise<string | null> {
+    const response = await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/search?jql=issuetype=Epic AND summary~"${quarter}"`,
+      { headers: this.getHeaders(config) }
+    );
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.issues?.[0]?.key || null;
+  }
+
+  private async linkToEpic(config: JiraConfig, issueKey: string, epicKey: string): Promise<void> {
+    await fetch(
+      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}`,
+      {
+        method: "PUT",
+        headers: this.getHeaders(config),
+        body: JSON.stringify({ fields: { customfield_10016: epicKey } }),
+      }
+    );
+  }
+
+  private getHeaders(config: JiraConfig) {
+    return {
+      "Content-Type": "application/json",
+      "Authorization": `Basic ${btoa(`${config.email}:${config.apiKey}`)}`,
+      "User-Agent": JiraService.USER_AGENT,
+      "Accept": "application/json",
+    };
+  }
+
+  private mapPriority(p: Priority): string {
+    const priorityMap: Record<Priority, string> = {
+      [Priority.HIGH]: "Highest",
+      [Priority.MEDIUM]: "High",
+      [Priority.LOW]: "Medium",
+    };
+    return priorityMap[p];
+  }
+
+  private getValidatedConfig(): JiraConfig {
+    const config = {
+      apiKey: PersistenceService.getJiraApiKey(),
+      domain: PersistenceService.getJiraDomain(),
+      projectKey: PersistenceService.getJiraProjectKey(),
+      email: PersistenceService.getJiraEmail(),
+    };
+    if (!config.apiKey || !config.domain || !config.projectKey || !config.email) {
+      throw new Error("🚨 Missing Jira configuration");
+    }
+    return config as JiraConfig;
+  }
+
+  private parseJiraIssue(issue: any): SubTask {
+    const taskIdMatch = issue.fields.summary.match(/\[([A-Z]+-\d+-\d+)\]/);
+    return {
+      id: taskIdMatch?.[1] || issue.key,
+      description: issue.fields.summary.replace(/^\[.*?\]\s*/, "").trim(),
+      status: this.mapJiraStatus(issue.fields.status?.name || "To Do"),
+      priority: this.mapJiraPriority(issue.fields.priority?.name || "Medium"),
+      category: issue.fields.labels?.find((l: string) => l.includes("2026")) || "2026 Q1",
+      theme: issue.fields.components?.[0]?.name || undefined,
+      dependencies: [],
+    };
+  }
+
+  private mapJiraStatus(status: string): TaskStatus {
+    if (status.includes("Done")) return TaskStatus.COMPLETED;
+    if (status.includes("Progress")) return TaskStatus.IN_PROGRESS;
+    return TaskStatus.PENDING;
+  }
+
+  private mapJiraPriority(priority: string): Priority {
+    if (priority.includes("High")) return Priority.HIGH;
+    if (priority.includes("Low")) return Priority.LOW;
+    return Priority.MEDIUM;
+  }
+
+  private async parseJiraError(response: Response): Promise<any> {
+    try {
+      return await response.json();
+    } catch {
+      return { errorMessages: ["Jira API error"] };
+    }
+  }
+}
 
 interface JiraConfig {
   apiKey: string;
@@ -15,185 +357,4 @@ interface JiraIssueResult {
   webUrl?: string;
   taskId?: string;
   error?: string;
-}
-
-/**
- * Jira Cloud REST API v3 Integration for Atlas Task Management
- */
-export class JiraService {
-  private static readonly API_VERSION = "3";
-  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.2.0";
-
-  /**
-   * Create Jira Issue from Atlas SubTask
-   */
-  async createTicket(task: SubTask): Promise<JiraIssueResult> {
-    try {
-      const config = this.getValidatedConfig();
-      const issueData = this.buildJiraPayload(task, config.projectKey);
-
-      const response = await fetch(
-        `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
-        {
-          method: "POST",
-          headers: this.getHeaders(config),
-          body: JSON.stringify(issueData),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await this.parseJiraError(response);
-        throw new Error(errorData.errorMessages?.[0] || `Jira API Error: ${response.status}`);
-      }
-
-      const issue = await response.json();
-      return {
-        success: true,
-        issueKey: issue.key,
-        issueId: issue.id,
-        webUrl: `https://${config.domain}.atlassian.net/browse/${issue.key}`,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        taskId: task.id,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  /**
-   * Update existing Jira issue with status/priority changes
-   */
-  async updateTicket(issueKey: string, updates: Partial<SubTask>): Promise<void> {
-    const config = this.getValidatedConfig();
-
-    // 1. Update Fields
-    const fieldUpdate = {
-      fields: {
-        ...(updates.priority && { priority: { name: this.mapPriority(updates.priority) } }),
-        ...(updates.category && { labels: [updates.category, "atlas-updated"] }),
-      },
-    };
-
-    const response = await fetch(
-      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}`,
-      {
-        method: "PUT",
-        headers: this.getHeaders(config),
-        body: JSON.stringify(fieldUpdate),
-      }
-    );
-
-    if (!response.ok) throw new Error(`Failed to update Jira fields for ${issueKey}`);
-
-    // 2. Handle Status Transition if provided
-    if (updates.status) {
-      await this.transitionIssue(config, issueKey, updates.status);
-    }
-  }
-
-  /**
-   * Batch process for roadmap synchronization
-   */
-  async bulkCreate(tasks: SubTask[]): Promise<JiraIssueResult[]> {
-    return Promise.all(tasks.map(task => this.createTicket(task)));
-  }
-
-  private async transitionIssue(config: JiraConfig, issueKey: string, status: TaskStatus) {
-    const transitionId = this.getStatusTransitionId(status);
-    await fetch(
-      `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}/transitions`,
-      {
-        method: "POST",
-        headers: this.getHeaders(config),
-        body: JSON.stringify({ transition: { id: transitionId } }),
-      }
-    );
-  }
-
-  private buildJiraPayload(task: SubTask, projectKey: string) {
-    return {
-      fields: {
-        project: { key: projectKey },
-        summary: `[${task.id}] ${task.description.substring(0, 100)}`,
-        issuetype: { name: "Task" },
-        priority: { name: this.mapPriority(task.priority || Priority.MEDIUM) },
-        labels: [
-          "atlas-strategic",
-          task.category?.replace(/\s+/g, "-"),
-          `theme-general`
-        ].filter(Boolean),
-        description: {
-          type: "doc",
-          version: 1,
-          content: [
-            {
-              type: "paragraph",
-              content: [{ type: "text", text: `🎯 Strategy: ${task.description}` }]
-            },
-            {
-              type: "paragraph",
-              content: [
-                { type: "text", text: "Dependencies: ", marks: [{ type: "strong" }] },
-                { type: "text", text: task.dependencies?.join(", ") || "None" }
-              ]
-            }
-          ]
-        }
-      }
-    };
-  }
-
-  private getHeaders(config: JiraConfig) {
-    return {
-      "Content-Type": "application/json",
-      "Authorization": `Basic ${btoa(`${config.email}:${config.apiKey}`)}`,
-      "User-Agent": JiraService.USER_AGENT,
-      "Accept": "application/json",
-    };
-  }
-
-  private mapPriority(p: Priority): string {
-    const map: Record<Priority, string> = {
-      [Priority.HIGH]: "Highest",
-      [Priority.MEDIUM]: "High",
-      [Priority.LOW]: "Medium",
-    };
-    return map[p];
-  }
-
-  private getStatusTransitionId(status: TaskStatus): string {
-    const map: Record<TaskStatus, string> = {
-      [TaskStatus.PENDING]: "11",
-      [TaskStatus.IN_PROGRESS]: "21",
-      [TaskStatus.COMPLETED]: "31",
-      [TaskStatus.BLOCKED]: "41",
-      [TaskStatus.FAILED]: "51",
-      [TaskStatus.WAITING]: "61",
-    };
-    return map[status] || "11";
-  }
-
-  private getValidatedConfig(): JiraConfig {
-    const config = {
-      apiKey: PersistenceService.getJiraApiKey(),
-      domain: PersistenceService.getJiraDomain(),
-      projectKey: PersistenceService.getJiraProjectKey(),
-      email: PersistenceService.getJiraEmail(),
-    };
-
-    if (!config.apiKey || !config.domain || !config.projectKey || !config.email) {
-      throw new Error("Missing Jira configuration. Please check Atlas Settings.");
-    }
-    return config as JiraConfig;
-  }
-
-  private async parseJiraError(response: Response) {
-    try {
-      return await response.json();
-    } catch {
-      return { errorMessages: ["Could not parse Jira error response"] };
-    }
-  }
 }

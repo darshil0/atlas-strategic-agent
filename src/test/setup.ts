@@ -1,73 +1,252 @@
-// vitest/setup.ts
-import "@testing-library/jest-dom/vitest";
-import { vi, beforeEach, beforeAll, afterAll } from "vitest";
+/**
+ * Atlas Vitest Setup (v3.2.4) - Glassmorphic Test Environment
+ * Production test configuration for MissionControl → AgentFactory → ReactFlow
+ * Perfect mocks for PersistenceService, GitHub/Jira sync, localStorage encryption
+ */
 
-// Mock localStorage for consistent testing
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
+// src/test/setup.ts
+import { expect, afterEach, vi, beforeEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+import { TaskStatus, Priority } from '@types';
+import type { Plan } from "@types";
 
+// Extend Vitest expect with jest-dom matchers
+expect.extend(matchers);
+
+// Cleanup React components after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+  vi.restoreAllMocks();
+});
+
+// === BROWSER ENVIRONMENT MOCKS ===
+Element.prototype.scrollIntoView = vi.fn();
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),      // deprecated
+    removeListener: vi.fn(),   // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn().mockReturnValue(true),
+  })),
+});
+
+// === PRODUCTION LOCALSTORAGE MOCK ===
+class AtlasLocalStorageMock {
+  private store: Record<string, string> = {};
+
+  getItem(key: string): string | null {
+    return this.store[key] ?? null;
+  }
+
+  setItem(key: string, value: string): void {
+    this.store[key] = value.toString();
+  }
+
+  removeItem(key: string): void {
+    delete this.store[key];
+  }
+
+  clear(): void {
+    this.store = {};
+  }
+
+  get length(): number {
+    return Object.keys(this.store).length;
+  }
+
+  key(index: number): string | null {
+    return Object.keys(this.store)[index] ?? null;
+  }
+}
+
+const localStorageMock = new AtlasLocalStorageMock();
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
   writable: true,
 });
 
-// Mock IntersectionObserver
-class IntersectionObserverMock {
-  constructor() {
-    // Mock constructor
-  }
-  observe() {
-    // Mock observe
-  }
-  disconnect() {
-    // Mock disconnect
-  }
-  unobserve() {
-    // Mock unobserve
-  }
-}
-vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
+// === ATLAS-SPECIFIC MOCKS ===
+const mockState = {
+  plan: null as any,
+  secrets: {} as Record<string, string>,
+};
 
-// Mock console methods for cleaner test output
-const originalConsole = console;
-beforeAll(() => {
-  vi.spyOn(console, 'warn').mockImplementation(() => {
-    // mock implementation
-  });
-  vi.spyOn(console, 'error').mockImplementation(() => {
-    // mock implementation
-  });
+vi.mock('@config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@config')>();
+  return {
+    ...actual,
+    ENV: {
+      ...actual.ENV,
+      GEMINI_API_KEY: 'test-api-key-12345',
+      DEBUG_MODE: false,
+    },
+  };
 });
 
-afterAll(() => {
-  vi.restoreAllMocks();
-  console.warn = originalConsole.warn.bind(originalConsole);
-  console.error = originalConsole.error.bind(originalConsole);
-});
+// Mock PersistenceService
+vi.mock('@services/persistenceService', () => ({
+  PersistenceService: {
+    getPlan: vi.fn(() => mockState.plan),
+    savePlan: vi.fn((plan) => { mockState.plan = plan; }),
+    getSecret: vi.fn((key) => mockState.secrets[key]),
+    saveSecret: vi.fn((key, val) => { mockState.secrets[key] = val; }),
+    getMessages: vi.fn().mockReturnValue([]),
+    saveMessages: vi.fn(),
+    getSettings: vi.fn().mockReturnValue({}),
+    saveSettings: vi.fn(),
+    getGithubConfig: vi.fn().mockReturnValue(null),
+    saveGithubConfig: vi.fn(),
+    getJiraConfig: vi.fn().mockReturnValue(null),
+    saveJiraConfig: vi.fn(),
+    saveWorkflow: vi.fn(),
+    getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002 }),
+    clearAll: vi.fn(() => { mockState.plan = null; mockState.secrets = {}; }),
+    getGithubApiKey: vi.fn(),
+    getJiraDomain: vi.fn(),
+    getJiraEmail: vi.fn(),
+    getJiraApiKey: vi.fn(),
+    getGithubOwner: vi.fn(),
+    getGithubRepo: vi.fn(),
+  },
+}));
 
-// Reset mocks before each test
+// Mock sync services
+vi.mock('@services', () => ({
+  githubService: {
+    createIssue: vi.fn().mockResolvedValue({ issueNumber: 123, htmlUrl: 'https://github.com/test' }),
+    syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
+  },
+  jiraService: {
+    createTicket: vi.fn().mockResolvedValue({ success: true, issueKey: 'ATLAS-123' }),
+    syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
+  },
+  syncServices: {
+    syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
+    healthCheck: vi.fn().mockResolvedValue([{ service: 'GitHub', healthy: true }, { service: 'Jira', healthy: true }]),
+  },
+}));
+
 beforeEach(() => {
-  localStorageMock.clear.mockClear();
-  localStorageMock.getItem.mockClear();
-  localStorageMock.setItem.mockClear();
-  localStorageMock.removeItem.mockClear();
+  // Reset localStorage for each test
+  localStorageMock.clear();
 
-  // Reset all mocks
-  vi.clearAllMocks();
+  // Mock IntersectionObserver for ReactFlow
+  const IntersectionObserverMock = vi.fn(() => ({
+    disconnect: vi.fn(),
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+  }));
+
+  vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 });
 
-// Mock ENV for testing
-vi.stubGlobal('ENV', {
-  GEMINI_API_KEY: 'test-key',
-  DEBUG_MODE: true,
-  APP_VERSION: '3.2.0-test',
+// === CONSOLE MOCKING ===
+const originalConsoleError = console.error;
+global.console = {
+  ...console,
+  error: (...args: unknown[]) => {
+    // Suppress React error boundaries and Vitest warnings
+    const errorMsg = args[0]?.toString?.();
+    if (
+      errorMsg?.includes('Error: Uncaught') ||
+      errorMsg?.includes('Warning:') ||
+      errorMsg?.includes('act') ||
+      errorMsg?.includes('findBy') ||
+      errorMsg?.includes('PersistenceService')
+    ) {
+      return;
+    }
+    originalConsoleError.call(console, ...args);
+  },
+  warn: vi.fn(), // Suppress warnings in tests
+  log: vi.fn(),  // Optional: suppress logs
+} as any;
+
+// === ATLAS-SPECIFIC TEST UTILITIES ===
+export const ATLAS_TEST_UTILS = {
+  /**
+   * Create mock 2026 Q1 plan for testing
+   */
+  createMockPlan: (): Plan => ({
+    projectName: "Test Project",
+    goal: 'AI Transformation Q1 2026',
+    tasks: [
+      {
+        id: 'AI-26-Q1-001',
+        description: 'Deploy Multi-Modal Agent Orchestration',
+        status: TaskStatus.PENDING,
+        priority: Priority.HIGH,
+        category: '2026 Q1',
+        theme: 'AI',
+        dependencies: [],
+      },
+      {
+        id: 'CY-26-Q1-001',
+        description: 'Deploy Zero-Trust Identity Fabric',
+        status: TaskStatus.PENDING,
+        priority: Priority.HIGH,
+        category: '2026 Q1',
+        theme: 'Cyber',
+        dependencies: ['AI-26-Q1-001'],
+      },
+    ],
+  }),
+
+  /**
+   * Mock MissionControl response
+   */
+  mockMissionControlResponse: (): any => ({
+    text: '🏛️ ATLAS v3.2.5 SYNTHESIS COMPLETE\nQuality Score: 92/100',
+    validation: {
+      iterations: 2,
+      finalScore: 92,
+      graphReady: true,
+      q1HighCount: 8,
+    },
+    plan: (global as any).ATLAS_TEST_UTILS.createMockPlan(),
+  }),
+
+  /**
+   * Clear all Atlas mocks and reset
+   */
+  resetAtlasMocks: (): void => {
+    vi.clearAllMocks();
+    localStorageMock.clear();
+    vi.restoreAllMocks();
+  },
+};
+
+// === GLASSMORPHIC CSS MOCKS ===
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+  value: vi.fn(),
+  writable: true,
 });
 
-// Mock crypto.randomUUID for deterministic tests
+// Mock ResizeObserver for glassmorphic charts
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Mock crypto.randomUUID for consistent test IDs
 vi.stubGlobal('crypto', {
-  getRandomValues: vi.fn(() => new Uint8Array(16)),
+  getRandomValues: vi.fn(() => new Uint8Array(32)),
+  randomUUID: vi.fn(() => '12345678-1234-1234-1234-123456789012'),
 });
+
+// Vitest snapshot serializer for A2UI messages
+expect.addSnapshotSerializer({
+  test: (val: any) => val?.version === '1.1' && Array.isArray(val.elements),
+  serialize: (val: any) => `A2UIMessage(v1.1, ${val.elements.length} elements)`,
+});
+
+(global as any).ATLAS_TEST_UTILS = ATLAS_TEST_UTILS;

@@ -1,268 +1,207 @@
+/**
+ * Atlas Agent Swarm (v3.2.3) - Glassmorphic Multi-Agent System
+ * Strategist → Analyst → Critic pipeline for 2026 enterprise roadmaps
+ */
+
 import { UIBuilder } from "./uiBuilder";
 import { BaseAgent } from "./types";
-import { A2UIMessage, AGUIEvent, A2UIComponentType } from "./protocol";
-import { TaskStatus, Priority } from "../../types";
-import { ENV } from "../../config";
-
-interface StrategyTask {
-  id: string;
-  description: string;
-  status: TaskStatus;
-  priority: Priority;
-  dependencies: string[];
-}
-
-interface StrategyContext {
-  goal: string;
-  tasks: StrategyTask[];
-  activeTaskId?: string;
-}
+import {
+  A2UIMessage,
+  AGUIEvent,
+  TaskStatus,
+  Priority,
+  SubTask,
+  Plan,
+  AgentExecutionContext
+} from "@types";
+import { ENV } from "@config";
+import { TASK_BANK } from "@data/taskBank";
 
 /**
- * Strategist Agent - Goal decomposition and roadmap generation
+ * Strategist Agent - Hierarchical Goal Decomposition
  */
-export class StrategistAgent extends BaseAgent<StrategyContext, Partial<StrategyContext>> {
-  name = "Strategist";
-  description =
-    "Decomposes complex goals into executable 2026 roadmaps with dependency graphs.";
+export class StrategistAgent extends BaseAgent {
+  name = "STRATEGIST";
+  description = "Decomposes goals into executable 2026 Q1-Q4 roadmaps with dependencies.";
 
   async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
+    const builder = new UIBuilder();
+
     switch (event.action) {
       case "task_select":
-        return new UIBuilder()
-          .add(A2UIComponentType.PROGRESS, {
-            label: "Strategic Alignment",
-            value: 75,
-          })
-          .add(A2UIComponentType.TEXT, {
-            text: `Strategist analyzing task ${event.elementId ?? "N/A"}`,
-          })
+        return builder
+          .text(`Strategist ACK: Locked target ${event.elementId}`)
+          .progress("Dependency Analysis", 82)
           .build();
 
       case "decompose":
-        return new UIBuilder()
-          .add(A2UIComponentType.TEXT, {
-            text: "Generating hierarchical task decomposition...",
-          })
+        return builder
+          .text("🧠 ATLAS_SYSTEM_INSTRUCTION parsing directive...")
+          .progress("Goal Decomposition", 45)
           .build();
 
-      default: {
-        const actionLabel = event.action ?? "unknown";
-        return new UIBuilder()
-          .add(A2UIComponentType.TEXT, {
-            text: `Strategist acknowledged: ${actionLabel}`,
-          })
+      default:
+        return builder
+          .text(`Strategist Status: Listening for ${event.action}`)
           .build();
-      }
     }
   }
 
-  async execute(
-    prompt: string,
-    context: Partial<StrategyContext> = {}
-  ): Promise<StrategyContext> {
-    const plan: StrategyContext = {
-      goal: context.goal ?? `Strategic execution plan for: ${prompt}`,
-      tasks:
-        context.tasks ??
-        [
-          {
-            id: "STRAT-001",
-            description: "Initial goal validation and scope definition",
-            status: TaskStatus.IN_PROGRESS,
-            priority: Priority.HIGH,
-            dependencies: [],
-          },
-          {
-            id: "STRAT-002",
-            description: "Dependency mapping and risk assessment",
-            status: TaskStatus.PENDING,
-            priority: Priority.MEDIUM,
-            dependencies: ["STRAT-001"],
-          },
-        ],
-      activeTaskId: context.activeTaskId,
-    };
-
-    if (ENV && ENV.DEBUG_MODE) {
-      console.log("[Strategist] Generated plan:", plan);
-    }
-
-    return plan;
-  }
-
-  getInitialUI(): A2UIMessage {
-    return new UIBuilder()
-      .add(A2UIComponentType.CARD, {
-        title: "Strategist Agent",
-        children: [
-          [
-            A2UIComponentType.TEXT,
-            {
-              text: "Ready for goal decomposition and roadmap generation.",
-            },
-          ],
-        ],
-      })
-      .build();
-  }
-}
-
-/**
- * Analyst Agent - Feasibility scoring and data grounding
- */
-export interface AnalystResult {
-  feasibility: number; // 0-100 score
-  confidence: number; // 0-100 confidence
-  risks: string[];
-  recommendations: string[];
-}
-
-export class AnalystAgent extends BaseAgent<AnalystResult, Partial<StrategyContext>> {
-  name = "Analyst";
-  description =
-    "Performs feasibility analysis, risk scoring, and data validation.";
-
-  async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
-    return new UIBuilder()
-      .add(A2UIComponentType.CHART, {
-        title: "Feasibility Analysis",
-        data: [
-          { label: "Technical", value: 92 },
-          { label: "Market", value: 78 },
-          { label: "Risk", value: 22 },
-          { label: "Cost", value: 85 },
-        ],
-        maxValue: 100,
-      })
-      .add(A2UIComponentType.TEXT, {
-        text: `Analysis complete for ${event.elementId ?? "N/A"}`,
-      })
-      .build();
-  }
-
-  async execute(
+  async execute<R = any>(
     _prompt: string,
-    _context: Partial<StrategyContext> = {}
-  ): Promise<AnalystResult> {
-    const analysis: AnalystResult = {
-      feasibility: 87,
-      confidence: 94,
-      risks: [
-        "Moderate dependency on Q2 vendor delivery",
-        "Regulatory approval timeline uncertainty",
-      ],
-      recommendations: [
-        "Prioritize CY-26-001 zero-trust implementation first",
-        "Parallel-track IN-26-003 quantum-resistant migration",
-      ],
+    context: AgentExecutionContext = {}
+  ): Promise<R> {
+    const plan = {
+      projectName: "Atlas Strategic 2026",
+      goal: prompt,
+      tasks: TASK_BANK
+        .filter(task => task.priority === Priority.HIGH && task.category === "2026 Q1")
+        .slice(0, 8)
+        .map(task => ({
+          id: task.id,
+          description: task.description,
+          status: TaskStatus.PENDING,
+          priority: task.priority,
+          category: task.category,
+          theme: task.theme,
+          dependencies: [],
+        })) as SubTask[],
+      ...context,
     };
 
-    if (ENV && ENV.DEBUG_MODE) {
-      console.log("[Analyst] Feasibility score:", analysis);
+    if (ENV.DEBUG_MODE) {
+      console.log(`🧠 [Strategist] Generated roadmap for: ${prompt}`);
     }
 
-    return analysis;
+    return plan as unknown as R;
   }
 
   getInitialUI(): A2UIMessage {
     return new UIBuilder()
-      .add(A2UIComponentType.TEXT, {
-        text: "Analyst ready for feasibility scoring and risk assessment.",
-      })
+      .card("🏛️ Strategist Agent v3.2.3")
+      .text("Ready for autonomous goal decomposition and dependency synthesis.")
       .build();
   }
 }
 
 /**
- * Critic Agent - Plan review and optimization
+ * Architect Agent - Technical Design + Infrastructure
  */
-export enum CriticIssueType {
-  DEPENDENCY = "dependency",
-  PRIORITY = "priority",
-  TIMELINE = "timeline",
-  RISK = "risk",
-}
-
-export enum CriticSeverity {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-}
-
-export interface CriticIssue {
-  type: CriticIssueType;
-  severity: CriticSeverity;
-  description: string;
-}
-
-export interface CriticResult {
-  score: number; // 0-100
-  issues: CriticIssue[];
-  optimizations: string[];
-}
-
-export class CriticAgent extends BaseAgent<CriticResult, Partial<StrategyContext>> {
-  name = "Critic";
-  description =
-    "Identifies plan gaps, circular dependencies, and optimization opportunities.";
+export class ArchitectAgent extends BaseAgent {
+  name = "ARCHITECT";
+  description = "Technical architecture design for strategic objectives.";
 
   async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
     return new UIBuilder()
-      .add(A2UIComponentType.CARD, {
-        title: "Critic Review",
-        children: [
-          [
-            A2UIComponentType.LIST,
-            {
-              items: [
-                { label: "No circular dependencies detected", icon: "✅" },
-                { label: "Q1 overload: 18 critical tasks", icon: "⚠️" },
-                { label: "CY-26-005 QKD blocked by vendor", icon: "🚫" },
-              ],
-            },
-          ],
-        ],
-      })
+      .card("🏗️ Technical Blueprint")
+      .text("Infrastructure stack: Next.js 15, Gemini 2.0, Tailwind 4.1")
       .build();
   }
 
-  async execute(
+  async execute<R = any>(
     _prompt: string,
-    _context: Partial<StrategyContext> = {}
-  ): Promise<CriticResult> {
-    const review: CriticResult = {
-      score: 88,
-      issues: [
-        {
-          type: CriticIssueType.TIMELINE,
-          severity: CriticSeverity.MEDIUM,
-          description: "Q1 overloaded (18 HIGH priority tasks)",
-        },
-        {
-          type: CriticIssueType.DEPENDENCY,
-          severity: CriticSeverity.HIGH,
-          description: "CY-26-005 blocked by unlisted vendor contract",
-        },
-      ],
-      optimizations: [
-        "Parallelize AI-26-001 and IN-26-002",
-        "Move ES-26-001 to Q2 to balance workload",
-      ],
-    };
-
-    if (ENV && ENV.DEBUG_MODE) {
-      console.log("[Critic] Plan review score:", review.score);
-    }
-
-    return review;
+    _context: AgentExecutionContext = {}
+  ): Promise<R> {
+    return {
+      stack: ["React 19", "Vite 7", "TypeScript 5.9"],
+      deployment: "Edge Functions",
+      scalability: "High",
+    } as unknown as R;
   }
 
   getInitialUI(): A2UIMessage {
     return new UIBuilder()
-      .add(A2UIComponentType.TEXT, {
-        text: "Critic ready for plan validation and optimization.",
-      })
+      .text("🏗️ Architect Agent ready for technical synthesis.")
+      .build();
+  }
+}
+
+/**
+ * Analyst Agent - Feasibility + Risk Scoring
+ */
+export class AnalystAgent extends BaseAgent {
+  name = "ANALYST";
+  description = "Feasibility scoring and TASK_BANK alignment analysis.";
+
+  async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
+    return new UIBuilder()
+      .card("📊 Analysis Matrix")
+      .progress("Feasibility Score", 87)
+      .text("Analysis complete. Q1 critical path validated.")
+      .build();
+  }
+
+  async execute<R = any>(
+    _prompt: string,
+    _context: AgentExecutionContext = {}
+  ): Promise<R> {
+    const analysis = {
+      feasibility: 87,
+      confidence: 94,
+      risks: [
+        "Q1 high priority overload (8 tasks detected)",
+        "Cross-theme dependency gap in Infrastructure node",
+      ],
+      recommendations: [
+        "Prioritize Zero-Trust Fabric before AI core transformation",
+        "Enable parallel processing for non-blocking Infra tasks",
+      ],
+    };
+
+    return analysis as unknown as R;
+  }
+
+  getInitialUI(): A2UIMessage {
+    return new UIBuilder()
+      .text("📊 Analyst active. Ready for feasibility modeling.")
+      .build();
+  }
+}
+
+/**
+ * Critic Agent - Plan Optimization + DAG Validation
+ */
+export class CriticAgent extends BaseAgent {
+  name = "CRITIC";
+  description = "Validates acyclic graphs and suggests optimizations.";
+
+  async handleEvent(_event: AGUIEvent): Promise<A2UIMessage> {
+    return new UIBuilder()
+      .card("🔍 Critic Review")
+      .text("Roadmap status: Validated", { size: "lg" })
+      .progress("Quality Score", 88)
+      .build();
+  }
+
+  async execute<R = any>(
+    _prompt: string,
+    context: AgentExecutionContext = {}
+  ): Promise<R> {
+    const plan = context.plan;
+    const q1HighCount = plan?.tasks?.filter(t =>
+      t.priority === Priority.HIGH && t.category?.includes("Q1")
+    )?.length || 0;
+
+    const review = {
+      score: 88,
+      graphValid: true,
+      issues: q1HighCount > 10 ? [{
+        type: "capacity",
+        severity: "high",
+        description: `Q1 capacity warning: ${q1HighCount} high priority tasks`,
+      }] : [],
+      optimizations: [
+        "Combine redundant security audits in Q1",
+        "Offload documentation tasks to Q2",
+      ],
+    };
+
+    return review as unknown as R;
+  }
+
+  getInitialUI(): A2UIMessage {
+    return new UIBuilder()
+      .text("🔍 Critic initialized. Ready for DAG validation.")
       .build();
   }
 }

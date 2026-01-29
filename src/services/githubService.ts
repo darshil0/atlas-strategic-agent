@@ -1,5 +1,5 @@
 /**
- * Atlas GitHub Service (v3.2.4) - Glassmorphic GitHub Issues Integration
+ * Atlas GitHub Service (v3.2.7) - Glassmorphic GitHub Issues Integration
  * Converts SubTasks ↔ GitHub Issues with TaskBank labels + milestones
  * Perfect sync for MissionControl → ReactFlow → GitHub Actions pipeline
  */

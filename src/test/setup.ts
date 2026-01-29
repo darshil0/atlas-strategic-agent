@@ -1,5 +1,5 @@
 /**
- * Atlas Vitest Setup (v3.2.4) - Glassmorphic Test Environment
+ * Atlas Vitest Setup (v3.2.7) - Glassmorphic Test Environment
  * Production test configuration for MissionControl → AgentFactory → ReactFlow
  * Perfect mocks for PersistenceService, GitHub/Jira sync, localStorage encryption
  */
@@ -204,7 +204,7 @@ export const ATLAS_TEST_UTILS = {
    * Mock MissionControl response
    */
   mockMissionControlResponse: (): any => ({
-    text: '🏛️ ATLAS v3.2.5 SYNTHESIS COMPLETE\nQuality Score: 92/100',
+    text: '🏛️ ATLAS v3.2.7 SYNTHESIS COMPLETE\nQuality Score: 92/100',
     validation: {
       iterations: 2,
       finalScore: 92,

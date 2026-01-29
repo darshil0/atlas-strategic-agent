@@ -1,5 +1,5 @@
 /**
- * Atlas Glassmorphic Icon System (v3.2.1)
+ * Atlas Glassmorphic Icon System (v3.2.7)
  * Task status icons for TaskCard, DependencyGraph, TimelineView
  * Glassmorphic containers + atlas-blue theming + perfect animations
  */

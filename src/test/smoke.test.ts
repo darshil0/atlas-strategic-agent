@@ -1,20 +1,19 @@
 /**
- * Atlas Core Integration Test Suite (v3.2.1) - Glassmorphic Smoke Tests
+ * Atlas Core Integration Test Suite (v3.2.7) - Glassmorphic Smoke Tests
  * Production test coverage for MissionControl → AgentFactory → PersistenceService
  * Validates full ADK stack + GitHub/Jira sync + ReactFlow data flow
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AgentFactory, MissionControl } from "@lib/adk";
-import { AgentPersona } from "@lib/adk/types";
+import { AgentFactory, MissionControl } from "@adk/index";
+import { AgentPersona } from "@adk/types";
 import { PersistenceService } from "@services/persistenceService";
-import { syncServices } from "@services";
+import { syncServices } from "@services/index";
 import { ATLAS_TEST_UTILS } from "../test/setup";
 
-// Enable console output in CI for debugging
-vi.setConfig({ logHeapUsage: true });
+// Integration tests for full Atlas ADK stack
 
-describe("🏛️ ATLAS v3.2.1 - Production Integration Tests", () => {
+describe("🏛️ ATLAS v3.2.7 - Production Integration Tests", () => {
   beforeEach(() => {
     ATLAS_TEST_UTILS.resetAtlasMocks();
   });
@@ -123,7 +122,7 @@ describe("🏛️ ATLAS v3.2.1 - Production Integration Tests", () => {
       expect(TASK_BANK).toBeDefined();
       expect(TASK_BANK.length).toBeGreaterThan(20);
       
-      const aiTasks = TASK_BANK.filter(t => t.theme === "AI");
+      const aiTasks = TASK_BANK.filter((t: any) => t.theme === "AI");
       expect(aiTasks.length).toBeGreaterThan(5);
     });
 

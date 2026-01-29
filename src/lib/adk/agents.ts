@@ -1,5 +1,5 @@
 /**
- * Atlas Agent Swarm (v3.2.3) - Glassmorphic Multi-Agent System
+ * Atlas Agent Swarm (v3.2.7) - Glassmorphic Multi-Agent System
  * Strategist → Analyst → Critic pipeline for 2026 enterprise roadmaps
  */
 
@@ -77,7 +77,7 @@ export class StrategistAgent extends BaseAgent {
 
   getInitialUI(): A2UIMessage {
     return new UIBuilder()
-      .card("🏛️ Strategist Agent v3.2.3")
+      .card("🏛️ Strategist Agent v3.2.7")
       .text("Ready for autonomous goal decomposition and dependency synthesis.")
       .build();
   }

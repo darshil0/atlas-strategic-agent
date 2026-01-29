@@ -19,6 +19,7 @@ The transition from v3.2.5 to v3.2.7 was driven by two core imperatives: **Libra
 
 1. **Dependency Modernization**: We updated 25+ packages (React 19.2.4, Vitest 4.0.18, Vite 7.3.1). This wasn't just "version bumping"—it involved reconciling breaking changes in Vite types and ensuring our custom PostCSS pipeline played nice with Tailwind 4.1.18.
 2. **Strongly-Typed Contracts**: The ADK (Agent Development Kit) moved away from `any` results. We introduced `AnalystResult` and `CriticResult` interfaces. Now, when the Analyst scores a plan, the Orchestrator doesn't "hope" the property is named `feasibilityScore`; the compiler *guarantees* it.
+3. **Identity Sync**: We unified the codebase versioning with the AI's internal system instruction. The agent now *knows* it is Atlas v3.2.7, aligning its reasoning with the latest technical constraints of the platform.
 
 ## v3.2.6 Update: The Orchestration Hardening
 *Added January 2026*

@@ -11,12 +11,13 @@ All notable changes to this project are documented in this file. This project ad
 This release focuses on updating the entire library stack to the latest stable versions and refining the Agent Development Kit (ADK) documentation with production-ready interfaces.
 
 ### Added
-- **Finalized ADK Interfaces**: Successfully implemented and documented `AnalystResult` and `CriticResult` strongly-typed result structures.
+- **Strongly-Typed Contracts**: The ADK (Agent Development Kit) moved away from `any` results. We introduced `AnalystResult` and `CriticResult` interfaces. Now, when the Analyst scores a plan, the Orchestrator doesn't "hope" the property is named `feasibilityScore`; the compiler *guarantees* it.
+- **Identity Sync**: We unified the codebase versioning with the AI's internal system instruction. The agent now *knows* it is Atlas v3.2.7, aligning its reasoning with the latest technical constraints of the platform.
 - **Enhanced Refinement Loop**: Formalized the iterative feedback mechanism in `MissionControl` to support up to 3 optimization cycles.
 
-### Changed
 - **Library Modernization**: Updated 25+ dependencies to their latest versions, including React 19.2.4+, Vitest 4.0.18+, and Vite 7.3.1+.
-- **Version Synchronization**: Unified version numbers across `package.json`, `README.md`, and `AGENT.md`.
+- **Unified Versioning**: Synchronized version identifiers across 27+ files, including internal headers, logging, and AI system instructions.
+- **Fixed Smoke Tests**: Resolved path alias resolution issues and updated Vitest configuration for `logHeapUsage` compatibility.
 
 ### [3.2.6] - 2026-01-28
 

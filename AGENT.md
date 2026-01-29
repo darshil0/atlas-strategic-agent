@@ -1,4 +1,4 @@
-# 🤖 Atlas Agent Development Kit (ADK) v3.2.6
+# 🤖 Atlas Agent Development Kit (ADK) v3.2.7
 
 ## Executive Summary
 

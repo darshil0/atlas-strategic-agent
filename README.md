@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.2.6
+# 🌌 Atlas Strategic Agent v3.2.7
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -230,7 +230,8 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
-- [x] **V3.2.5** - Centralized utilities, improved type safety, and production-ready error handling
+- [x] **V3.2.7** - Dependency modernization (React 19.2.4+), finalized ADK interfaces, and CI/CD refinements
+- [x] **V3.2.6** - Hardened JSON parsing logic, multi-agent property mapping, and iterative refinement loops
 - [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol, ReactFlow graphs
 - [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization
 - [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives

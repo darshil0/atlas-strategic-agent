@@ -4,7 +4,27 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
-## [3.2.5] - 2026-01-24
+## [3.2.6] - 2026-01-28
+
+### 🚀 Orchestration Hardening & Synchronization
+
+This release focuses on hardening the multi-agent orchestration pipeline, fixing critical JSON parsing logic for LLM responses, and reconciling local codebase with premium remote features.
+
+### Added
+- **Dynamic Agent Metadata**: Agents now return strongly-typed results (`AnalystResult`, `CriticResult`) instead of unstructured objects.
+- **Enhanced MissionControl**: Improved iterative refinement loop in `orchestrator.ts` with better feedback propagation.
+
+### Fixed
+- **JSON Parsing Logic**: Fixed critical bug in `GeminiService` where leading/trailing brackets were being stripped from structured JSON responses, causing intermittent parsing failures.
+- **Multi-Agent Property Mapping**: Resolved property mismatches in the `Strategist → Analyst → Critic` pipeline that caused missing feasibility scores and review notes.
+- **Git Reconciliation**: Unified local environment with remote v3.2.5 feature set, restoring glassmorphic UI assets and advanced agent swarm logic.
+- **Type-Check & Linting**:
+  - Fixed 50+ type errors related to `MissionResult` and `SubTask` interfaces.
+  - Resolved `vitest.config.ts` version mismatch through type casting.
+  - Fixed "unused-vars" and "empty-functions" lint errors across `setup.ts` and `agents.ts`.
+- **UI State Management**: Fixed a type mismatch in `Sidebar.tsx` where `activeTaskId` failed strict null checks.
+
+### [3.2.5] - 2026-01-24
 
 ### 🚀 Continuous Improvement & Infrastructure
 
@@ -219,6 +239,12 @@ For issues, questions, or contributions:
 ---
 
 ## Migration Guides
+
+### Upgrading from 3.2.5 to 3.2.6
+
+No breaking changes. This release hardens the ADK orchestration layer and fixes JSON parsing for Gemini 2.0 responses.
+
+**Action Required**: None.
 
 ### Upgrading from 3.2.4 to 3.2.5
 
